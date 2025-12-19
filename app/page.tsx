@@ -1,5 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { Hero } from '@/components/Hero'
+import { ProductCard } from '@/components/ProductCard'
 import { headers } from 'next/headers' // Importamos os headers
 
 export default async function Home() {
@@ -15,6 +16,12 @@ export default async function Home() {
     .select('*')
     .eq('domain', host) // <-- A MÁGICA ACONTECE AQUI
     .single()
+
+    // 2.5 Buscar produtos DESTE tenant
+  const { data: products } = await supabase
+    .from('products')
+    .select('*')
+    .eq('tenant_id', tenant.id)
 
   // 3. Se não encontrar nada, mostramos uma página genérica ou erro
   if (!tenant) {
@@ -51,11 +58,31 @@ export default async function Home() {
 
       <Hero name={tenant.name} primaryColor={colors.primary} />
       
+      <section className="max-w-6xl mx-auto py-16 px-6">
+        <h2 className="text-2xl font-bold text-slate-900 mb-8">Nossos Produtos</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {products?.map((product) => (
+            <ProductCard 
+              key={product.id}
+              name={product.name}
+              description={product.description}
+              price={product.price}
+              imageUrl={product.image_url}
+              color={colors.primary}
+            />
+          ))}
+        </div>
+      </section>
+
       <div className="max-w-6xl mx-auto p-12 text-center">
         <p className="text-slate-400 text-sm">
           Acessando como: <span className="font-mono text-slate-600 font-bold">{host}</span>
         </p>
       </div>
+
+      <footer className="py-10 border-t text-center text-slate-400 text-sm bg-white">
+        © {new Date().getFullYear()} {tenant.name} - Plataforma Vertexgraf SaaS
+      </footer>
     </main>
   )
 }
