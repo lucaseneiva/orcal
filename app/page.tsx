@@ -81,7 +81,7 @@ export default async function Home() {
       </div>
 
       <footer className="py-10 border-t text-center text-slate-400 text-sm bg-white">
-        © {new Date().getFullYear()} {tenant.name} - Plataforma Vertexgraf SaaS
+        © {new Date().getFullYear()} {tenant.name} - Plataforma SaaS
       </footer>
     </main>
   )
