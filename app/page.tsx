@@ -66,6 +66,7 @@ export default async function Home() {
               key={product.id}
               name={product.name}
               description={product.description}
+              id={product.id}
               price={product.price}
               imageUrl={product.image_url}
               color={colors.primary}
