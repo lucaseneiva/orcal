@@ -43,5 +43,7 @@ O comando `db push` leva apenas as **Tabelas**. Ele **NÃO** leva os dados.
 - `npx supabase db pull` - Baixar estrutura (Do remoto -> Para local).
 - `npx supabase db push` - Subir estrutura (Do local -> Para remoto).
 - `npx supabase migration repair --status reverted <id>` - Usar caso o histórico de migrations bugue.
+- `npx supabase status` - Saber qual o projeto linkado
+- `npx supabase start` - Iniciar o contaienr do projeto
 
 ---
