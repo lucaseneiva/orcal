@@ -5,7 +5,7 @@ import { headers } from 'next/headers' // Importamos os headers
 
 export default async function Home() {
   const supabase = await createClient()
-  
+
   // 1. Pegamos o domínio que está sendo acessado (ex: localhost:3000 ou vertexgraf.com.br)
   const headerStack = await headers()
   const host = headerStack.get('host')
@@ -17,24 +17,31 @@ export default async function Home() {
     .eq('domain', host) // <-- A MÁGICA ACONTECE AQUI
     .single()
 
-    // 2.5 Buscar produtos DESTE tenant
+  if (!tenant) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="text-center p-10 bg-white rounded-xl shadow-sm border max-w-md">
+          <div className="text-6xl mb-4 p-20">🔍</div>
+          <h1 className="text-2xl font-bold text-slate-800 mb-2">
+            Ops! Página não encontrada
+          </h1>
+          <p className="text-slate-600 leading-relaxed">
+            Não conseguimos encontrar o que você está procurando.
+            Verifique se o endereço está correto ou entre em contato com o suporte.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  // 2.5 Buscar produtos DESTE tenant
   const { data: products } = await supabase
     .from('products')
     .select('*')
     .eq('tenant_id', tenant.id)
 
   // 3. Se não encontrar nada, mostramos uma página genérica ou erro
-  if (!tenant) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-100">
-        <div className="text-center p-10 bg-white rounded-xl shadow-sm border">
-          <h1 className="text-2xl font-bold text-slate-800">Domínio não configurado ⚠️</h1>
-          <p className="text-slate-500 mt-2">Este endereço não está vinculado a nenhuma gráfica.</p>
-          <p className="text-xs text-slate-400 mt-4 italic">Host detectado: {host}</p>
-        </div>
-      </div>
-    )
-  }
+
 
   // 4. Se encontrou, extraímos as cores e renderizamos o site
   const colors = tenant.colors as { primary: string; secondary: string }
@@ -57,12 +64,12 @@ export default async function Home() {
       </nav>
 
       <Hero name={tenant.name} primaryColor={colors.primary} />
-      
+
       <section className="max-w-6xl mx-auto py-16 px-6">
         <h2 className="text-2xl font-bold text-slate-900 mb-8">Nossos Produtos</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {products?.map((product) => (
-            <ProductCard 
+            <ProductCard
               key={product.id}
               name={product.name}
               description={product.description}
