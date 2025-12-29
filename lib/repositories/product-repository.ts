@@ -11,7 +11,7 @@ export class ProductRepository {
     const { data } = await (await this.supabase)
       .from('products')
       .select('*')
-      .eq('tenant_id', tenantId)
+      .eq('store_id', tenantId)
 
     return data || []
   }

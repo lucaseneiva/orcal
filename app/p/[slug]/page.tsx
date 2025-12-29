@@ -1,7 +1,11 @@
 import { createClient } from '@/utils/supabase/server'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import AddToCartButton from './components/AddToCartButton' // Componente cliente para usar o hook
+import AddToCartButton from './components/AddToCartButton'
+
+type PageProps = {
+  params: Promise<{ slug: string }>
+}
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const supabase = await createClient()
@@ -9,38 +13,25 @@ export default async function ProductPage({ params }: { params: { slug: string }
   const host = headerStack.get('host')
   const { slug } = await params
 
-  // 1. Tenant
-  const { data: tenant } = await supabase
-    .from('tenants')
+  const { data: store } = await supabase
+    .from('stores')
     .select('*')
-    .eq('domain', host)
+    .eq('subdomain', host)
     .single()
 
-  if (!tenant) return notFound()
+  if (!store) return notFound()
 
-  // 2. Produto
   const { data: product } = await supabase
-    .from('products')
+    .from('products') 
     .select('*')
-    .eq('tenant_id', tenant.id)
+    .eq('store_id', store.id)
     .eq('slug', slug)
     .single()
 
   if (!product) return notFound()
 
-  const colors = tenant.colors as any
-
   return (
     <div className="min-h-screen bg-white">
-        {/* Navbar Simplificada (Deveria ser um componente reutilizável) */}
-      <nav className="p-6 border-b">
-        <div className="max-w-4xl mx-auto">
-             <a href="/" className="font-bold text-xl" style={{ color: colors.secondary }}>
-                ← Voltar para {tenant.name}
-             </a>
-        </div>
-      </nav>
-
       <main className="max-w-4xl mx-auto py-12 px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Imagem */}
@@ -60,7 +51,7 @@ export default async function ProductPage({ params }: { params: { slug: string }
             <div className="mt-8">
               <AddToCartButton 
                 product={{ id: product.id, name: product.name, price: product.price }} 
-                color={colors.primary} 
+                color={store.primaryColor} 
               />
             </div>
           </div>

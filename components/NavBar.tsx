@@ -1,0 +1,80 @@
+"use client";
+
+import { ArrowLeft, ShoppingBag, Menu } from "lucide-react";
+import { useCart } from "@/components/providers/CartProvider";
+
+type NavbarProps = {
+  store: {
+    name: string;
+    logo_url?: string | null;
+  };
+  primaryColor: string;
+};
+
+export function Navbar({ store, primaryColor }: NavbarProps) {
+//   const { cartCount } = useCart();
+
+  return (
+    <>
+      {/* Topbar */}
+      <div className="bg-slate-900 text-slate-300 text-xs py-2 px-6">
+        <div className="max-w-6xl mx-auto flex justify-between items-center">
+          <a
+            href="https://site-institucional-do-cliente.com"
+            className="flex items-center hover:text-white transition-colors gap-2"
+          >
+            <ArrowLeft size={14} />
+            Voltar para o site principal
+          </a>
+          <span className="hidden sm:block opacity-70">
+            Catálogo Oficial de Orçamentos
+          </span>
+        </div>
+      </div>
+
+      {/* Navbar */}
+      <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
+        <div className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
+          {/* Logo */}
+          <div className="flex items-center gap-2">
+            {store.logo_url ? (
+              <img
+                src={store.logo_url}
+                alt={store.name}
+                className="h-10 w-auto object-contain"
+              />
+            ) : (
+              <span className="text-2xl font-bold tracking-tight text-slate-900">
+                {store.name}
+              </span>
+            )}
+          </div>
+
+          {/* Ações */}
+          <div className="flex items-center gap-6">
+            <div className="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+              <a href="#" className="hover:text-slate-900">Todos os Produtos</a>
+              <a href="#" className="hover:text-slate-900">Categorias</a>
+            </div>
+
+            <button className="relative p-2 rounded-full hover:bg-slate-100">
+              <ShoppingBag size={24} style={{ color: primaryColor }} />
+              {/* {cartCount > 0 && (
+                <span
+                  className="absolute -top-1 -right-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
+                  style={{ backgroundColor: primaryColor }}
+                >
+                  {cartCount}
+                </span>
+              )} */}
+            </button>
+
+            <button className="md:hidden text-slate-600">
+              <Menu size={24} />
+            </button>
+          </div>
+        </div>
+      </nav>
+    </>
+  );
+}

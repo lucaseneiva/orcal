@@ -14,63 +14,6 @@ export function StoreLayout({ store, products, primaryColor, host }: StoreLayout
 
   return (
     <main className="min-h-screen bg-slate-50 font-sans">
-      
-      {/* 1. Topbar "Utilitária" - Conecta de volta ao site mãe */}
-      <div className="bg-slate-900 text-slate-300 text-xs py-2 px-6">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <a href="https://site-institucional-do-cliente.com" className="flex items-center hover:text-white transition-colors gap-2">
-            <ArrowLeft size={14} />
-            Voltar para o site principal
-          </a>
-          <span className="hidden sm:block opacity-70">Catálogo Oficial de Orçamentos</span>
-        </div>
-      </div>
-
-      {/* 2. Navbar Principal - Foco na Marca e Ações */}
-      <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
-          
-          {/* Logo / Nome da Loja */}
-          <div className="flex items-center gap-2">
-            {store.logo_url ? (
-               <img src={store.logo_url} alt={store.name} className="h-10 w-auto object-contain" />
-            ) : (
-              <span className="text-2xl font-bold tracking-tight text-slate-900">
-                {store.name}
-              </span>
-            )}
-          </div>
-
-          {/* Ações Direitas (Carrinho é o rei aqui) */}
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
-              <a href="#" className="hover:text-slate-900 transition-colors">Todos os Produtos</a>
-              <a href="#" className="hover:text-slate-900 transition-colors">Categorias</a>
-            </div>
-
-            <button 
-              className="relative p-2 rounded-full hover:bg-slate-100 transition-colors group"
-              aria-label="Ver Orçamento"
-            >
-              <ShoppingBag size={24} style={{ color: primaryColor }} />
-              {cartCount > 0 && (
-                <span 
-                  className="absolute -top-1 -right-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: primaryColor }}
-                >
-                  {cartCount}
-                </span>
-              )}
-            </button>
-            
-            {/* Mobile Menu Trigger (se necessário) */}
-            <button className="md:hidden text-slate-600">
-              <Menu size={24} />
-            </button>
-          </div>
-        </div>
-      </nav>
-
       <header 
         className="py-12 px-6 border-b"
         style={{ 
@@ -122,6 +65,7 @@ export function StoreLayout({ store, products, primaryColor, host }: StoreLayout
               price={product.price}
               imageUrl={product.image_url}
               color={primaryColor}
+              slug={product.slug}
 
             />
           ))}
