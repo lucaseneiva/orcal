@@ -1,25 +1,22 @@
-import { headers } from 'next/headers'
-import { StoreService } from '@/lib/services/store-service'
 import { StoreNotFound } from '@/components/StoreNotFound'
-import { StoreLayout } from '@/components/StoreLayout'
-
+import { StoreHome } from '@/components/StoreHome'
+import { getCurrentStore } from '@/lib/utils/get-current-store'
+import { ProductRepository } from '@/lib/repositories/product-repository'
+  
 export default async function Home() {
-  const headerStack = await headers()
-  const host = headerStack.get('host')
-
-  const storeService = new StoreService()
-  const data = await storeService.getStoreDataByHost(host)
-
-  if (!data) {
+  const store = await getCurrentStore();
+  const productRepo = new ProductRepository();
+  if (!store) {
     return <StoreNotFound />
   }
+  
+  const products = await productRepo.findByStoreId(store.id);
 
   return (
-    <StoreLayout 
-      store={data.store}
-      products={data.products}
-      primaryColor={data.primaryColor}
-      host={host || ''}
+    <StoreHome
+      store={store}
+      products={products}
+      primaryColor={store.primary_color || '#4578A'}
     />
   )
 }

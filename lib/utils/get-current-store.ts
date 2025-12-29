@@ -2,6 +2,7 @@ import { cache } from 'react';
 import { headers } from 'next/headers';
 import { StoreRepository } from '@/lib/repositories/store-repository';
 import { notFound } from 'next/navigation';
+import { Console } from 'console';
 
 export const getCurrentStore = cache(async () => {
   const headerStack = await headers();
@@ -11,6 +12,5 @@ export const getCurrentStore = cache(async () => {
   const store = await repo.findByDomain(host);
 
   if (!store) return null;
-
   return store;
 });

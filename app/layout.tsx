@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/NavBar";
 import { StoreNotFound } from "@/components/StoreNotFound";
 import { getCurrentStore } from '@/lib/utils/get-current-store';
+import { Footer } from "@/components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,6 +44,8 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navbar store={store} />
         {children}
+        
+        <Footer storeName={store.name} />
       </body>
     </html>
   );

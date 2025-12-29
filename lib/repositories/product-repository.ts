@@ -7,12 +7,11 @@ export class ProductRepository {
     this.supabase = createClient()
   }
 
-  async findByTenantId(tenantId: string) {
+  async findByStoreId(storeId: string) {
     const { data } = await (await this.supabase)
       .from('products')
       .select('*')
-      .eq('store_id', tenantId)
-
+      .eq('store_id', storeId)
     return data || []
   }
 }

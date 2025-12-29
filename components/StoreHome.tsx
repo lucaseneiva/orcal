@@ -1,14 +1,13 @@
 import { Search, ShoppingBag, ArrowLeft, Menu } from 'lucide-react' // Instale: npm i lucide-react
 import { ProductCard } from '@/components/ProductCard'
 
-interface StoreLayoutProps {
+interface StoreHomeProps {
   store: any
   products: any[]
   primaryColor: string 
-  host: string
 }
 
-export function StoreLayout({ store, products, primaryColor, host }: StoreLayoutProps) {
+export function StoreHome({ products, primaryColor}: StoreHomeProps) {
   // Simulando contagem do carrinho (no futuro virá de um contexto/estado)
   const cartCount = 0; 
 
@@ -73,15 +72,7 @@ export function StoreLayout({ store, products, primaryColor, host }: StoreLayout
       </section>
 
       {/* Footer Simples */}
-      <footer className="border-t bg-white mt-12">
-        <div className="max-w-6xl mx-auto py-10 px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
-          <p>© {new Date().getFullYear()} {store.name} - Todos os direitos reservados.</p>
-          <div className="flex items-center gap-2">
-            <span>Powered by</span>
-            <span className="font-bold text-slate-700">Orçal</span>
-          </div>
-        </div>
-      </footer>
+      
     </main>
   )
 }

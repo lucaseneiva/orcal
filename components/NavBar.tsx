@@ -1,13 +1,12 @@
 "use client";
 
 import { ArrowLeft, ShoppingBag, Menu } from "lucide-react";
-import { useCart } from "@/components/providers/CartProvider";
 
 type NavbarProps = {
   store: {
     name: string;
     logo_url?: string | null;
-    primaryColor: string;
+    primary_color: string;
   };
 };
 
@@ -41,7 +40,7 @@ export function Navbar({ store }: NavbarProps) {
             </div>
 
             <button className="relative p-2 rounded-full hover:bg-slate-100">
-              <ShoppingBag size={24} style={{ color: store.primaryColor }} />
+              <ShoppingBag size={24} style={{ color: store.primary_color }} />
               {/* {cartCount > 0 && (
                 <span
                   className="absolute -top-1 -right-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
