@@ -10,7 +10,7 @@ export const getCurrentStore = cache(async () => {
   const repo = new StoreRepository();
   const store = await repo.findByDomain(host);
 
-  if (!store) notFound(); 
+  if (!store) return null;
 
   return store;
 });

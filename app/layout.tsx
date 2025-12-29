@@ -2,11 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/NavBar";
-import { StoreService } from "@/lib/services/store-service";
-import { headers } from 'next/headers'
 import { StoreNotFound } from "@/components/StoreNotFound";
-  import { getCurrentStore } from '@/lib/utils/get-current-store';
-import { get } from "http";
+import { getCurrentStore } from '@/lib/utils/get-current-store';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,24 +25,24 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const defaultPrimaryColor = "#000000"; 
-
 
   const store = await getCurrentStore();
 
   if (!store) {
-      return <StoreNotFound />
+    return (
+      <html lang="pt-BR">
+        <body>
+          <StoreNotFound />
+        </body>
+      </html>
+    );
   }
 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-
-
-          <Navbar store={store} />
-            {children}
-          
-          
+        <Navbar store={store} />
+        {children}
       </body>
     </html>
   );
