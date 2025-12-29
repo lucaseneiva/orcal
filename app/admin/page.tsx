@@ -1,5 +1,5 @@
 // app/admin/page.tsx
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/lib/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { signout } from '../login/actions'
 

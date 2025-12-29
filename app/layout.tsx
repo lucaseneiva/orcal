@@ -5,8 +5,8 @@ import { Navbar } from "@/components/NavBar";
 import { StoreService } from "@/lib/services/store-service";
 import { headers } from 'next/headers'
 import { StoreNotFound } from "@/components/StoreNotFound";
-import { StoreProvider } from "@/components/providers/StoreProvider";
-
+  import { getCurrentStore } from '@/lib/utils/get-current-store';
+import { get } from "http";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,27 +28,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const headerStack = await headers()
-  const host = headerStack.get('host')
-
   const defaultPrimaryColor = "#000000"; 
-  const storeService = new StoreService()
-  const data = await storeService.getStoreDataByHost(host)
 
-  if (!data) {
+
+  const store = await getCurrentStore();
+
+  if (!store) {
       return <StoreNotFound />
   }
 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        
-        
-          <Navbar store={data.store} primaryColor={defaultPrimaryColor} />
-          
-          <StoreProvider store={data.store}>
+
+
+          <Navbar store={store} />
             {children}
-          </StoreProvider>
+          
           
       </body>
     </html>

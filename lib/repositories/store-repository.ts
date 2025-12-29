@@ -1,4 +1,4 @@
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export class StoreRepository {
   private supabase

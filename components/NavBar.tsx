@@ -7,11 +7,11 @@ type NavbarProps = {
   store: {
     name: string;
     logo_url?: string | null;
+    primaryColor: string;
   };
-  primaryColor: string;
 };
 
-export function Navbar({ store, primaryColor }: NavbarProps) {
+export function Navbar({ store }: NavbarProps) {
 //   const { cartCount } = useCart();
 
   return (
@@ -41,11 +41,11 @@ export function Navbar({ store, primaryColor }: NavbarProps) {
             </div>
 
             <button className="relative p-2 rounded-full hover:bg-slate-100">
-              <ShoppingBag size={24} style={{ color: primaryColor }} />
+              <ShoppingBag size={24} style={{ color: store.primaryColor }} />
               {/* {cartCount > 0 && (
                 <span
                   className="absolute -top-1 -right-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: primaryColor }}
+                  style={{ backgroundColor: store.primaryColor }}
                 >
                   {cartCount}
                 </span>

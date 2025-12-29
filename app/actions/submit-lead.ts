@@ -1,6 +1,6 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
+import { createClient } from '@/lib/utils/supabase/server'
 import { headers } from 'next/headers'
 import { Resend } from 'resend' // 1. Importar Resend
 import { NewLeadEmail } from '@/components/emails/NewLeadEmail' // 2. Importar o template
