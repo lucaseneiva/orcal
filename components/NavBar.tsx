@@ -16,23 +16,6 @@ export function Navbar({ store, primaryColor }: NavbarProps) {
 
   return (
     <>
-      {/* Topbar */}
-      <div className="bg-slate-900 text-slate-300 text-xs py-2 px-6">
-        <div className="max-w-6xl mx-auto flex justify-between items-center">
-          <a
-            href="https://site-institucional-do-cliente.com"
-            className="flex items-center hover:text-white transition-colors gap-2"
-          >
-            <ArrowLeft size={14} />
-            Voltar para o site principal
-          </a>
-          <span className="hidden sm:block opacity-70">
-            Catálogo Oficial de Orçamentos
-          </span>
-        </div>
-      </div>
-
-      {/* Navbar */}
       <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
         <div className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
           {/* Logo */}
