@@ -1,8 +1,6 @@
 'use client'
 import Link from "next/link";
 
-import { useCart } from "@/components/providers/CartProvider"
-
 type ProductProps = {
   id: string
   name: string
@@ -14,17 +12,7 @@ type ProductProps = {
 }
 
 export function ProductCard({ id, name, description, price, imageUrl, color, slug }: ProductProps) {
-  // Pegamos a função de adicionar do nosso Provider
-  const { addToCart } = useCart()
-
-  const handleAddToCart = () => {
-    addToCart({
-      id,
-      name,
-      price
-    })
-  }
-
+  
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
       <img src={imageUrl} alt={name} className="w-full h-48 object-cover" />

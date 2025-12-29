@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { CartProvider } from "@/components/providers/CartProvider";
-import { CartDrawer } from "@/components/CartDrawer";
 import { Navbar } from "@/components/NavBar";
 import { StoreService } from "@/lib/services/store-service";
 import { headers } from 'next/headers'
 import { StoreNotFound } from "@/components/StoreNotFound";
+import { StoreProvider } from "@/components/providers/StoreProvider";
 
 
 const geistSans = Geist({
@@ -44,15 +43,13 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         
-        <CartProvider>
+        
           <Navbar store={data.store} primaryColor={defaultPrimaryColor} />
-          <CartDrawer primaryColor={defaultPrimaryColor} />
           
+          <StoreProvider store={data.store}>
+            {children}
+          </StoreProvider>
           
-          {children}
-
-        </CartProvider>
-
       </body>
     </html>
   );

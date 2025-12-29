@@ -1,7 +1,6 @@
 import { createClient } from '@/utils/supabase/server'
 import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
-import AddToCartButton from './components/AddToCartButton'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -46,13 +45,6 @@ export default async function ProductPage({ params }: { params: { slug: string }
             
             <div className="mt-6 prose text-slate-500">
                 <p>{product.description}</p>
-            </div>
-
-            <div className="mt-8">
-              <AddToCartButton 
-                product={{ id: product.id, name: product.name, price: product.price }} 
-                color={store.primaryColor} 
-              />
             </div>
           </div>
         </div>
