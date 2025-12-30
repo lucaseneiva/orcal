@@ -10,6 +10,7 @@ type NavbarProps = {
 };
 
 export function Navbar({ store }: NavbarProps) {
+  // test vercel deployment
   // Uncomment when cart functionality is ready
   // const { cartCount } = useCart();
   const cartCount = 0;
