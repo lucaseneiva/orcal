@@ -24,7 +24,7 @@ export function StoreHome({ products, primaryColor}: StoreHomeProps) {
             O que você precisa imprimir hoje?
           </h1>
           <p className="text-slate-500 text-lg">
-            Selecione os itens e monte seu orçamento online instantaneamente.
+            Selecione os itens e monte seu pedido de orçamento online.
           </p>
           
           {/* Barra de Busca "Heroica" */}
