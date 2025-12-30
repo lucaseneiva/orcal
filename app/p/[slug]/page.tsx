@@ -33,9 +33,7 @@ export default async function ProductPage({ params }: PageProps) {
           {/* Info */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
-            <p className="text-2xl font-bold mt-2 text-gray-900">
-               {product.price}
-            </p>
+            
             
             <div className="mt-4 prose text-gray-600">
                 <p>{product.description}</p>
