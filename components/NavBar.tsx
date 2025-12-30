@@ -1,6 +1,5 @@
 "use client";
-
-import { ArrowLeft, ShoppingBag, Menu } from "lucide-react";
+import { ShoppingBag, Menu } from "lucide-react";
 
 type NavbarProps = {
   store: {
@@ -11,52 +10,67 @@ type NavbarProps = {
 };
 
 export function Navbar({ store }: NavbarProps) {
-//   const { cartCount } = useCart();
+  // Uncomment when cart functionality is ready
+  // const { cartCount } = useCart();
+  const cartCount = 0;
 
   return (
-    <>
-      <nav className="bg-white border-b sticky top-0 z-50 shadow-sm">
-        <div className="max-w-6xl mx-auto px-6 h-20 flex justify-between items-center">
-          {/* Logo */}
-          <div className="flex items-center gap-2">
-            {store.logo_url ? (
-              <img
-                src={store.logo_url}
-                alt={store.name}
-                className="h-10 w-auto object-contain"
-              />
-            ) : (
-              <span className="text-2xl font-bold tracking-tight text-slate-900">
-                {store.name}
+    <nav 
+      className="border-b sticky top-0 z-50 shadow-sm"
+      style={{ backgroundColor: store.primary_color }}
+    >
+      <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+        
+        {/* Logo Section */}
+        <div className="flex items-center">
+          {store.logo_url ? (
+            <img
+              src={store.logo_url}
+              alt={`${store.name} logo`}
+              className="h-10 w-auto object-contain"
+            />
+          ) : (
+            <span className="text-2xl font-bold tracking-tight text-white">
+              {store.name}
+            </span>
+          )}
+        </div>
+
+        {/* Navigation Links - Desktop */}
+        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/90">
+          <a href="#products" className="hover:text-white transition-colors">
+            Todos os Produtos
+          </a>
+          <a href="#categories" className="hover:text-white transition-colors">
+            Categorias
+          </a>
+        </div>
+
+        {/* Actions Section */}
+        <div className="flex items-center gap-4">
+          
+          {/* Shopping Cart Button */}
+          <button 
+            className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
+            aria-label="Carrinho de compras"
+          >
+            <ShoppingBag size={24} className="text-white" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-500 px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+                {cartCount}
               </span>
             )}
-          </div>
+          </button>
 
-          {/* Ações */}
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
-              <a href="#" className="hover:text-slate-900">Todos os Produtos</a>
-              <a href="#" className="hover:text-slate-900">Categorias</a>
-            </div>
-
-            <button className="relative p-2 rounded-full hover:bg-slate-100">
-              <ShoppingBag size={24} style={{ color: store.primary_color }} />
-              {/* {cartCount > 0 && (
-                <span
-                  className="absolute -top-1 -right-1 text-[10px] font-bold text-white px-1.5 py-0.5 rounded-full"
-                  style={{ backgroundColor: store.primaryColor }}
-                >
-                  {cartCount}
-                </span>
-              )} */}
-            </button>
-
-            <button className="md:hidden text-slate-600">
-              <Menu size={24} />
-            </button>
-          </div>
+          {/* Mobile Menu Button */}
+          <button 
+            className="md:hidden p-2 rounded-full hover:bg-white/10 transition-colors"
+            aria-label="Menu"
+          >
+            <Menu size={24} className="text-white" />
+          </button>
         </div>
-      </nav>
-    </>
+      </div>
+    </nav>
   );
 }
