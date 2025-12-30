@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/utils/supabase/server'
 
-export class StoreRepository {
+class StoreRepository {
   private supabase
 
   constructor() {
@@ -19,3 +19,5 @@ export class StoreRepository {
     return error ? null : data
   }
 } 
+
+export const storeRepository = new StoreRepository()

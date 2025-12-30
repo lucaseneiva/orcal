@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/utils/supabase/server'
 
-export class ProductRepository {
+class ProductRepository {
   private supabase
 
   constructor() {
@@ -14,4 +14,16 @@ export class ProductRepository {
       .eq('store_id', storeId)
     return data || []
   }
+
+  async findBySlugAndStoreId(slug: string, storeId: string) {
+    const { data } = await (await this.supabase)
+      .from('products')
+      .select('*')
+      .eq('slug', slug)
+      .eq('store_id', storeId)
+      .single()
+    return data || null
+  }
 }
+
+export const productRepository = new ProductRepository()

@@ -1,33 +1,16 @@
-import { createClient } from '@/lib/utils/supabase/server'
-import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
+import { productRepository } from '@/lib/repositories/product-repository'
+import { getCurrentStore } from '@/lib/utils/get-current-store'
 
 type PageProps = {
   params: Promise<{ slug: string }>
 }
 
 export default async function ProductPage({ params }: { params: { slug: string } }) {
-  const supabase = await createClient()
-  const headerStack = await headers()
-  const host = headerStack.get('host')
-  const { slug } = await params
-
-  const { data: store } = await supabase
-    .from('stores')
-    .select('*')
-    .eq('subdomain', host)
-    .single()
-
-  if (!store) return notFound()
-
-  const { data: product } = await supabase
-    .from('products') 
-    .select('*')
-    .eq('store_id', store.id)
-    .eq('slug', slug)
-    .single()
-
-  if (!product) return notFound()
+  const store = await getCurrentStore();
+  const { slug } = await params;
+  const product = await productRepository.findBySlugAndStoreId(slug, store.id);
+  if (!product) return notFound();
 
   return (
     <div className="min-h-screen bg-white">
