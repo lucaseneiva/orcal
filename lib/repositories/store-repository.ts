@@ -3,8 +3,8 @@ import { createClient } from '@/lib/utils/supabase/server'
 class StoreRepository {
   private supabase
 
-  constructor() {
-    this.supabase = createClient()
+  constructor(supabase: any) {
+    this.supabase = supabase
   }
 
   async findByDomain(domain: string | null) {
@@ -20,4 +20,7 @@ class StoreRepository {
   }
 } 
 
-export const storeRepository = new StoreRepository()
+export async function getStoreRepository() {
+  const supabase = createClient();
+  return new StoreRepository(supabase);
+}

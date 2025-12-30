@@ -1,12 +1,13 @@
 import { cache } from 'react';
 import { headers } from 'next/headers';
-import { storeRepository } from '@/lib/repositories/store-repository';
+import { getStoreRepository } from '@/lib/repositories/store-repository';
 
 export const getCurrentStore = cache(async () => {
   const headerStack = await headers();
   const host = headerStack.get('host');
 
-  const store = await storeRepository.findByDomain(host);
+  const storeRepository = await getStoreRepository();
+  const store = storeRepository.findByDomain(host);
 
   if (!store) return null;
   return store;

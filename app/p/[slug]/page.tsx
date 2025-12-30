@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { productRepository } from '@/lib/repositories/product-repository'
+import { getProductRepository } from '@/lib/repositories/product-repository'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 
 type PageProps = {
@@ -9,9 +9,11 @@ type PageProps = {
 export default async function ProductPage({ params }: { params: { slug: string } }) {
   const store = await getCurrentStore();
   const { slug } = await params;
-  const product = await productRepository.findBySlugAndStoreId(slug, store.id);
+  
+  const productRepository = await getProductRepository()
+  const product = await productRepository.findBySlugAndStoreId(slug, store.id)
   if (!product) return notFound();
-
+  
   return (
     <div className="min-h-screen bg-white">
       <main className="max-w-4xl mx-auto py-12 px-6">
