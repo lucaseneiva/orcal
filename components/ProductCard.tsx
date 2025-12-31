@@ -22,7 +22,7 @@ export function ProductCard({ id, name, description, price, imageUrl, color, slu
         <p className="text-slate-500 text-sm mt-1 line-clamp-2 flex-1">{description}</p>
         
         <div className="mt-4 flex items-center justify-center pt-4 border-t border-slate-100">
-          <Link href={`/p/${slug}`}>
+          <Link href={`/p/${slug}`} prefetch={false}>
             <button
               className="text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-lg text-white transition-transform hover:scale-105 active:scale-95"
               style={{ backgroundColor: color }}
