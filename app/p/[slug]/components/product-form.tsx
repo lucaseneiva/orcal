@@ -1,80 +1,111 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
-// Tipagem básica para saber o que esperar do banco
-type AttributeValue = {
-  id: string
-  label: string
-}
-
-type Attribute = {
-  id: string
-  name: string
-  slug: string
-  attribute_values: AttributeValue[]
+// 1. Tipagem atualizada conforme o retorno da nossa Query anterior
+type ProductOption = {
+  value_id: string
+  value_name: string      // Ex: "Couché 300g"
+  value_meta: string | null
+  attribute_id: string
+  attribute_name: string  // Ex: "Papel"
+  attribute_slug: string
 }
 
 interface ProductFormProps {
-  product: any
+  product: {
+    id: string
+    name: string
+    // O array plano que vem do banco
+    options: ProductOption[] 
+    quantity_tiers?: number[] // Opcional, caso venha do banco
+  }
   store: any
-  availableAttributes: Attribute[] // <--- Recebemos a lista do banco aqui
 }
 
-export default function ProductForm({ product, store, availableAttributes }: ProductFormProps) {
-  // 1. Estado para armazenar as escolhas (Ex: { material: "Couché", acabamento: "Verniz" })
+export default function ProductForm({ product, store }: ProductFormProps) {
+  // Estado para armazenar os IDs selecionados: { [attribute_id]: value_id }
   const [selections, setSelections] = useState<Record<string, string>>({})
   
-  // 2. Estado para quantidade (Pega a primeira opção do produto ou 100 como fallback)
-  // Assumindo que no banco você criou a coluna 'quantity_tiers' no produto
-  const quantities = product.quantity_tiers || [100, 250, 500, 1000]; 
+  // Quantidades
+  const quantities = product.quantity_tiers || [100, 250, 500, 1000]
   const [qtd, setQtd] = useState(quantities[0])
   
-  // Cor da loja
-  const brandColor = store.primary_color || store.color || '#000000';
+  const brandColor = store.primary_color || store.color || '#000000'
 
-  // Função para atualizar o objeto de seleções
-  const handleSelection = (slug: string, value: string) => {
-    setSelections(prev => ({
+  // 2. Lógica de Agrupamento (O Pulo do Gato)
+  // Transforma o array plano em grupos para montar os <select>
+  const groupedAttributes = useMemo(() => {
+    const groups: Record<string, { 
+      id: string, 
+      name: string, 
+      slug: string, 
+      values: ProductOption[] 
+    }> = {}
+
+    product.options.forEach((opt) => {
+      // Se o grupo (ex: Papel) ainda não existe, cria
+      if (!groups[opt.attribute_id]) {
+        groups[opt.attribute_id] = {
+          id: opt.attribute_id,
+          name: opt.attribute_name,
+          slug: opt.attribute_slug,
+          values: []
+        }
+      }
+      // Adiciona a opção (ex: Couché) ao grupo
+      groups[opt.attribute_id].values.push(opt)
+    })
+
+    return Object.values(groups)
+  }, [product.options])
+
+  // 3. Auto-selecionar a primeira opção de cada atributo ao carregar
+  useEffect(() => {
+    const defaults: Record<string, string> = {}
+    
+    groupedAttributes.forEach((group) => {
+      if (group.values.length > 0) {
+        // Seleciona o ID da primeira opção
+        defaults[group.id] = group.values[0].value_id
+      }
+    })
+    
+    // Só atualiza se o selections estiver vazio (primeira carga)
+    if (Object.keys(selections).length === 0) {
+      setSelections(defaults)
+    }
+  }, [groupedAttributes]) // Removemos 'selections' da dependência para evitar loop
+
+  const handleSelection = (attributeId: string, valueId: string) => {
+    setSelections((prev) => ({
       ...prev,
-      [slug]: value
+      [attributeId]: valueId
     }))
   }
-
-  // (Opcional) Pré-selecionar a primeira opção de cada atributo ao carregar
-  useEffect(() => {
-    const defaults: Record<string, string> = {};
-    availableAttributes.forEach(attr => {
-      if (attr.attribute_values.length > 0) {
-        defaults[attr.slug] = attr.attribute_values[0].label;
-      }
-    });
-    setSelections(defaults);
-  }, [availableAttributes]);
 
   return (
     <div className="mt-8 space-y-6">
       
-      {/* Grid de Atributos Dinâmicos */}
-      {/* Se não tiver atributos, esconde essa div para não ficar buraco vazio */}
-      {availableAttributes.length > 0 && (
+      {/* Seção de Atributos */}
+      {groupedAttributes.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-          {availableAttributes.map((attr) => (
-            <div key={attr.id}>
+          {groupedAttributes.map((attrGroup) => (
+            <div key={attrGroup.id}>
               <label className="block text-sm font-bold text-gray-900 mb-1.5 capitalize">
-                {attr.name}
+                {attrGroup.name}
               </label>
               
               <select 
                 className="w-full border border-gray-400 rounded-md p-2.5 bg-white text-gray-900 font-medium focus:border-black focus:ring-1 focus:ring-black outline-none"
-                value={selections[attr.slug] || ''}
-                style={{ accentColor: store.primary_color }}
-                onChange={(e) => handleSelection(attr.slug, e.target.value)}
+                // O value é o ID da opção selecionada para este atributo
+                value={selections[attrGroup.id] || ''}
+                style={{ accentColor: brandColor }}
+                onChange={(e) => handleSelection(attrGroup.id, e.target.value)}
               >
-                {/* Mapeia os valores (options) desse atributo */}
-                {attr.attribute_values.map((val) => (
-                  <option key={val.id} value={val.label}>
-                    {val.label}
+                {attrGroup.values.map((val) => (
+                  <option key={val.value_id} value={val.value_id}>
+                    {val.value_name}
                   </option>
                 ))}
               </select>
@@ -83,12 +114,12 @@ export default function ProductForm({ product, store, availableAttributes }: Pro
         </div>
       )}
 
-      {/* Seleção de Quantidade */}
+      {/* Seção de Quantidade */}
       <div>
         <label className="block text-sm font-bold text-gray-900 mb-2">Quantidade</label>
         <div className="flex flex-wrap gap-2">
-          {quantities.map((q: number) => {
-            const isSelected = qtd === q;
+          {quantities.map((q) => {
+            const isSelected = qtd === q
             return (
               <button
                 key={q}
@@ -109,19 +140,25 @@ export default function ProductForm({ product, store, availableAttributes }: Pro
 
       <hr className="border-gray-200 my-6" />
 
-      {/* Ações */}
+      {/* Botões de Ação */}
       <div className="flex flex-col gap-3">
         <button 
           style={{ backgroundColor: brandColor }}
           className="w-full text-white py-3.5 rounded-lg font-bold text-lg hover:opacity-90 transition shadow-sm"
           onClick={() => {
-            // Aqui você veria os dados prontos para enviar pro Supabase
-            console.log('Dados do Pedido:', {
-              productId: product.id,
-              quantidade: qtd,
-              opcoes: selections
-            })
-            alert(`Item configurado! Veja o console (F12).`)
+            // Prepara o objeto final para enviar (payload)
+            const pedido = {
+              product_id: product.id,
+              quantity: qtd,
+              // Mapeia os IDs selecionados de volta para os objetos completos (se precisar)
+              selected_options: Object.entries(selections).map(([attrId, valId]) => ({
+                attribute_id: attrId,
+                value_id: valId
+              }))
+            }
+            
+            console.log('Enviando para o carrinho:', pedido)
+            alert('Produto configurado! Verifique o console.')
           }}
         >
           Adicionar ao Carrinho
@@ -129,7 +166,7 @@ export default function ProductForm({ product, store, availableAttributes }: Pro
         
         <button 
           className="w-full bg-white text-gray-800 border-2 border-gray-300 py-3.5 rounded-lg font-bold hover:bg-gray-50 hover:border-gray-400 transition"
-          onClick={() => alert('Abrir modal de orçamento...')}
+          onClick={() => alert('Modal de orçamento...')}
         >
           Pedir Orçamento
         </button>

@@ -13,7 +13,7 @@ class StoreRepository {
     const { data, error } = await (await this.supabase)
       .from('stores')
       .select('*')
-      .eq('subdomain', domain)
+      .eq('domain', domain)
       .single()
 
     return error ? null : data

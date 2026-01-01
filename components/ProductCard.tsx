@@ -5,13 +5,12 @@ type ProductProps = {
   id: string
   name: string
   description: string
-  price: string
   imageUrl: string
   color: string
   slug: string
 }
 
-export function ProductCard({ id, name, description, price, imageUrl, color, slug }: ProductProps) {
+export function ProductCard({ id, name, description, imageUrl, color, slug }: ProductProps) {
   
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">

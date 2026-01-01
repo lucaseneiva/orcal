@@ -3,7 +3,6 @@ import { getProductRepository } from '@/lib/repositories/product-repository'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import { createClient } from '@/lib/utils/supabase/server'
-import { Database } from '@/types/supabase'
 
 // Tipagem correta para a query com relacionamento
 type AttributeWithValues = {
@@ -12,7 +11,7 @@ type AttributeWithValues = {
   slug: string
   attribute_values: {
     id: string
-    label: string
+    name: string
     attribute_id: string
   }[]
 }
@@ -26,29 +25,8 @@ export default async function ProductPage({ params }: PageProps) {
   const store = await getCurrentStore()
   const { slug } = await params
   const productRepository = await getProductRepository()
-  const product = await productRepository.findBySlugAndStoreId(slug, store.id)
-
-  const { data, error } = await (await supabase)
-    .from('attributes')
-    .select(`
-      id,
-      name,
-      slug,
-      attribute_values (
-        id,
-        label,
-        attribute_id
-      )
-    `)
-    .eq('store_id', store.id)
-    .order('created_at', { ascending: true })
-
-  if (error) {
-    console.error('Error fetching attributes:', error)
-  }
-
-  const globalAttributes: AttributeWithValues[] = data ?? []
-    
+  const product = await productRepository.getStoreProduct(store.id, slug)
+  
   if (!product) return notFound()
 
   return (
@@ -72,7 +50,6 @@ export default async function ProductPage({ params }: PageProps) {
             <ProductForm 
               product={product} 
               store={store} 
-              availableAttributes={globalAttributes} 
             />
           </div>
         </div>

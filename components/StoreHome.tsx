@@ -61,7 +61,6 @@ export function StoreHome({ products, primaryColor}: StoreHomeProps) {
               name={product.name}
               description={product.description}
               id={product.id}
-              price={product.price}
               imageUrl={product.image_url}
               color={primaryColor}
               slug={product.slug}
