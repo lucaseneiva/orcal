@@ -4,6 +4,7 @@ import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import { createClient } from '@/lib/utils/supabase/server'
 
+
 // Tipagem correta para a query com relacionamento
 type AttributeWithValues = {
   id: string
@@ -56,3 +57,4 @@ export default async function ProductPage({ params }: PageProps) {
     </div>
   )
 }
+

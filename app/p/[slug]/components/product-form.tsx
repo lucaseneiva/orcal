@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
+import { useCart } from '@/app/context/cart-context' // <--- Importe
+import { useRouter } from 'next/navigation' // <--- Importe
 
 // 1. Tipagem atualizada conforme o retorno da nossa Query anterior
 type ProductOption = {
@@ -24,6 +26,9 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ product, store }: ProductFormProps) {
+  const router = useRouter()
+  const { addToCart } = useCart()
+
   // Estado para armazenar os IDs selecionados: { [attribute_id]: value_id }
   const [selections, setSelections] = useState<Record<string, string>>({})
   
@@ -82,6 +87,29 @@ export default function ProductForm({ product, store }: ProductFormProps) {
       ...prev,
       [attributeId]: valueId
     }))
+  }
+
+  function handleAddToCart() {
+    // Monta lista legível de opções selecionadas
+    const selectedOptionsReadable = groupedAttributes.map(group => {
+      const selectedValueId = selections[group.id]
+      const selectedOption = group.values.find(v => v.value_id === selectedValueId)
+      
+      return {
+        name: group.name, // Ex: "Papel"
+        value: selectedOption?.value_name || 'Padrão' // Ex: "Couché"
+      }
+    })
+
+    addToCart({
+      productId: product.id,
+      productName: product.name, // Se tiver essa prop no objeto product
+      quantity: qtd,
+      options: selectedOptionsReadable
+    })
+    
+    // Envia pro checkout
+    router.push('/checkout')
   }
 
   return (
@@ -145,21 +173,7 @@ export default function ProductForm({ product, store }: ProductFormProps) {
         <button 
           style={{ backgroundColor: brandColor }}
           className="w-full text-white py-3.5 rounded-lg font-bold text-lg hover:opacity-90 transition shadow-sm"
-          onClick={() => {
-            // Prepara o objeto final para enviar (payload)
-            const pedido = {
-              product_id: product.id,
-              quantity: qtd,
-              // Mapeia os IDs selecionados de volta para os objetos completos (se precisar)
-              selected_options: Object.entries(selections).map(([attrId, valId]) => ({
-                attribute_id: attrId,
-                value_id: valId
-              }))
-            }
-            
-            console.log('Enviando para o carrinho:', pedido)
-            alert('Produto configurado! Verifique o console.')
-          }}
+          onClick={handleAddToCart}
         >
           Adicionar ao Carrinho
         </button>
@@ -170,7 +184,7 @@ export default function ProductForm({ product, store }: ProductFormProps) {
         >
           Pedir Orçamento
         </button>
-      </div>
+      </div>  
     </div>
   )
 }

@@ -1,6 +1,7 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import { CartProvider } from "./context/cart-context";
 import { Navbar } from "@/components/NavBar";
 import { StoreNotFound } from "@/components/StoreNotFound";
 import { getCurrentStore } from '@/lib/utils/get-current-store';
@@ -43,7 +44,9 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navbar store={store} />
-        {children}
+
+        <CartProvider>{<div className="mx-auto bg-gray-50">{children}</div>}</CartProvider>
+        
         
         <Footer storeName={store.name} />
       </body>
