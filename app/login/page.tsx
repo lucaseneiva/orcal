@@ -1,5 +1,5 @@
-// app/login/page.tsx
 import { login } from './actions'
+import { getCurrentStore } from '@/lib/utils/get-current-store'
 
 type LoginPageProps = {
     searchParams: Promise<{ message?: string }>
@@ -7,7 +7,8 @@ type LoginPageProps = {
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
     const params = await searchParams
-
+    const store = await getCurrentStore()
+    
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
@@ -42,7 +43,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
                     <button
                         formAction={login}
-                        className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+                        style={{ backgroundColor: store.primary_color}}
+                        className=" text-white p-2 rounded hover:bg-blue-700 transition"
                     >
                         Entrar
                     </button>
