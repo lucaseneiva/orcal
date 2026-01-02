@@ -1,14 +1,14 @@
 import { createClient } from '@/lib/utils/supabase/server'
 import { Product, ProductOption } from '@/types'
 
-class ProductRepository {
+class ProductService {
   private supabase
 
   constructor(supabase: any) {
     this.supabase = supabase
   }
 
-  async findByStoreId(storeId: string) {
+  async getStoreProducts(storeId: string) {
     const { data } = await (await this.supabase)
       .from('products')
       .select('*')
@@ -88,7 +88,7 @@ class ProductRepository {
   }
 }
 
-export async function getProductRepository() {
+export async function getProductService() {
   const supabase = await createClient()
-  return new ProductRepository(supabase)
+  return new ProductService(supabase)
 }

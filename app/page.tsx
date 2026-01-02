@@ -1,7 +1,7 @@
 import { StoreNotFound } from '@/components/StoreNotFound'
 import { StoreHome } from '@/components/StoreHome'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { getProductRepository } from '@/lib/services/product-service'
+import { getProductService } from '@/lib/services/product-service'
 
 export default async function Home() {
   const store = await getCurrentStore();
@@ -10,8 +10,8 @@ export default async function Home() {
     return <StoreNotFound />
   }
 
-  const productRepository = await getProductRepository()
-  const products = await productRepository.findByStoreId(store.id)
+  const productService = await getProductService()
+  const products = await productService.getStoreProducts(store.id)
 
   return (
     <StoreHome

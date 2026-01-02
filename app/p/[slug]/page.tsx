@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getProductRepository } from '@/lib/services/product-service'
+import { getProductService } from '@/lib/services/product-service'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import { createClient } from '@/lib/utils/supabase/server'
@@ -21,11 +21,10 @@ type PageProps = {
 }
 
 export default async function ProductPage({ params }: PageProps) {
-  const supabase = createClient()
   const store = await getCurrentStore()
   const { slug } = await params
-  const productRepository = await getProductRepository()
-  const product = await productRepository.getStoreProduct(store.id, slug)
+  const productService = await getProductService()
+  const product = await productService.getStoreProduct(store.id, slug)
   
   if (!product) return notFound()
 
