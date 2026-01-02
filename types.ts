@@ -15,3 +15,8 @@ export interface Product {
   slug: string;
   options: ProductOption[]; 
 }
+
+export interface Profile {
+  id: string;
+  store_id: string;
+}

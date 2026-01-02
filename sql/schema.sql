@@ -85,3 +85,10 @@ create table product_attribute_values (
     references attribute_values(id)
     on delete cascade
 );
+
+create table users (
+  id uuid primary key, -- mesmo id do auth
+  store_id uuid references stores(id),
+  name text,
+  created_at timestamp default now()
+);

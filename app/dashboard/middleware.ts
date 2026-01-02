@@ -25,13 +25,13 @@ export async function middleware(request: NextRequest) {
 
   // PROTEÇÃO DE ROTA
   // Se tentar acessar /admin e não tiver usuário, manda pro login
-  if (request.nextUrl.pathname.startsWith('/admin') && !user) {
+  if (request.nextUrl.pathname.startsWith('/dashboard') && !user) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
   // Se já tiver logado e tentar acessar /login, manda pro admin
   if (request.nextUrl.pathname.startsWith('/login') && user) {
-    return NextResponse.redirect(new URL('/admin', request.url))
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
   return response
