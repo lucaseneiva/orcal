@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getProductRepository } from '@/lib/repositories/product-repository'
+import { getProductRepository } from '@/lib/services/product-service'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import { createClient } from '@/lib/utils/supabase/server'

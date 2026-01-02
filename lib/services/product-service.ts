@@ -54,14 +54,12 @@ class ProductRepository {
       .eq('slug', slug)
       .single();
 
-    // Se der erro ou não achar nada, retorna null
     if (error || !data) {
       console.error('Produto não encontrado:', error);
       return null;
     }
 
-    // --- TRANSFORMAÇÃO DE DADOS (Unitária) ---
-    // Aqui 'data' já é o produto, não precisamos fazer data.map(...)
+    // --- TRANSFORMAÇÃO DE DADOS ---
 
     const options: ProductOption[] = data.product_attribute_values.map((pav: any) => {
       const val = pav.attribute_values;
@@ -83,7 +81,7 @@ class ProductRepository {
       description: data.description,
       image_url: data.image_url,
       slug: data.slug,
-      options: options, // Array limpo de opções
+      options: options,
     };
 
     return product;

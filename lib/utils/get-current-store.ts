@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { headers } from 'next/headers';
-import { getStoreRepository } from '@/lib/repositories/store-repository';
+import { getStoreRepository } from '@/lib/services/store-service';
 
 export const getCurrentStore = cache(async () => {
   const headerStack = await headers();
