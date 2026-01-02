@@ -86,6 +86,61 @@ class ProductService {
 
     return product;
   }
+
+  async getStoreAttributes(storeId: string) {
+    const { data } = await (await this.supabase)
+      .from('attributes')
+      .select(`
+        id,
+        name,
+        slug,
+        attribute_values (
+          id,
+          name
+        )
+      `)
+      .eq('store_id', storeId)
+    
+    return data || []
+  }
+
+  async getProductById(productId: string) {
+    const { data, error } = await (await this.supabase)
+      .from('products')
+      .select(`
+        id,
+        name,
+        description,
+        slug,
+        image_url,
+        status,
+        store_id,
+        product_attribute_values (
+          attribute_values (
+            id,
+            name
+          )
+        )
+      `)
+      .eq('id', productId)
+      .single()
+
+    if (error || !data) return null
+
+    // --- TRANSFORMAÇÃO IMPORTANTE ---
+    // Precisamos converter o retorno aninhado do banco para o formato "plano"
+    // que o nosso formulário espera (array de options)
+    
+    const options = data.product_attribute_values.map((pav: any) => ({
+      value_id: pav.attribute_values.id,
+      value_name: pav.attribute_values.name
+    }))
+
+    return {
+      ...data,
+      options // O formulário vai usar isso para marcar os checkboxes
+    }
+  }
 }
 
 export async function getProductService() {

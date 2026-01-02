@@ -3,125 +3,141 @@
 import { upsertProduct, deleteProduct } from './actions'
 import Link from 'next/link'
 
-export function ProductForm({ product }: { product?: any }) {
+// Tipos para ajudar no autocomplete
+type Attribute = {
+  id: string
+  name: string
+  attribute_values: { id: string; name: string }[]
+}
+
+type ProductFormProps = {
+  product?: any
+  allAttributes: Attribute[] // Nova prop obrigatória
+}
+
+export function ProductForm({ product, allAttributes }: ProductFormProps) {
   
-  // 1. Wrapper para lidar com Criar/Editar
+  // Cria um Set com os IDs que o produto JÁ tem, para marcar como checked
+  // Precisamos ver como o dado vem do banco. Geralmente vem aninhado.
+  // Supondo que você ajustou o SELECT do getStoreProduct para trazer os IDs simples:
+  const existingIds = new Set(
+    product?.options?.map((opt: any) => opt.value_id) || []
+  )
+
   async function handleSubmit(formData: FormData) {
     const result = await upsertProduct(formData)
-    
-    if (result?.error) {
-      alert(result.error) // Mostra erro simples se houver
-    }
+    if (result?.error) alert(result.error)
   }
 
-  // 2. Wrapper para lidar com Deletar
   async function handleDelete(formData: FormData) {
     const result = await deleteProduct(formData)
-    
-    if (result?.error) {
-      alert(result.error)
-    }
+    if (result?.error) alert(result.error)
   }
 
   return (
-    <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl border shadow-sm">
-      {/* 3. Usamos handleSubmit aqui em vez de chamar a action direto */}
-      <form action={handleSubmit} className="flex flex-col gap-5">
+    <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      {/* Coluna Principal (Esquerda) */}
+      <div className="md:col-span-2 bg-white p-6 rounded-xl border shadow-sm h-fit">
+        <form id="product-form" action={handleSubmit} className="flex flex-col gap-5">
+          {product?.id && <input type="hidden" name="id" value={product.id} />}
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+            <input name="name" defaultValue={product?.name} required className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+            <input name="slug" defaultValue={product?.slug} className="w-full border rounded-lg p-2.5 bg-gray-50 outline-none" placeholder="Automático se vazio" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
+            <textarea name="description" defaultValue={product?.description} rows={4} className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Imagem URL</label>
+            <input name="image_url" defaultValue={product?.image_url} type="url" className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black" />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select name="status" defaultValue={product?.status || 'active'} className="w-full border rounded-lg p-2.5 bg-white">
+              <option value="active">Ativo</option>
+              <option value="inactive">Inativo</option>
+            </select>
+          </div>
+        </form>
+      </div>
+
+      {/* Coluna Lateral (Direita) - Atributos */}
+      <div className="bg-white p-6 rounded-xl border shadow-sm h-fit">
+        <h3 className="font-bold text-gray-900 mb-4">Configurações do Produto</h3>
         
-        {product?.id && <input type="hidden" name="id" value={product.id} />}
+        {allAttributes.length === 0 ? (
+          <p className="text-sm text-gray-500">Nenhum atributo cadastrado na loja.</p>
+        ) : (
+          <div className="space-y-6">
+            {allAttributes.map((attr) => (
+              <div key={attr.id}>
+                <h4 className="text-sm font-semibold text-gray-800 mb-2 uppercase tracking-wider">
+                  {attr.name}
+                </h4>
+                <div className="space-y-2">
+                  {attr.attribute_values.map((val) => (
+                    <label key={val.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
+                      <input 
+                        type="checkbox"
+                        // O SEGREDO: input fora do form principal, mas usando form="product-form"
+                        // OU colocamos tudo dentro do mesmo form tag (recomendado mudar o layout se der)
+                        // Para simplificar, vou assumir que este componente está dentro do form, 
+                        // mas como separei as divs visualmente, precisamos usar o atributo `form="product-form"`
+                        form="product-form"
+                        name="selected_values" // Nome fixo para agrupar no array
+                        value={val.id}
+                        defaultChecked={existingIds.has(val.id)}
+                        className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
+                      />
+                      <span className="text-sm text-gray-600">{val.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nome do Produto</label>
-          <input
-            name="name"
-            defaultValue={product?.name}
-            required
-            className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-black outline-none text-gray-700"
-            placeholder="Ex: Cartão de Visita"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Slug (URL Amigável)</label>
-          <input
-            name="slug"
-            defaultValue={product?.slug}
-            className="w-full border rounded-lg p-2.5 bg-gray-50 focus:bg-white transition outline-none text-gray-700"
-            placeholder="Deixe vazio para gerar automaticamente"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-          <textarea
-            name="description"
-            defaultValue={product?.description}
-            rows={4}
-            className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-black outline-none text-gray-700"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">URL da Imagem</label>
-          <input
-            name="image_url"
-            defaultValue={product?.image_url}
-            type="url"
-            className="w-full border rounded-lg p-2.5 focus:ring-2 focus:ring-black outline-none text-gray-700"
-            placeholder="https://exemplo.com/imagem.jpg"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-          <select 
-            name="status" 
-            defaultValue={product?.status || 'active'}
-            className="w-full border rounded-lg p-2.5 bg-white text-gray-700"
-          >
-            <option value="active">Ativo</option>   
-            <option value="inactive">Inativo</option>
-          </select>
-        </div>
-
-        <div className="flex items-center gap-4 pt-4 border-t mt-2">
-          <Link 
+        {/* Botões movidos para cá ou manter embaixo, mas precisam referenciar o form */}
+        <div className="mt-8 pt-6 border-t">
+            <button 
+              type="submit"
+              form="product-form"
+              className="w-full px-5 py-2.5 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800"
+            >
+              {product ? 'Salvar Tudo' : 'Criar Produto'}
+            </button>
+            
+            <Link 
             href="/dashboard/products"
-            className="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="block text-center mt-3 text-sm text-gray-500 hover:text-black"
           >
             Cancelar
           </Link>
-          
-          <button 
-            type="submit"
-            className="px-5 py-2.5 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800 flex-1"
-          >
-            {product ? 'Salvar Alterações' : 'Criar Produto'}
-          </button>
         </div>
-      </form>
 
-      {product?.id && (
-        <div className="mt-8 pt-6 border-t border-red-100">
-          <h3 className="text-sm font-bold text-red-900 mb-2">Zona de Perigo</h3>
-          
-          {/* 4. Usamos handleDelete aqui */}
-          <form action={handleDelete}>
-            <input type="hidden" name="id" value={product.id} />
-            <button 
-              type="submit"
-              className="text-red-600 text-sm hover:underline bg-red-50 px-3 py-1.5 rounded"
-              onClick={(e) => {
-                if(!confirm('Tem certeza que deseja excluir este produto?')) {
-                  e.preventDefault()
-                }
-              }}
-            >
-              Excluir este produto
-            </button>
-          </form>
-        </div>
-      )}
+        {/* Delete button (se existir) */}
+        {product?.id && (
+             <div className="mt-4 pt-4 border-t border-red-100 text-center">
+             <form action={handleDelete}>
+               <input type="hidden" name="id" value={product.id} />
+               <button type="submit" className="text-xs text-red-600 underline">Excluir Produto</button>
+             </form>
+           </div>
+        )}
+
+      </div>
     </div>
   )
 }

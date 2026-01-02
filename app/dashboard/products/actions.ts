@@ -13,7 +13,6 @@ function slugify(text: string) {
     .replace(/[^\w\-]+/g, '') // Remove caracteres não alfanuméricos
     .replace(/\-\-+/g, '-')   // Substitui múltiplos - por um único -
 }
-
 export async function upsertProduct(formData: FormData) {
   const supabase = await createClient()
   const store = await getCurrentStore()
@@ -26,7 +25,10 @@ export async function upsertProduct(formData: FormData) {
   const image_url = formData.get('image_url') as string
   const status = formData.get('status') as string
 
-  // Se não tiver slug, gera a partir do nome
+  // 1. Pega todos os valores marcados nos checkboxes
+  // O getAll pega todos os inputs com name="selected_values"
+  const selectedValues = formData.getAll('selected_values') as string[]
+
   let slug = formData.get('slug') as string
   if (!slug || slug.trim() === '') {
     slug = slugify(name)
@@ -41,27 +43,54 @@ export async function upsertProduct(formData: FormData) {
     store_id: store.id
   }
 
+  let productId = id
   let error;
 
+  // --- 2. SALVAR PRODUTO ---
   if (id) {
-    // --- ATUALIZAR ---
     const { error: updateError } = await supabase
       .from('products')
       .update(payload)
       .eq('id', id)
-      .eq('store_id', store.id) // Segurança extra
+      .eq('store_id', store.id)
     error = updateError
   } else {
-    // --- CRIAR ---
-    const { error: insertError } = await supabase
+    const { data: newProduct, error: insertError } = await supabase
       .from('products')
       .insert(payload)
+      .select()
+      .single()
+      
+    if (newProduct) productId = newProduct.id
     error = insertError
   }
 
   if (error) {
     console.error(error)
     return { error: 'Erro ao salvar produto' }
+  }
+
+  // --- 3. SALVAR ATRIBUTOS (O PULO DO GATO) ---
+  if (productId) {
+    // A. Removemos todas as relações antigas desse produto (limpeza)
+    await supabase
+      .from('product_attribute_values')
+      .delete()
+      .eq('product_id', productId)
+
+    // B. Se houver checkboxes marcados, criamos as novas relações
+    if (selectedValues.length > 0) {
+      const attributesPayload = selectedValues.map(valueId => ({
+        product_id: productId,
+        attribute_value_id: valueId
+      }))
+
+      const { error: attrError } = await supabase
+        .from('product_attribute_values')
+        .insert(attributesPayload)
+      
+      if (attrError) console.error('Erro ao salvar atributos:', attrError)
+    }
   }
 
   revalidatePath('/dashboard/products')
