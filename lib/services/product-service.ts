@@ -141,6 +141,22 @@ class ProductService {
       options // O formulário vai usar isso para marcar os checkboxes
     }
   }
+
+  async getAttributeById(id: string) {
+    const { data, error } = await (await this.supabase)
+      .from('attributes')
+      .select(`
+        *,
+        attribute_values (
+          id,
+          name
+        )
+      `)
+      .eq('id', id)
+      .single()
+
+    return error ? null : data
+  }
 }
 
 export async function getProductService() {
