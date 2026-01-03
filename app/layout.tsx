@@ -1,4 +1,5 @@
 import './globals.css';
+import { headers } from 'next/headers';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/app/context/cart-context";
@@ -29,16 +30,22 @@ export default async function RootLayout({
 
   const store = await getCurrentStore();
 
-  if (!store) {
-    return (
-      <html lang="pt-BR">
-        <body>
-          <StoreNotFound />
-        </body>
-      </html>
-    );
-  }
+  // if (!store) {
+  //   return (
+  //     <html lang="pt-BR">
+  //       <body>
+  //         <StoreNotFound />
+  //       </body>
+  //     </html>
+  //   );
+  // }
 
+  if (!store) {
+    const headersList = await headers();
+    const host = headersList.get('host');
+    const xForwardedHost = headersList.get('x-forwarded-host');
+  }
+  
   return (
     <html lang="pt-BR">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
