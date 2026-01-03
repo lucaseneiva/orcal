@@ -15,9 +15,8 @@ export function AttributeForm({ attribute }: { attribute?: any }) {
   return (
     <div className="max-w-2xl mx-auto space-y-8">
       
-      {/* --- PARTE 1: O ATRIBUTO --- */}
       <div className="bg-white p-6 rounded-xl border shadow-sm">
-        <h2 className="text-lg font-bold mb-4">Dados do Atributo</h2>
+        <h2 className="text-lg font-bold mb-4 text-gray-900">Dados do Atributo</h2>
         <form action={upsertAttribute} className="flex flex-col gap-4">
           {attribute?.id && <input type="hidden" name="id" value={attribute.id} />}
 
@@ -28,12 +27,12 @@ export function AttributeForm({ attribute }: { attribute?: any }) {
               defaultValue={attribute?.name}
               placeholder="Ex: Tamanho, Papel, Cor"
               required
-              className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black"
+              className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700"
             />
           </div>
 
           <div className="flex gap-4 pt-2">
-            <Link href="/dashboard/attributes" className="px-4 py-2 text-sm border rounded hover:bg-gray-50">
+            <Link href="/dashboard/attributes" className="px-4 py-2 text-sm border rounded hover:bg-gray-50 text-gray-700">
               Cancelar
             </Link>
             <button type="submit" className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 flex-1">
@@ -43,15 +42,14 @@ export function AttributeForm({ attribute }: { attribute?: any }) {
         </form>
       </div>
 
-      {/* --- PARTE 2: OS VALORES (Só aparece se estiver editando) --- */}
       {attribute?.id && (
         <div className="bg-white p-6 rounded-xl border shadow-sm">
-          <h2 className="text-lg font-bold mb-4">Valores Disponíveis</h2>
+          <h2 className="text-lg font-bold mb-4 text-gray-900">Valores Disponíveis</h2>
           
           {/* Lista de Valores Existentes */}
           <div className="space-y-2 mb-6">
             {attribute.attribute_values?.length === 0 && (
-              <p className="text-gray-400 text-sm italic">Nenhum valor cadastrado (ex: P, M, G).</p>
+              <p className="text-gray-500 text-sm italic">Nenhum valor cadastrado (ex: P, M, G).</p>
             )}
             
             {attribute.attribute_values?.map((val: any) => (
@@ -69,14 +67,13 @@ export function AttributeForm({ attribute }: { attribute?: any }) {
             ))}
           </div>
 
-          {/* Adicionar Novo Valor */}
           <form ref={formRef} action={handleCreateValue} className="flex gap-2 border-t pt-4">
             <input type="hidden" name="attribute_id" value={attribute.id} />
             <input 
               name="name" 
               placeholder="Novo valor (ex: Extra Grande)" 
               required
-              className="flex-1 border rounded p-2 text-sm outline-none focus:border-black"
+              className="flex-1 border rounded p-2 text-sm outline-none focus:border-black text-gray-700"
             />
             <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded text-sm hover:bg-green-700 font-medium">
               + Adicionar
@@ -85,7 +82,6 @@ export function AttributeForm({ attribute }: { attribute?: any }) {
         </div>
       )}
 
-      {/* --- DELETE ATRIBUTO --- */}
       {attribute?.id && (
          <div className="text-center pt-4">
             <form action={deleteAttribute}>

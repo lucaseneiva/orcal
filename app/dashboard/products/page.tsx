@@ -19,18 +19,15 @@ export default async function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
+      <Link href="/dashboard/" className="text-sm text-gray-500 mb-4 block">← Voltar</Link>
+
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
+
         <div className="flex items-center justify-between mb-8">
           <div>
-            <div className="text-sm text-gray-500 mb-1">
-              <Link href="/dashboard" className="hover:text-gray-900">Dashboard</Link>
-              <span className="mx-2">/</span>
-              <span className="text-gray-900">Produtos</span>
-            </div>
             <h1 className="text-3xl font-bold text-gray-900">Seus Produtos</h1>
           </div>
-          
+
           <Link
             href="/dashboard/products/new"
             className="bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800"
@@ -70,15 +67,13 @@ export default async function ProductsPage() {
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="p-4">
                       <div className="font-medium text-gray-900">{product.name}</div>
-                    
+
                     </td>
                     <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                        product.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                      }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                          product.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
-                        }`} />
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                        }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${product.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
+                          }`} />
                         {product.status === 'active' ? 'Ativo' : 'Inativo'}
                       </span>
                     </td>
