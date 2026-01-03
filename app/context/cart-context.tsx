@@ -35,9 +35,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   }, [items])
 
   function addToCart(item: CartItem) {
-    setItems(prev => [...prev, item])
-    // Opcional: Redirecionar para o checkout aqui ou mostrar toast
-    alert('Item adicionado ao orçamento!') 
+    setItems(prev => [...prev, item]) 
   }
 
   function removeFromCart(index: number) {

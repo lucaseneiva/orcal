@@ -175,15 +175,9 @@ export default function ProductForm({ product, store }: ProductFormProps) {
           className="w-full text-white py-3.5 rounded-lg font-bold text-lg hover:opacity-90 transition shadow-sm"
           onClick={handleAddToCart}
         >
-          Adicionar ao Carrinho
+          Adicionar ao Pedido
         </button>
         
-        <button 
-          className="w-full bg-white text-gray-800 border-2 border-gray-300 py-3.5 rounded-lg font-bold hover:bg-gray-50 hover:border-gray-400 transition"
-          onClick={() => alert('Modal de orçamento...')}
-        >
-          Pedir Orçamento
-        </button>
       </div>  
     </div>
   )
