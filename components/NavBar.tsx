@@ -37,16 +37,6 @@ export function Navbar({ store }: NavbarProps) {
           )}
         </div>
 
-        {/* Navigation Links - Desktop */}
-        <div className="hidden md:flex items-center gap-8 text-sm font-medium text-white/90">
-          <a href="#products" className="hover:text-white transition-colors">
-            Todos os Produtos
-          </a>
-          <a href="#categories" className="hover:text-white transition-colors">
-            Categorias
-          </a>
-        </div>
-
         {/* Actions Section */}
         <div className="flex items-center gap-4">
           
@@ -61,14 +51,6 @@ export function Navbar({ store }: NavbarProps) {
                 {cartCount}
               </span>
             )}
-          </button>
-
-          {/* Mobile Menu Button */}
-          <button 
-            className="md:hidden p-2 rounded-full hover:bg-white/10 transition-colors"
-            aria-label="Menu"
-          >
-            <Menu size={24} className="text-white" />
           </button>
         </div>
       </div>
