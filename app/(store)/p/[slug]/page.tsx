@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { getProductService } from '@/lib/services/product-service'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
-import { createClient } from '@/lib/utils/supabase/server'
+import Link from 'next/link'
 
 
 // Tipagem correta para a query com relacionamento
@@ -26,11 +26,17 @@ export default async function ProductPage({ params }: PageProps) {
   const { slug } = await params
   const productService = await getProductService()
   const product = await productService.getStoreProduct(store.id, slug)
-  
+
   if (!product) return notFound()
 
   return (
     <div className="min-h-screen bg-white">
+
+      <div className="p-4">
+        <Link href="/" className="text-lg text-gray-500 block">
+          ← Voltar
+        </Link>
+      </div>
       <main className="max-w-4xl mx-auto py-12 px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Imagem */}
@@ -47,9 +53,9 @@ export default async function ProductPage({ params }: PageProps) {
             <div className="mt-4 prose text-gray-600">
               <p>{product.description}</p>
             </div>
-            <ProductForm 
-              product={product} 
-              store={store} 
+            <ProductForm
+              product={product}
+              store={store}
             />
           </div>
         </div>
