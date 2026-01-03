@@ -1,7 +1,7 @@
-"use client";
-import { ShoppingBag, Menu } from "lucide-react";
+'use client';
+import { ShoppingBag } from "lucide-react";
 
-type NavbarProps = {
+type StoreNavbarProps = {
   store: {
     name: string;
     logo_url?: string | null;
@@ -9,19 +9,15 @@ type NavbarProps = {
   };
 };
 
-export function Navbar({ store }: NavbarProps) {
-  // test vercel deployment
-  // Uncomment when cart functionality is ready
-  // const { cartCount } = useCart();
-  const cartCount = 0;
+export function StoreNavbar({ store }: StoreNavbarProps) {
+  const cartCount = 0; // Replace with actual cart logic
 
   return (
-    <nav 
+    <nav
       className="border-b sticky top-0 z-50 shadow-sm"
       style={{ backgroundColor: store.primary_color }}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
-        
         {/* Logo Section */}
         <div className="flex items-center">
           {store.logo_url ? (
@@ -39,15 +35,13 @@ export function Navbar({ store }: NavbarProps) {
 
         {/* Actions Section */}
         <div className="flex items-center gap-4">
-          
-          {/* Shopping Cart Button */}
-          <button 
+          <button
             className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
             aria-label="Carrinho de compras"
           >
             <ShoppingBag size={24} className="text-white" />
             {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-500 px-1.5 py-0.5 rounded-full min-w-[20px] text-center">
+              <span className="absolute -top-1 -right-1 text-xs font-bold text-white bg-red-500 px-1.5 py-0.5 rounded-full min-w-5 text-center">
                 {cartCount}
               </span>
             )}
