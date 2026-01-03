@@ -2,8 +2,8 @@
 
 import { upsertProduct, deleteProduct } from './actions'
 import Link from 'next/link'
-import { useState } from 'react' // Importar useState
-import { ImageUpload } from '../components/image-upload' // Importar o componente novo
+import { useState } from 'react'
+import { ImageUpload } from '../components/image-upload'
 
 type Attribute = {
   id: string
@@ -18,7 +18,6 @@ type ProductFormProps = {
 
 export function ProductForm({ product, allAttributes }: ProductFormProps) {
   
-  // Estado local para guardar a URL da imagem
   const [imageUrl, setImageUrl] = useState(product?.image_url || '')
 
   const existingIds = new Set(
@@ -38,45 +37,39 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
   return (
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      {/* Coluna Principal */}
       <div className="md:col-span-2 bg-white p-6 rounded-xl border shadow-sm h-fit">
         <form id="product-form" action={handleSubmit} className="flex flex-col gap-5">
           {product?.id && <input type="hidden" name="id" value={product.id} />}
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-            <input name="name" defaultValue={product?.name} required className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black" />
+            <input name="name" defaultValue={product?.name} required className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700 mb-1" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-            <input name="slug" defaultValue={product?.slug} className="w-full border rounded-lg p-2.5 bg-gray-50 outline-none" placeholder="Automático se vazio" />
+            <input name="slug" defaultValue={product?.slug} className="w-full border rounded-lg p-2.5 bg-gray-50 outline-none text-gray-700 mb-1" placeholder="Automático se vazio" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-            <textarea name="description" defaultValue={product?.description} rows={4} className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black" />
+            <textarea name="description" defaultValue={product?.description} rows={4} className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700 mb-1" />
           </div>
 
-          {/* --- AQUI ESTA A MUDANÇA --- */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Imagem do Produto</label>
             
-            {/* 1. O Componente Visual */}
             <ImageUpload 
                 defaultUrl={imageUrl} 
                 onUrlChange={(url) => setImageUrl(url)} 
             />
 
-            {/* 2. O Input Escondido que o Server Action vai ler */}
-            {/* O name="image_url" precisa ser igual ao que estava no input text antes */}
             <input type="hidden" name="image_url" value={imageUrl} />
           </div>
-          {/* --------------------------- */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select name="status" defaultValue={product?.status || 'active'} className="w-full border rounded-lg p-2.5 bg-white">
+            <select name="status" defaultValue={product?.status || 'active'} className="w-full border rounded-lg p-2.5 bg-white text-gray-700 mb-1">
               <option value="active">Ativo</option>
               <option value="inactive">Inativo</option>
             </select>
@@ -84,10 +77,9 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
         </form>
       </div>
 
-      {/* Coluna Lateral (Mantida igual) */}
+
       <div className="bg-white p-6 rounded-xl border shadow-sm h-fit">
         <h3 className="font-bold text-gray-900 mb-4">Configurações do Produto</h3>
-        {/* ... resto do código dos atributos igual ... */}
         {allAttributes.length === 0 ? (
           <p className="text-sm text-gray-500">Nenhum atributo cadastrado.</p>
         ) : (
