@@ -1,6 +1,9 @@
 'use client';
+
+import { useCart } from '@/app/context/cart-context';
 import { ShoppingBag } from "lucide-react";
 import Link  from "next/link";
+
 type StoreNavbarProps = {
   store: {
     name: string;
@@ -10,8 +13,8 @@ type StoreNavbarProps = {
 };
 
 export function StoreNavbar({ store }: StoreNavbarProps) {
-  const cartCount = 0; // Replace with actual cart logic
-
+  const cartCount = useCart().items.length;
+  
   return (
     <nav
       className="border-b sticky top-0 z-50 shadow-sm"

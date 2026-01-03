@@ -1,6 +1,8 @@
 // app/layout.tsx
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { StoreNavbar } from '@/components/StoreNavBar'
+import { CartProvider } from '@/app/context/cart-context';
+
 
 export default async function RootLayout({
     children,
@@ -10,11 +12,11 @@ export default async function RootLayout({
     const store = await getCurrentStore()
 
     return (
-
-        <div>
+        
+        <CartProvider>
             {store && <StoreNavbar store={store} />}
             {children}
-        </div>
+        </CartProvider>
 
     )
 }
