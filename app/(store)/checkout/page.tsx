@@ -12,7 +12,7 @@ export default function CheckoutPage() {
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
-    
+
     // Injeta os itens do carrinho no FormData como string JSON
     formData.append('cart_items', JSON.stringify(items))
 
@@ -52,9 +52,15 @@ export default function CheckoutPage() {
   }
 
   return (
+
     <div className="max-w-4xl mx-auto p-6 min-h-screen">
-      <h1 className="text-2xl font-bold mb-8">Finalizar Orçamento</h1>
-      
+      <Link href="/" className="text-lg text-gray-500 block">
+        ← Voltar
+      </Link>
+      <div className="p-4">
+      </div>
+      <h1 className="text-2xl font-bold mb-8 text-gray-900">Finalizar Orçamento</h1>
+
       <div className="grid md:grid-cols-2 gap-12">
         {/* Lista de Itens */}
         <div>
@@ -63,7 +69,7 @@ export default function CheckoutPage() {
             {items.map((item, idx) => (
               <div key={idx} className="flex gap-4 bg-white p-4 rounded-lg border shadow-sm relative group">
                 {/* Botão remover */}
-                <button 
+                <button
                   onClick={() => removeFromCart(idx)}
                   className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
                 >
@@ -71,9 +77,9 @@ export default function CheckoutPage() {
                 </button>
 
                 {item.imageUrl && (
-                   <img src={item.imageUrl} className="w-16 h-16 object-cover rounded bg-gray-100" />
+                  <img src={item.imageUrl} className="w-16 h-16 object-cover rounded bg-gray-100" />
                 )}
-                
+
                 <div>
                   <h3 className="font-bold text-gray-900">{item.productName}</h3>
                   <div className="text-sm text-gray-500 mt-1 space-y-0.5">
@@ -86,25 +92,35 @@ export default function CheckoutPage() {
               </div>
             ))}
           </div>
+          <div className="flex justify-center p-6">
+            <Link href="/" prefetch={false}>
+              <button
+                className="text-sm font-bold uppercase tracking-wider px-4 py-2 rounded-lg text-white transition-transform hover:scale-105 active:scale-95 bg-black"
+              >
+                Adicionar +
+              </button>
+            </Link>
+          </div>
+
         </div>
 
         {/* Formulário */}
         <div className="bg-gray-50 p-6 rounded-xl h-fit">
           <h2 className="font-semibold text-gray-700 mb-4">Seus Dados</h2>
           <form action={handleSubmit} className="flex flex-col gap-4">
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Seu Nome</label>
-              <input name="name" required className="w-full border rounded p-2.5 outline-none focus:border-black" placeholder="João da Silva" />
+              <input name="name" required className="w-full border rounded p-2.5 outline-none focus:border-black text-gray-600" placeholder="João da Silva" />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
-              <input name="whatsapp" required type="tel" className="w-full border rounded p-2.5 outline-none focus:border-black" placeholder="(11) 99999-9999" />
+              <input name="whatsapp" required type="tel" className="w-full border rounded p-2.5 outline-none focus:border-black text-gray-600" placeholder="(11) 99999-9999" />
             </div>
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={loading}
               className="mt-4 bg-black text-white w-full py-3 rounded-lg font-bold text-lg hover:bg-gray-800 disabled:opacity-70 flex justify-center"
             >
@@ -112,7 +128,7 @@ export default function CheckoutPage() {
                 <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : 'Solicitar Orçamento'}
             </button>
-            
+
             <p className="text-xs text-gray-500 text-center mt-2">
               Nenhum pagamento é realizado agora.
             </p>
