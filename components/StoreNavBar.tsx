@@ -1,6 +1,6 @@
 'use client';
 import { ShoppingBag } from "lucide-react";
-
+import Link  from "next/link";
 type StoreNavbarProps = {
   store: {
     name: string;
@@ -35,9 +35,11 @@ export function StoreNavbar({ store }: StoreNavbarProps) {
 
         {/* Actions Section */}
         <div className="flex items-center gap-4">
+          <Link href="/checkout" prefetch={false}>
+          
           <button
             className="relative p-2 rounded-full hover:bg-white/10 transition-colors"
-            aria-label="Carrinho de compras"
+            aria-label="Pedido"
           >
             <ShoppingBag size={24} className="text-white" />
             {cartCount > 0 && (
@@ -46,6 +48,7 @@ export function StoreNavbar({ store }: StoreNavbarProps) {
               </span>
             )}
           </button>
+          </Link>
         </div>
       </div>
     </nav>
