@@ -1,4 +1,4 @@
-import { AttributeForm } from '@/app/dashboard/attributes/form'
+import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
 import { getProductService } from '@/lib/services/product-service'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
