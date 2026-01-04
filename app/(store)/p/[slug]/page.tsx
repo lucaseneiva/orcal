@@ -40,7 +40,7 @@ export default async function ProductPage({ params }: PageProps) {
       <main className="max-w-4xl mx-auto py-12 px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Imagem */}
-          <div className="bg-gray-100 rounded-lg overflow-hidden h-96 sticky top-6 border border-gray-200">
+          <div className="bg-gray-100 rounded-lg overflow-hidden h-96 top-6 border border-gray-200">
             <img
               src={product.image_url}
               alt={product.name}

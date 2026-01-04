@@ -17,7 +17,7 @@ export function StoreNavbar({ store }: StoreNavbarProps) {
   
   return (
     <nav
-      className="border-b sticky top-0 z-50 shadow-sm"
+      className="border-b sticky w-dvw top-0 z-50 shadow-sm"
       style={{ backgroundColor: store.primary_color }}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
