@@ -48,9 +48,9 @@ export async function createValue(formData: FormData) {
   
   const attribute_id = formData.get('attribute_id') as string
   const name = formData.get('name') as string
-  const meta = formData.get('meta') as string
+  const description = formData.get('description') as string
   
-  console.log("Tentando criar valor:", { attribute_id, name, meta }) // DEBUG LOG
+  console.log("Tentando criar valor:", { attribute_id, name, description }) // DEBUG LOG
 
   if (!name || !attribute_id) {
     console.error("Dados incompletos para criar valor")
@@ -60,7 +60,7 @@ export async function createValue(formData: FormData) {
   const { error } = await supabase.from('attribute_values').insert({
     attribute_id,
     name,
-    description: meta || null // Garantindo que usa a coluna 'meta'
+    description: description || null // Garantindo que usa a coluna 'meta'
   })
 
   if (error) {
@@ -88,28 +88,25 @@ export async function updateValue(formData: FormData) {
 
   const id = formData.get('id') as string
   const name = formData.get('name') as string
-  const meta = formData.get('meta') as string
   const attribute_id = formData.get('attribute_id') as string
+  
+  // ALINHAMENTO: Pegando o valor do campo 'description'
+  const description = formData.get('description') as string
 
-  console.log("Atualizando valor:", { id, meta }) // DEBUG LOG
+  console.log("UPDATE - Recebido:", { id, name, description }) // Debug no terminal
 
-  // CORREÇÃO 1: Nome da coluna alterado de 'description' para 'meta'
   const { error } = await supabase
     .from('attribute_values')
     .update({
       name,
-      description: meta || null, 
+      description: description || null, // Salvando na coluna correta
     })
     .eq('id', id)
 
   if (error) {
-    console.error("Erro Supabase Update:", error)
+    console.error("Erro ao atualizar:", error)
     throw error
   }
 
-  // CORREÇÃO 2: Mantendo o usuário na página de edição (/edit)
-  const path = `/dashboard/attributes/${attribute_id}/edit`
-  
-  revalidatePath(path)
-  redirect(path) // Isso força o recarregamento da página correta
+  revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }

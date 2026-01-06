@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation' // <--- Importe
 type ProductOption = {
   value_id: string
   value_name: string      // Ex: "Couché 300g"
-  value_meta: string | null
+  description: string | null
   attribute_id: string
   attribute_name: string  // Ex: "Papel"
   attribute_slug: string

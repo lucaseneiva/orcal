@@ -1,7 +1,7 @@
 export interface ProductOption {
   value_id: string;
   value_name: string;      // Ex: "Couché 300g"
-  value_meta: string | null; // Ex: "#FF0000" ou "couche-300"
+  description: string | null; // Ex: "#FF0000" ou "couche-300"
   attribute_id: string;
   attribute_name: string;  // Ex: "Papel"
   attribute_slug: string;  // Ex: "papel"

@@ -5,7 +5,7 @@ import { useState } from 'react'
 type ProductOption = {
   value_id: string
   value_name: string
-  value_meta: string | null
+  description: string | null
   attribute_id: string
   attribute_name: string
   attribute_slug: string
@@ -37,7 +37,7 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
 
   // Filter groups that have at least one value with description
   const groupsWithDescriptions = attributeGroups.filter(group => 
-    group.values.some(val => val.value_meta)
+    group.values.some(val => val.description)
   )
 
   if (groupsWithDescriptions.length === 0) {
@@ -55,7 +55,7 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
       <div className="space-y-3">
         {groupsWithDescriptions.map((group) => {
           const isExpanded = expandedAttribute === group.id
-          const hasAnyDescription = group.values.some(val => val.value_meta)
+          const hasAnyDescription = group.values.some(val => val.description)
           
           if (!hasAnyDescription) return null
 
@@ -83,7 +83,7 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
               {isExpanded && (
                 <div className="p-4 bg-white space-y-4">
                   {group.values.map((val) => {
-                    if (!val.value_meta) return null
+                    if (!val.description) return null
                     
                     return (
                       <div key={val.value_id} className="border-l-4 pl-4 py-2" style={{ borderColor: brandColor }}>
@@ -91,7 +91,7 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
                           {val.value_name}
                         </h4>
                         <p className="text-sm text-gray-600 leading-relaxed">
-                          {val.value_meta}
+                          {val.description}
                         </p>
                       </div>
                     )

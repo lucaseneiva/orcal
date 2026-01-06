@@ -69,7 +69,7 @@ class ProductService {
       return {
         value_id: val.id,
         value_name: val.name,
-        value_meta: val.description,
+        description: val.description,
         attribute_value_description: val.description,
         attribute_id: attr.id,
         attribute_name: attr.name,
@@ -152,7 +152,8 @@ class ProductService {
         *,
         attribute_values (
           id,
-          name
+          name,
+          description
         )
       `)
       .eq('id', id)
