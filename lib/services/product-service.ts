@@ -42,6 +42,7 @@ class ProductService {
         attribute_values (
           id,
           name,
+          description, 
           attributes (
             id,
             name,
@@ -68,7 +69,8 @@ class ProductService {
       return {
         value_id: val.id,
         value_name: val.name,
-        value_meta: val.value,
+        value_meta: val.description,
+        attribute_value_description: val.description,
         attribute_id: attr.id,
         attribute_name: attr.name,
         attribute_slug: attr.slug,
@@ -118,7 +120,8 @@ class ProductService {
         product_attribute_values (
           attribute_values (
             id,
-            name
+            name,
+            description
           )
         )
       `)
