@@ -11,7 +11,7 @@ export default async function OrdersPage() {
 
   // Buscar pedidos (Do mais recente para o antigo)
   const { data: orders, error } = await supabase
-    .from('orders')
+    .from('quote_requests')
     .select('*')
     .eq('store_id', store.id)
     .order('created_at', { ascending: false })

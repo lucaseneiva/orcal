@@ -17,7 +17,7 @@ export function OrderCard({ order }: { order: any }) {
       // Atualizar no banco de dados
       const supabase = createClient()
       await supabase
-        .from('orders')
+        .from('quote_requests')
         .update({ viewed: true })
         .eq('id', order.id)
     }

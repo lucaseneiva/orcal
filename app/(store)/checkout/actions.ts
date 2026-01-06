@@ -25,7 +25,7 @@ export async function submitOrder(formData: FormData) {
   const items = JSON.parse(cartJson)
 
   // 1. Salvar no Supabase (Unchanged)
-  const { error: dbError } = await supabase.from('orders').insert({
+  const { error: dbError } = await supabase.from('quote_requests').insert({
     store_id: store.id,
     customer_name: name,
     customer_whatsapp: whatsapp,
