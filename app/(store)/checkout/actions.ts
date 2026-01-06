@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import * as Brevo from '@getbrevo/brevo'
+import { revalidatePath } from 'next/cache'
 
 // Initialize Brevo Client
 const apiInstance = new Brevo.TransactionalEmailsApi()
@@ -40,7 +41,7 @@ export async function submitOrder(formData: FormData) {
 
   // 2. Enviar Notificação por Email (Brevo)
   try {
-    const adminEmail = 'neiva.lucas13@gmail.com' // Replace with actual admin email
+    const adminEmail = 'teste@gmail.com' // Replace with actual admin email
 
     // Generate HTML (Same logic)
     const itemsHtml = items.map((item: any) => `
@@ -86,6 +87,6 @@ export async function submitOrder(formData: FormData) {
     console.error('Erro Email:', emailError)
     // We don't fail the request if email fails, just log it
   }
-
+  revalidatePath('/dashboard/orders')
   return { success: true }
 }
