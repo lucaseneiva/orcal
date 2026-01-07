@@ -27,7 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "open": "^11.0.0",
-    "supabase": "^2.67.3",
+    "supabase": "^2.71.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
