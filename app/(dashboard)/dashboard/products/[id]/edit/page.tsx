@@ -1,4 +1,4 @@
-import { getProductById } from '@/lib/data/products'
+import { getProductById } from '@/lib/data/products.dao'
 import { getStoreAttributes } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'

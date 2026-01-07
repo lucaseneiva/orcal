@@ -4,10 +4,10 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { deleteProduct } from '@/lib/data/products'
+import { deleteProduct } from '@/lib/data/products.dao'
 import { slugify } from '@/lib/utils/slugfy'
 import { ProductAttributesDAO } from '@/lib/data/product-attributes.dao'
-import { upsert } from '@/lib/data/products'
+import { upsert } from '@/lib/data/products.dao'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {

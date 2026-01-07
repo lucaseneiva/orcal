@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { getStoreProduct } from '@/lib/data/products'
+import { getStoreProduct } from '@/lib/data/products.dao'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import Link from 'next/link'

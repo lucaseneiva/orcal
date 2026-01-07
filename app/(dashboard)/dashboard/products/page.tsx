@@ -1,7 +1,7 @@
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { getStoreProducts } from '@/lib/data/products'
+import { getStoreProducts } from '@/lib/data/products.dao'
 
 interface Product {
   id: string
