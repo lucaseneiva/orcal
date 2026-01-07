@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { headers } from 'next/headers';
-import { getStoreRepository } from '@/lib/services/store-service';
+import { findStoreByDomain } from '@/lib/data/stores';
 
 export const getCurrentStore = cache(async () => {
   const headerStack = await headers();
@@ -11,8 +11,8 @@ export const getCurrentStore = cache(async () => {
 
   console.log('[DEBUG] Host final processado:', host);
 
-  const storeRepository = await getStoreRepository();
-  const store = await storeRepository.findByDomain(host || null);
+  
+  const store = await findStoreByDomain(host || null);
 
   if (!store) return null;
   return store;

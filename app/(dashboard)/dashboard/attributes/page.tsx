@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { getProductService } from '@/lib/services/product-service'
+import { getStoreAttributes } from '@/lib/data/stores'
 import { redirect } from 'next/navigation'
 
 export default async function AttributesPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const productService = await getProductService()
-  const attributes = await productService.getStoreAttributes(store.id)
+  
+  const attributes = await getStoreAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

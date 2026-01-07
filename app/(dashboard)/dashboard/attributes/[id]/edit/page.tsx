@@ -1,12 +1,12 @@
 import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
-import { getProductService } from '@/lib/services/product-service'
+import { getAttributeById } from '@/lib/data/products'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
 export default async function EditAttributePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const productService = await getProductService()
-  const attribute = await productService.getAttributeById(id)
+  
+  const attribute = await getAttributeById(id)
 
   if (!attribute) return notFound()
 

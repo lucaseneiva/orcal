@@ -1,4 +1,5 @@
-import { getProductService } from '@/lib/services/product-service'
+import { getProductById } from '@/lib/data/products'
+import { getStoreAttributes } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
@@ -9,10 +10,10 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const productService = await getProductService()
+  
   
   // 1. Buscar Produto
-  const product = await productService.getProductById(id) // O seu metodo getStoreProduct já traz os atributos selecionados?
+  const product = await getProductById(id) // O seu metodo getStoreProduct já traz os atributos selecionados?
   // NOTA: O seu getStoreProduct atual busca por SLUG. 
   // Você precisará de um getById ou adaptar o getStoreProduct para aceitar ID se o parâmetro da rota for ID.
   // Supondo que você crie um getProductById(id) ou use query direta aqui:
@@ -20,7 +21,7 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
   if (!product) return notFound()
 
   // 2. Buscar Atributos Disponíveis
-  const allAttributes = await productService.getStoreAttributes(store.id)
+  const allAttributes = await getStoreAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

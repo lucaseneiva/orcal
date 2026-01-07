@@ -1,5 +1,5 @@
 import { ProductForm } from '../form'
-import { getProductService } from '@/lib/services/product-service'
+import { getStoreAttributes } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 
@@ -7,9 +7,7 @@ export default async function NewProductPage() {
   const store = await getCurrentStore()
   if (!store) return null
 
-  const productService = await getProductService()
-  // Buscar atributos disponíveis
-  const allAttributes = await productService.getStoreAttributes(store.id)
+  const allAttributes = await getStoreAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
@@ -19,4 +17,4 @@ export default async function NewProductPage() {
       <ProductForm allAttributes={allAttributes} />
     </div>
   )
-}
+} 
