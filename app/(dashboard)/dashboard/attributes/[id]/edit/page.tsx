@@ -1,12 +1,13 @@
 import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
-import { getAttributeById } from '@/lib/data/attributes'
+import { AttributeDAO } from '@/lib/data/attribute.dao'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function EditAttributePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  
-  const attribute = await getAttributeById(id)
+  const attributeDAO = new AttributeDAO(await createClient())
+  const attribute = await attributeDAO.getAttributeById(id)
 
   if (!attribute) return notFound()
 
