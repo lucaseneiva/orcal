@@ -27,7 +27,7 @@ export function QuoteRequestCard({ order }: { order: any }) {
     <div className={`bg-white border rounded-xl shadow-sm overflow-hidden transition-all hover:shadow-md ${!isViewed ? 'ring-2 ring-blue-400' : ''}`}>
       {/* Badge "NOVO" */}
       {!isViewed && (
-        <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white text-xs font-bold px-3 py-1 text-center">
+        <div className="bg-linear-to-r from-blue-500 to-blue-600 text-white text-xs font-bold px-3 py-1 text-center">
           🔔 NOVO PEDIDO
         </div>
       )}
