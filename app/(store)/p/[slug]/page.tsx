@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation'
-import { getProductService } from '@/lib/services/product-service'
+import { getStoreProduct } from '@/lib/data/products'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import Link from 'next/link'
 import AttributeDetails from './components/attribute-options'
+import { blob } from 'stream/consumers'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -11,9 +12,10 @@ type PageProps = {
 
 export default async function ProductPage({ params }: PageProps) {
   const store = await getCurrentStore()
+  if (store == null) notFound()
+
   const { slug } = await params
-  const productService = await getProductService()
-  const product = await productService.getStoreProduct(store.id, slug)
+  const product = await getStoreProduct(store.id, slug)
   
   if (!product) return notFound()
   
@@ -42,7 +44,7 @@ export default async function ProductPage({ params }: PageProps) {
           <div className="lg lg:top-24 h-fit">
             <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 aspect-square">
               <img
-                src={product.image_url}
+                src={product.image_url ?? "/placeholder.png"}
                 alt={product.name}
                 className="w-full h-full object-cover"
               />
@@ -73,7 +75,7 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
           <AttributeDetails 
             options={product.options}
-            brandColor={store.primary_color || store.color || '#000000'}
+            brandColor={store.primary_color || store.primary_color || '#000000'}
           />
         </div>
       </main>

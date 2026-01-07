@@ -9,6 +9,8 @@ export type ProductRaw = Tables<'products'>
 export type Attribute = Tables<'attributes'>
 export type Store = Tables<'stores'>
 
+export type ProductInsert =
+  Database['public']['Tables']['products']['Insert']
 // 2. Tipos Compostos (Joins)
 // O Supabase não gera tipos para joins automaticamente, então criamos extensões
 

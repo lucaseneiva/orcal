@@ -1,5 +1,5 @@
 import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
-import { getAttributeById } from '@/lib/data/products'
+import { getAttributeById } from '@/lib/data/attributes'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 

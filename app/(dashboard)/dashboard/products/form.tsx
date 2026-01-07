@@ -1,6 +1,6 @@
 'use client'
 
-import { upsertProduct, deleteProduct } from './actions'
+import { upsertProductAction, deleteProductAction } from './actions'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ImageUpload } from '../components/image-upload'
@@ -25,12 +25,12 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
   )
 
   async function handleSubmit(formData: FormData) {
-    const result = await upsertProduct(formData)
+    const result = await upsertProductAction(formData)
     if (result?.error) alert(result.error)
   }
 
   async function handleDelete(formData: FormData) {
-    const result = await deleteProduct(formData)
+    const result = await deleteProductAction(formData)
     if (result?.error) alert(result.error)
   }
 
