@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation'
-import { getStoreProduct } from '@/lib/data/products.dao'
+import { ProductDAO } from '@/lib/data/product.dao'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import Link from 'next/link'
 import AttributeDetails from './components/attribute-options'
 import { blob } from 'stream/consumers'
+import { createClient } from '@/lib/utils/supabase/server'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -15,7 +16,8 @@ export default async function ProductPage({ params }: PageProps) {
   if (store == null) notFound()
 
   const { slug } = await params
-  const product = await getStoreProduct(store.id, slug)
+  const productDAO = new ProductDAO(await createClient())
+  const product = await productDAO.getStoreProduct(store.id, slug)
   
   if (!product) return notFound()
   

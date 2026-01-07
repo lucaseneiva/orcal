@@ -4,10 +4,9 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { deleteProduct } from '@/lib/data/products.dao'
+import { ProductDAO } from '@/lib/data/product.dao'
 import { slugify } from '@/lib/utils/slugfy'
 import { ProductAttributesDAO } from '@/lib/data/product-attributes.dao'
-import { upsert } from '@/lib/data/products.dao'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {
@@ -40,9 +39,9 @@ export async function upsertProductAction(formData: FormData) {
 
     }
 
-    // 4. Salva produto via DAO
-    // const productDAO = new ProductDAO()
-    const product = await upsert(id, store.id, productPayload)
+    
+    const productDAO = new ProductDAO(await createClient())
+    const product = await productDAO.upsert(id, store.id, productPayload)
     
     // 5. Sincroniza atributos
     const attributesDAO = new ProductAttributesDAO(await createClient())
@@ -72,9 +71,10 @@ export async function upsertProductAction(formData: FormData) {
 
 export async function deleteProductAction(formData: FormData) {
   const id = formData.get('id') as string
-  
+  const productDAO = new ProductDAO(await createClient())
+
    try {
-    await deleteProduct(id)
+    await productDAO.deleteProduct(id)
   } catch (error) {
     return { error: 'Não foi possível deletar.' } 
   }

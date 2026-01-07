@@ -1,9 +1,10 @@
-import { getProductById } from '@/lib/data/products.dao'
+import { ProductDAO } from '@/lib/data/product.dao'
 import { getStoreAttributes } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
 import Link from 'next/link'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
@@ -12,15 +13,11 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
   
   
-  // 1. Buscar Produto
-  const product = await getProductById(id) // O seu metodo getStoreProduct já traz os atributos selecionados?
-  // NOTA: O seu getStoreProduct atual busca por SLUG. 
-  // Você precisará de um getById ou adaptar o getStoreProduct para aceitar ID se o parâmetro da rota for ID.
-  // Supondo que você crie um getProductById(id) ou use query direta aqui:
+  const productDAO = new ProductDAO(await createClient())
+  const product = await productDAO.getProductById(id)
 
   if (!product) return notFound()
 
-  // 2. Buscar Atributos Disponíveis
   const allAttributes = await getStoreAttributes(store.id)
 
   return (

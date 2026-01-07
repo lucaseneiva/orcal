@@ -9,7 +9,7 @@ type AttributeRelation = {
 }
 
 export class ProductAttributesDAO {
-  private supabase: SupabaseClient<Database>
+  private supabase
 
   constructor(supabase: SupabaseClient<Database>) {
     this.supabase = supabase
