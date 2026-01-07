@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/utils/supabase/server'
-import { Product, ProductOption } from '@/types'
+import { ProductWithDetails, ProductOption } from '@/lib/types/types'
 
 class ProductService {
   private supabase
@@ -26,18 +26,13 @@ class ProductService {
     return data || null
   }
 
-  async getStoreProduct(storeId: string, slug: string): Promise<Product | null> {
+  async getStoreProduct(storeId: string, slug: string): Promise<ProductWithDetails | null> {
     const supabase = createClient();
 
     const { data, error } = await (await supabase)
       .from('products')
       .select(`
-      id,
-      name,
-      description,
-      slug,
-      image_url,
-      created_at,
+      *,
       product_attribute_values (
         attribute_values (
           id,
@@ -77,13 +72,18 @@ class ProductService {
       };
     });
 
-    const product: Product = {
+    const product: ProductWithDetails = {
       id: data.id,
       name: data.name,
       description: data.description,
       image_url: data.image_url,
       slug: data.slug,
       options: options,
+      created_at: data.created_at,
+      status: data.status,
+      updated_at: data.updated_at,
+      store_id: data.store_id,
+      display_order: data.display_order
     };
 
     return product;

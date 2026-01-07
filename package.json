@@ -6,7 +6,8 @@
     "dev": "next dev --turbo & open http://localhost:3000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen-types": "npx supabase gen types typescript --project-id gruykkqpajxvzwntnacb > lib/types/database.types.ts"
   },
   "dependencies": {
     "@getbrevo/brevo": "^3.0.1",
