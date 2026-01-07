@@ -57,7 +57,7 @@ export default async function AdminDashboard() {
               Gerenciar os seus pedidos de orçamento
             </p>
             <Link
-              href="/dashboard/orders"
+              href="/dashboard/quote-requests"
               className="mt-4 inline-block bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 w-fit"
             >
               Ver Pedidos

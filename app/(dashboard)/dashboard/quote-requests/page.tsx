@@ -1,7 +1,7 @@
 import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { redirect } from 'next/navigation'
-import { OrderCard } from './components/OrderCard'
+import { QuoteRequestCard } from './components/QuoteRequestCard'
 
 export default async function OrdersPage() {
   const supabase = await createClient()
@@ -52,7 +52,7 @@ export default async function OrdersPage() {
 
       <div className="grid gap-4">
         {orders.map((order) => (
-          <OrderCard key={order.id} order={order} />
+          <QuoteRequestCard key={order.id} order={order} />
         ))}
       </div>
     </div>

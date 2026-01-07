@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/utils/supabase/client'
 
-export function OrderCard({ order }: { order: any }) {
+export function QuoteRequestCard({ order }: { order: any }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isViewed, setIsViewed] = useState(order.viewed || false)
 
