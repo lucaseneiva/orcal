@@ -1,13 +1,14 @@
 import { ProductForm } from '../form'
-import { getStoreAttributes } from '@/lib/data/stores'
+import { StoreDAO } from '@/lib/data/store.dao'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import Link from 'next/link'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function NewProductPage() {
   const store = await getCurrentStore()
   if (!store) return null
 
-  const allAttributes = await getStoreAttributes(store.id)
+  const storeDAO = new StoreDAO(await createClient())
+  const allAttributes = await storeDAO.getStoreAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
