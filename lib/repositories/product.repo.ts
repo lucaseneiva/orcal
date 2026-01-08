@@ -11,7 +11,6 @@ export class ProductRepo {
   }
 
   async getFromStore(storeId: string) {
-
     const { data } = await this.supabase
       .from('products')
       .select('*')
