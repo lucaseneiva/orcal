@@ -1,5 +1,5 @@
 import { ProductForm } from '../form'
-import { StoreDAO } from '@/lib/repositories/store.repo'
+import { StoreRepo } from '@/lib/repositories/store.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { createClient } from '@/lib/utils/supabase/server'
 
@@ -7,8 +7,8 @@ export default async function NewProductPage() {
   const store = await getCurrentStore()
   if (!store) return null
 
-  const storeDAO = new StoreDAO(await createClient())
-  const allAttributes = await storeDAO.getStoreAttributes(store.id)
+  const storeRepo = new StoreRepo(await createClient())
+  const allAttributes = await storeRepo.getStoreAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

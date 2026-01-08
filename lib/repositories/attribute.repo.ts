@@ -2,17 +2,17 @@ import { SupabaseClient } from "@supabase/supabase-js"
 import { Database } from "../types/database.types"
 
 
-export class AttributeDAO {
+export class AttributeRepo {
   private supabase
 
-  constructor (supabase: SupabaseClient<Database>){
+  constructor(supabase: SupabaseClient<Database>) {
     this.supabase = supabase
   }
 
-  async getAttributeById(id: string){
+  async getAttributeById(id: string) {
     const { data, error } = await this.supabase
-        .from('attributes')
-        .select(`
+      .from('attributes')
+      .select(`
         *,
         attribute_values (
           id,
@@ -20,11 +20,11 @@ export class AttributeDAO {
           description
         )
       `)
-        .eq('id', id)
-        .single()
+      .eq('id', id)
+      .single()
 
     return error ? null : data
-}
+  }
 }
 
 

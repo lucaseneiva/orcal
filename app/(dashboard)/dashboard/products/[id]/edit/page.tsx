@@ -1,5 +1,5 @@
-import { ProductDAO } from '@/lib/repositories/product.repo'
-import { StoreDAO } from '@/lib/repositories/store.repo'
+import { ProductRepo } from '@/lib/repositories/product.repo'
+import { StoreRepo } from '@/lib/repositories/store.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
@@ -12,13 +12,13 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
 
 
-  const productDAO = new ProductDAO(await createClient())
-  const product = await productDAO.getProductById(id)
+  const productRepo = new ProductRepo(await createClient())
+  const product = await productRepo.getProductById(id)
 
   if (!product) return notFound()
 
-  const storeDAO = new StoreDAO(await createClient())
-  const allAttributes = await storeDAO.getStoreAttributes(store.id)
+  const storeRepo = new StoreRepo(await createClient())
+  const allAttributes = await storeRepo.getStoreAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

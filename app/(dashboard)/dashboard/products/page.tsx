@@ -1,7 +1,7 @@
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ProductDAO } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/repositories/product.repo'
 import { createClient } from '@/lib/utils/supabase/server'
 
 
@@ -16,8 +16,8 @@ export default async function ProductsPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const productDAO = new ProductDAO(await createClient())
-  const products = await productDAO.getStoreProducts(store.id)
+  const productRepo = new ProductRepo(await createClient())
+  const products = await productRepo.getStoreProducts(store.id)
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

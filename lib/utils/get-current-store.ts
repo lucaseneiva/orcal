@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { headers } from 'next/headers';
-import { StoreDAO } from '@/lib/repositories/store.repo';
+import { StoreRepo } from '@/lib/repositories/store.repo';
 import { createClient } from './supabase/server';
 
 export const getCurrentStore = cache(async () => {
@@ -12,8 +12,8 @@ export const getCurrentStore = cache(async () => {
 
   console.log('[DEBUG] Host final processado:', host);
 
-  const storeDAO = new StoreDAO(await createClient())
-  const store = await storeDAO.findStoreByDomain(host || null);
+  const storeRepo = new StoreRepo(await createClient())
+  const store = await storeRepo.findStoreByDomain(host || null);
 
   if (!store) return null;
   return store;

@@ -3,7 +3,7 @@ import { ProductWithDetails, ProductOption, ProductRaw, ProductInsert } from '@/
 import { Database } from '../types/database.types'
 import { SupabaseClient } from '@supabase/supabase-js'
 
-export class ProductDAO {
+export class ProductRepo {
   private supabase
 
   constructor(supabase: SupabaseClient<Database>) {

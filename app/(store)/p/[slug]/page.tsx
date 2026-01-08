@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { ProductDAO } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/repositories/product.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import Link from 'next/link'
@@ -16,8 +16,8 @@ export default async function ProductPage({ params }: PageProps) {
   if (store == null) notFound()
 
   const { slug } = await params
-  const productDAO = new ProductDAO(await createClient())
-  const product = await productDAO.getStoreProduct(store.id, slug)
+  const productRepo = new ProductRepo(await createClient())
+  const product = await productRepo.getStoreProduct(store.id, slug)
   
   if (!product) return notFound()
   

@@ -4,9 +4,9 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ProductDAO } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/repositories/product.repo'
 import { slugify } from '@/lib/utils/slugfy'
-import { ProductAttributesDAO } from '@/lib/repositories/product-attributes.repo'
+import { ProductAttributesRepo } from '@/lib/repositories/product-attributes.repo'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {
@@ -40,19 +40,19 @@ export async function upsertProductAction(formData: FormData) {
     }
 
     
-    const productDAO = new ProductDAO(await createClient())
-    const product = await productDAO.upsert(id, store.id, productPayload)
+    const productRepo = new ProductRepo(await createClient())
+    const product = await productRepo.upsert(id, store.id, productPayload)
     
     // 5. Sincroniza atributos
-    const attributesDAO = new ProductAttributesDAO(await createClient())
+    const attributesRepo = new ProductAttributesRepo(await createClient())
     
     // Escolha uma das estratégias:
     
     // Opção A: Simples (delete + insert) - usa a atual
-    await attributesDAO.replaceAll(product.id, selectedAttributeIds)
+    await attributesRepo.replaceAll(product.id, selectedAttributeIds)
     
     // Opção B: Eficiente (diff) - recomendada se tiver timestamps
-    // await attributesDAO.syncAttributes(product.id, selectedAttributeIds)
+    // await attributesRepo.syncAttributes(product.id, selectedAttributeIds)
 
     // 6. Revalida e redireciona
     
@@ -71,10 +71,10 @@ export async function upsertProductAction(formData: FormData) {
 
 export async function deleteProductAction(formData: FormData) {
   const id = formData.get('id') as string
-  const productDAO = new ProductDAO(await createClient())
+  const productRepo = new ProductRepo(await createClient())
 
    try {
-    await productDAO.deleteProduct(id)
+    await productRepo.deleteProduct(id)
   } catch (error) {
     return { error: 'Não foi possível deletar.' } 
   }

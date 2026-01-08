@@ -8,7 +8,7 @@ type AttributeRelation = {
   attribute_value_id: string
 }
 
-export class ProductAttributesDAO {
+export class ProductAttributesRepo {
   private supabase
 
   constructor(supabase: SupabaseClient<Database>) {
@@ -23,12 +23,12 @@ export class ProductAttributesDAO {
       .from('product_attribute_values')
       .select('attribute_value_id')
       .eq('product_id', productId)
-    
+
     if (error) {
       console.error('Erro ao buscar atributos:', error)
       return []
     }
-    
+
     return data?.map(item => item.attribute_value_id) || []
   }
 
@@ -41,7 +41,7 @@ export class ProductAttributesDAO {
       .from('product_attribute_values')
       .delete()
       .eq('product_id', productId)
-    
+
     if (deleteError) {
       throw new Error(`Erro ao limpar atributos: ${deleteError.message}`)
     }
@@ -57,7 +57,7 @@ export class ProductAttributesDAO {
     const { error: insertError } = await this.supabase
       .from('product_attribute_values')
       .insert(payload)
-    
+
     if (insertError) {
       throw new Error(`Erro ao inserir atributos: ${insertError.message}`)
     }
@@ -68,7 +68,7 @@ export class ProductAttributesDAO {
    */
   async syncAttributes(productId: string, newAttributeIds: string[]) {
     const currentIds = await this.getCurrentAttributeIds(productId)
-    
+
     // Calcula o que adicionar e o que remover
     const toAdd = newAttributeIds.filter(id => !currentIds.includes(id))
     const toRemove = currentIds.filter(id => !newAttributeIds.includes(id))
@@ -80,7 +80,7 @@ export class ProductAttributesDAO {
         .delete()
         .eq('product_id', productId)
         .in('attribute_value_id', toRemove)
-      
+
       if (error) console.error('Erro ao remover atributos:', error)
     }
 
@@ -94,7 +94,7 @@ export class ProductAttributesDAO {
       const { error } = await this.supabase
         .from('product_attribute_values')
         .insert(payload)
-      
+
       if (error) console.error('Erro ao adicionar atributos:', error)
     }
   }

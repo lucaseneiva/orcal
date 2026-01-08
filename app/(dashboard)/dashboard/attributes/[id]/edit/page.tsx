@@ -1,13 +1,13 @@
 import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
-import { AttributeDAO } from '@/lib/repositories/attribute.repo'
+import { AttributeRepo } from '@/lib/repositories/attribute.repo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function EditAttributePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const attributeDAO = new AttributeDAO(await createClient())
-  const attribute = await attributeDAO.getAttributeById(id)
+  const attributeRepo = new AttributeRepo(await createClient())
+  const attribute = await attributeRepo.getAttributeById(id)
 
   if (!attribute) return notFound()
 

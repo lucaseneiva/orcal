@@ -4,7 +4,7 @@ import { SupabaseClient } from '@supabase/supabase-js'
 import { Database } from '../types/database.types'
 
 
-export class StoreDAO {
+export class StoreRepo {
   private supabase
 
   constructor(supabase: SupabaseClient<Database>) {
