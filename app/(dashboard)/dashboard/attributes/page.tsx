@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { StoreDAO } from '@/lib/data/store.dao'
+import { StoreDAO } from '@/lib/repositories/store.repo'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/utils/supabase/server'
 

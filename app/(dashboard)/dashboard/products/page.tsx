@@ -1,7 +1,7 @@
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ProductDAO } from '@/lib/data/product.dao'
+import { ProductDAO } from '@/lib/repositories/product.repo'
 import { createClient } from '@/lib/utils/supabase/server'
 
 

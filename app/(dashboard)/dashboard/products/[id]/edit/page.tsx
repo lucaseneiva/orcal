@@ -1,5 +1,5 @@
-import { ProductDAO } from '@/lib/data/product.dao'
-import { StoreDAO } from '@/lib/data/store.dao'
+import { ProductDAO } from '@/lib/repositories/product.repo'
+import { StoreDAO } from '@/lib/repositories/store.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'

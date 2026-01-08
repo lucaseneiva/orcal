@@ -1,5 +1,5 @@
 import { ProductForm } from '../form'
-import { StoreDAO } from '@/lib/data/store.dao'
+import { StoreDAO } from '@/lib/repositories/store.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { createClient } from '@/lib/utils/supabase/server'
 

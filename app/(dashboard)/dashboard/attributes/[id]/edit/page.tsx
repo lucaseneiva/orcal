@@ -1,5 +1,5 @@
 import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
-import { AttributeDAO } from '@/lib/data/attribute.dao'
+import { AttributeDAO } from '@/lib/repositories/attribute.repo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/utils/supabase/server'

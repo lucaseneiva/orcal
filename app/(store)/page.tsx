@@ -1,7 +1,7 @@
 import { StoreNotFound } from '@/components/StoreNotFound'
 import { StoreHome } from '@/components/StoreHome'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { ProductDAO } from '@/lib/data/product.dao'
+import { ProductDAO } from '@/lib/repositories/product.repo'
 import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function Home() {

@@ -4,9 +4,9 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ProductDAO } from '@/lib/data/product.dao'
+import { ProductDAO } from '@/lib/repositories/product.repo'
 import { slugify } from '@/lib/utils/slugfy'
-import { ProductAttributesDAO } from '@/lib/data/product-attributes.dao'
+import { ProductAttributesDAO } from '@/lib/repositories/product-attributes.repo'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {
