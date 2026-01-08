@@ -5,8 +5,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        // Substitua 'SUA-ID-DO-PROJETO' pela ID que aparece na URL do seu Supabase
-        hostname: 'SUA-ID-DO-PROJETO.supabase.co',
+        // ID URL do seu Supabase
+        hostname: process.env.NEXT_STORAGE_SUPABASE_URL! || '',
         port: '',
         pathname: '/storage/v1/object/public/**',
       },
