@@ -1,7 +1,9 @@
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { getProductService } from '@/lib/services/product-service'
+import { ProductRepo } from '@/lib/repositories/product.repo'
+import { createClient } from '@/lib/utils/supabase/server'
+
 
 interface Product {
   id: string
@@ -14,8 +16,8 @@ export default async function ProductsPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const productService = await getProductService()
-  const products = await productService.getStoreProducts(store.id)
+  const productRepo = new ProductRepo(await createClient())
+  const products = await productRepo.getFromStore(store.id)
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

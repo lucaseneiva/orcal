@@ -2,9 +2,15 @@
 
 import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { Resend } from 'resend'
+import * as Brevo from '@getbrevo/brevo'
+import { revalidatePath } from 'next/cache'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Initialize Brevo Client
+const apiInstance = new Brevo.TransactionalEmailsApi()
+apiInstance.setApiKey(
+  Brevo.TransactionalEmailsApiApiKeys.apiKey,
+  process.env.BREVO_API_KEY as string
+)
 
 export async function submitOrder(formData: FormData) {
   const supabase = await createClient()
@@ -18,8 +24,8 @@ export async function submitOrder(formData: FormData) {
   
   const items = JSON.parse(cartJson)
 
-  // 1. Salvar no Supabase
-  const { error: dbError } = await supabase.from('orders').insert({
+  // 1. Salvar no Supabase (Unchanged)
+  const { error: dbError } = await supabase.from('quote_requests').insert({
     store_id: store.id,
     customer_name: name,
     customer_whatsapp: whatsapp,
@@ -33,42 +39,54 @@ export async function submitOrder(formData: FormData) {
     return { success: false, error: 'Erro interno ao salvar pedido.' }
   }
 
-  // 2. Enviar Notificação por Email (Resend)
+  // 2. Enviar Notificação por Email (Brevo)
   try {
-    // Busca o email do dono (assumindo que profiles.id = store.owner_id ou algo assim)
-    // Para simplificar no MVP: vamos mandar para o email fixo de teste ou buscar no auth se possível
-    // Vou usar um email fixo ou o seu email para testar
-    const adminEmail = 'neiva.lucas13@gmail.com' 
+    const adminEmail = 'teste@gmail.com' // Replace with actual admin email
 
-    // Monta um HTML simples para o email
+    // Generate HTML (Same logic)
     const itemsHtml = items.map((item: any) => `
       <div style="margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #eee;">
         <strong>${item.productName}</strong><br/>
         Qtd: ${item.quantity}<br/>
-        ${item.options.map((o: any) => `${o.name}: ${o.value}`).join(' | ')}
+        ${item.options ? item.options.map((o: any) => `${o.name}: ${o.value}`).join(' | ') : ''}
       </div>
     `).join('')
 
-    await resend.emails.send({
-      from: 'Orçamentos <onboarding@resend.dev>', // Use o domínio verificado se tiver
-      to: adminEmail,
-      subject: `Novo Orçamento de ${name}`,
-      html: `
-        <h1>Novo Pedido de Orçamento!</h1>
-        <p><strong>Cliente:</strong> ${name}</p>
-        <p><strong>WhatsApp:</strong> ${whatsapp}</p>
-        <hr/>
-        <h3>Itens Solicitados:</h3>
-        ${itemsHtml}
-        <br/>
-        <a href="https://wa.me/55${whatsapp.replace(/\D/g,'')}">Iniciar conversa no WhatsApp</a>
-      `
-    })
+    const emailHtml = `
+      <h1>Novo Pedido de Orçamento!</h1>
+      <p><strong>Cliente:</strong> ${name}</p>
+      <p><strong>WhatsApp:</strong> ${whatsapp}</p>
+      <hr/>
+      <h3>Itens Solicitados:</h3>
+      ${itemsHtml}
+      <br/>
+      <a href="https://wa.me/55${whatsapp.replace(/\D/g,'')}">Iniciar conversa no WhatsApp</a>
+    `
+
+    // Create the email object
+    const sendSmtpEmail = new Brevo.SendSmtpEmail()
+    
+    sendSmtpEmail.subject = `Novo Orçamento de ${name}`
+    sendSmtpEmail.htmlContent = emailHtml
+    
+    // IMPORTANT: This email must be verified in your Brevo account "Senders" list
+    sendSmtpEmail.sender = { 
+      name: "no-reply", 
+      email: "no-reply@orcal.com.br" 
+    }
+    
+    sendSmtpEmail.to = [
+      { email: adminEmail, name: "Admin" }
+    ]
+
+    // Send
+    await apiInstance.sendTransacEmail(sendSmtpEmail)
 
   } catch (emailError) {
+    // Log the detailed error from Brevo
     console.error('Erro Email:', emailError)
-    // Não vamos falhar o pedido se o email falhar, apenas logar
+    // We don't fail the request if email fails, just log it
   }
-
+  revalidatePath('/dashboard/orders')
   return { success: true }
 }

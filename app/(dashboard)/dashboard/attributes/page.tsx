@@ -1,14 +1,15 @@
 import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { getProductService } from '@/lib/services/product-service'
+import { StoreRepo } from '@/lib/repositories/store.repo'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function AttributesPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const productService = await getProductService()
-  const attributes = await productService.getStoreAttributes(store.id)
+  const storeRepo = new StoreRepo(await createClient())
+  const attributes = await storeRepo.getAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

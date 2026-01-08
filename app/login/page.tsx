@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation'
 import { login } from './actions'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 
@@ -8,7 +9,9 @@ type LoginPageProps = {
 export default async function LoginPage({ searchParams }: LoginPageProps) {
     const params = await searchParams
     const store = await getCurrentStore()
-    
+
+    if(!store) return notFound()
+        
     return (
         <div className="flex min-h-screen items-center justify-center bg-gray-100">
             <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">

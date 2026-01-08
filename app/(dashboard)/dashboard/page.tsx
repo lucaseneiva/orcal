@@ -47,6 +47,22 @@ export default async function AdminDashboard() {
               Ver Atributos
             </Link>
           </div>
+
+          {/* Card de Atributos */}
+          <div className="p-6 border rounded-xl bg-white hover:shadow-md transition cursor-pointer flex flex-col">
+            <h2 className="text-lg font-bold text-gray-900">
+              Pedidos de Orçamento
+            </h2>
+            <p className="text-sm text-gray-500 mt-2">
+              Gerenciar os seus pedidos de orçamento
+            </p>
+            <Link
+              href="/dashboard/quote-requests"
+              className="mt-4 inline-block bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800 w-fit"
+            >
+              Ver Pedidos
+            </Link>
+          </div>
         </div>
       </div>
     </div>

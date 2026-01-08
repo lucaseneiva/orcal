@@ -1,15 +1,14 @@
 import { ProductForm } from '../form'
-import { getProductService } from '@/lib/services/product-service'
+import { StoreRepo } from '@/lib/repositories/store.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import Link from 'next/link'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function NewProductPage() {
   const store = await getCurrentStore()
   if (!store) return null
 
-  const productService = await getProductService()
-  // Buscar atributos disponíveis
-  const allAttributes = await productService.getStoreAttributes(store.id)
+  const storeRepo = new StoreRepo(await createClient())
+  const allAttributes = await storeRepo.getAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
@@ -19,4 +18,4 @@ export default async function NewProductPage() {
       <ProductForm allAttributes={allAttributes} />
     </div>
   )
-}
+} 

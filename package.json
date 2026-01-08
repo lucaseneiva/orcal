@@ -6,17 +6,18 @@
     "dev": "next dev --turbo & open http://localhost:3000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gen-types": "npx supabase gen types typescript --project-id gruykkqpajxvzwntnacb > lib/types/database.types.ts"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "@react-email/render": "^2.0.0",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
     "lucide-react": "^0.562.0",
     "next": "16.1.0",
     "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "resend": "^6.6.0"
+    "react-dom": "19.2.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
@@ -26,7 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.1.0",
     "open": "^11.0.0",
-    "supabase": "^2.67.3",
+    "supabase": "^2.71.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

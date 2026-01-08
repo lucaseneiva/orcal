@@ -1,15 +1,18 @@
 import { createClient } from '@/lib/utils/supabase/server'
-import { Product, ProductOption } from '@/types'
+import { ProductWithDetails, ProductOption, ProductRaw, ProductInsert } from '@/lib/types/types'
+import { Database } from '../types/database.types'
+import { SupabaseClient } from '@supabase/supabase-js'
 
-class ProductService {
+export class ProductRepo {
   private supabase
 
-  constructor(supabase: any) {
+  constructor(supabase: SupabaseClient<Database>) {
     this.supabase = supabase
   }
 
-  async getStoreProducts(storeId: string) {
-    const { data } = await (await this.supabase)
+  async getFromStore(storeId: string) {
+
+    const { data } = await this.supabase
       .from('products')
       .select('*')
       .eq('store_id', storeId)
@@ -17,7 +20,8 @@ class ProductService {
   }
 
   async findBySlugAndStoreId(slug: string, storeId: string) {
-    const { data } = await (await this.supabase)
+
+    const { data } = await this.supabase
       .from('products')
       .select('*')
       .eq('slug', slug)
@@ -26,22 +30,16 @@ class ProductService {
     return data || null
   }
 
-  async getStoreProduct(storeId: string, slug: string): Promise<Product | null> {
-    const supabase = createClient();
-
-    const { data, error } = await (await supabase)
+  async getStoreProduct(storeId: string, slug: string): Promise<ProductWithDetails | null> {
+    const { data, error } = await this.supabase
       .from('products')
       .select(`
-      id,
-      name,
-      description,
-      slug,
-      image_url,
-      created_at,
+      *,
       product_attribute_values (
         attribute_values (
           id,
           name,
+          description, 
           attributes (
             id,
             name,
@@ -68,44 +66,35 @@ class ProductService {
       return {
         value_id: val.id,
         value_name: val.name,
-        value_meta: val.value,
+        description: val.description,
+        attribute_value_description: val.description,
         attribute_id: attr.id,
         attribute_name: attr.name,
         attribute_slug: attr.slug,
       };
     });
 
-    const product: Product = {
+    const product: ProductWithDetails = {
       id: data.id,
       name: data.name,
       description: data.description,
       image_url: data.image_url,
       slug: data.slug,
       options: options,
+      created_at: data.created_at,
+      status: data.status,
+      updated_at: data.updated_at,
+      store_id: data.store_id,
+      display_order: data.display_order
     };
 
     return product;
   }
 
-  async getStoreAttributes(storeId: string) {
-    const { data } = await (await this.supabase)
-      .from('attributes')
-      .select(`
-        id,
-        name,
-        slug,
-        attribute_values (
-          id,
-          name
-        )
-      `)
-      .eq('store_id', storeId)
-    
-    return data || []
-  }
 
-  async getProductById(productId: string) {
-    const { data, error } = await (await this.supabase)
+  async getById(productId: string) {
+
+    const { data, error } = await this.supabase
       .from('products')
       .select(`
         id,
@@ -118,7 +107,8 @@ class ProductService {
         product_attribute_values (
           attribute_values (
             id,
-            name
+            name,
+            description
           )
         )
       `)
@@ -130,7 +120,7 @@ class ProductService {
     // --- TRANSFORMAÇÃO IMPORTANTE ---
     // Precisamos converter o retorno aninhado do banco para o formato "plano"
     // que o nosso formulário espera (array de options)
-    
+
     const options = data.product_attribute_values.map((pav: any) => ({
       value_id: pav.attribute_values.id,
       value_name: pav.attribute_values.name
@@ -142,24 +132,62 @@ class ProductService {
     }
   }
 
-  async getAttributeById(id: string) {
-    const { data, error } = await (await this.supabase)
-      .from('attributes')
-      .select(`
-        *,
-        attribute_values (
-          id,
-          name
-        )
-      `)
-      .eq('id', id)
+  async create(payload: ProductInsert) {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('products')
+      .insert(payload)
+      .select()
       .single()
 
-    return error ? null : data
+    if (error) throw new Error(`Erro ao criar produto: ${error.message}`)
+    return data
+  }
+
+
+  async update(id: string, storeId: string, payload: ProductInsert) {
+    const supabase = await createClient()
+    const { data, error } = await supabase
+      .from('products')
+      .update(payload)
+      .eq('id', id)
+      .eq('store_id', storeId)
+      .select()
+      .single()
+
+    if (error) throw new Error(`Erro ao atualizar produto: ${error.message}`)
+    return data
+  }
+
+
+  async upsert(id: string | null, storeId: string, payload: ProductInsert) {
+    if (id) {
+      return this.update(id, storeId, payload)
+    }
+    return this.create(payload)
+  }
+
+  async deleteProduct(id: string) {
+    const supabase = await createClient()
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+
+    if (error) {
+      return { error: 'Erro ao deletar' }
+    }
   }
 }
 
-export async function getProductService() {
-  const supabase = await createClient()
-  return new ProductService(supabase)
-}
+
+
+
+
+
+
+
+
+
+
+

@@ -14,7 +14,7 @@ export function ProductCard({ id, name, description, imageUrl, color, slug }: Pr
   
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-      <img src={imageUrl} alt={name} className="w-full h-48 object-cover" />
+      <img src={imageUrl ?? "/placeholder.png"} alt={name} className="w-full h-48 object-cover" />
       
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-bold text-lg text-slate-900">{name}</h3>

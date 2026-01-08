@@ -1,12 +1,13 @@
 import { AttributeForm } from '@/app/(dashboard)/dashboard/attributes/form'
-import { getProductService } from '@/lib/services/product-service'
+import { AttributeRepo } from '@/lib/repositories/attribute.repo'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function EditAttributePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const productService = await getProductService()
-  const attribute = await productService.getAttributeById(id)
+  const attributeRepo = new AttributeRepo(await createClient())
+  const attribute = await attributeRepo.getById(id)
 
   if (!attribute) return notFound()
 
