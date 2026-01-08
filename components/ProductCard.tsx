@@ -1,5 +1,6 @@
 'use client'
 import Link from "next/link";
+import Image from "next/image"; // Importado para otimização
 
 type ProductProps = {
   id: string
@@ -10,11 +11,22 @@ type ProductProps = {
   slug: string
 }
 
-export function ProductCard({ id, name, description, imageUrl, color, slug }: ProductProps) {
+// Removido o 'id' da desestruturação para corrigir o erro "defined but never used"
+export function ProductCard({ name, description, imageUrl, color, slug }: ProductProps) {
   
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
-      <img src={imageUrl ?? "/placeholder.png"} alt={name} className="w-full h-48 object-cover" />
+      
+      {/* Container da Imagem com Next.js Image */}
+      <div className="relative w-full h-48">
+        <Image 
+          src={imageUrl || "/placeholder.png"} 
+          alt={name} 
+          fill 
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      </div>
       
       <div className="p-5 flex flex-col flex-1">
         <h3 className="font-bold text-lg text-slate-900">{name}</h3>
