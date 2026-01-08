@@ -1,8 +1,9 @@
-'use client' // <--- Isso avisa pro Next: "Isso roda no navegador, não no servidor"
+'use client'
 
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
+import { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react'
 
-// Define como é um item do carrinho
+// --- Tipagens ---
+
 export type CartItem = {
   id: string
   name: string
@@ -10,7 +11,6 @@ export type CartItem = {
   quantity: number
 }
 
-// Define quais funções estarão disponíveis
 type CartContextType = {
   items: CartItem[]
   addToCart: (item: Omit<CartItem, 'quantity'>) => void
@@ -22,46 +22,75 @@ type CartContextType = {
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
 
+// --- Provider ---
+
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [cartOpen, setCartOpen] = useState(false)
+  
+  // Ref para garantir que o salvamento só ocorra após o carregamento inicial
+  const isHydrated = useRef(false)
 
-  // Recuperar do localStorage quando a página carregar
+  // 1. CARREGAMENTO: Executa apenas uma vez na montagem do componente
   useEffect(() => {
     const saved = localStorage.getItem('orcamento_cart')
     if (saved) {
       try {
-        setItems(JSON.parse(saved))
+        const parsed = JSON.parse(saved)
+        if (Array.isArray(parsed)) {
+          // Usamos um agendamento de tarefa (Task) para evitar o erro de cascata
+          // Isso garante que o render inicial do Next termine antes da atualização
+          setTimeout(() => {
+            setItems(parsed)
+            isHydrated.current = true
+          }, 0)
+          return
+        }
       } catch (e) {
         console.error('Erro ao ler carrinho', e)
       }
     }
+    isHydrated.current = true
   }, [])
 
-  // Salvar no localStorage sempre que mudar algo
-  useEffect(() => {
-    localStorage.setItem('orcamento_cart', JSON.stringify(items))
-  }, [items])
+  // 2. PERSISTÊNCIA: Função auxiliar para salvar no disco
+  const saveToStorage = (newItems: CartItem[]) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('orcamento_cart', JSON.stringify(newItems))
+    }
+  }
 
-  // Função de adicionar
+  // 3. AÇÕES: Atualizam o estado e o storage simultaneamente
   const addToCart = (product: Omit<CartItem, 'quantity'>) => {
     setItems(prev => {
       const existing = prev.find(i => i.id === product.id)
+      let updated: CartItem[]
+
       if (existing) {
-        return prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
+        updated = prev.map(i => i.id === product.id ? { ...i, quantity: i.quantity + 1 } : i)
+      } else {
+        updated = [...prev, { ...product, quantity: 1 }]
       }
-      return [...prev, { ...product, quantity: 1 }]
+
+      saveToStorage(updated)
+      return updated
     })
-    setCartOpen(true) // Abre o carrinho automaticamente
+    setCartOpen(true)
   }
 
   const removeFromCart = (id: string) => {
-    setItems(prev => prev.filter(item => item.id !== id))
+    setItems(prev => {
+      const updated = prev.filter(item => item.id !== id)
+      saveToStorage(updated)
+      return updated
+    })
   }
 
-  const clearCart = () => setItems([])
+  const clearCart = () => {
+    setItems([])
+    localStorage.removeItem('orcamento_cart')
+  }
 
-  // O "return" aqui é o tal do Wrapper. Ele envolve os "children" com o Contexto.
   return (
     <CartContext.Provider value={{ items, addToCart, removeFromCart, clearCart, cartOpen, setCartOpen }}>
       {children}
@@ -69,7 +98,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
   )
 }
 
-// Hook para facilitar o uso nos outros componentes
 export const useCart = () => {
   const context = useContext(CartContext)
   if (!context) throw new Error('useCart deve ser usado dentro de um CartProvider')

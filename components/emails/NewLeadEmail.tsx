@@ -1,14 +1,19 @@
 import * as React from 'react';
 
+// 1. Definimos a interface para o item individual do email
+interface EmailItem {
+  name: string;
+  quantity: number | string;
+}
+
 interface NewLeadEmailProps {
   customerName: string;
   customerEmail: string;
   customerWhatsapp: string;
-  items: any[];
+  items: EmailItem[]; // Trocado de any[] para EmailItem[]
   tenantName: string;
 }
 
-// Estilos inline básicos para garantir que funcione em qualquer email client (Gmail, Outlook)
 export const NewLeadEmail = ({
   customerName,
   customerEmail,
@@ -38,7 +43,8 @@ export const NewLeadEmail = ({
         </tr>
       </thead>
       <tbody>
-        {items.map((item, index) => (
+        {/* O TypeScript agora sabe que item possui as propriedades name e quantity */}
+        {items.map((item: EmailItem, index: number) => (
           <tr key={index}>
             <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{item.name}</td>
             <td style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>{item.quantity}</td>
