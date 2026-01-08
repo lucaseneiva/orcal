@@ -13,7 +13,7 @@ export const getCurrentStore = cache(async () => {
   console.log('[DEBUG] Host final processado:', host);
 
   const storeRepo = new StoreRepo(await createClient())
-  const store = await storeRepo.findStoreByDomain(host || null);
+  const store = await storeRepo.findByDomain(host || null);
 
   if (!store) return null;
   return store;

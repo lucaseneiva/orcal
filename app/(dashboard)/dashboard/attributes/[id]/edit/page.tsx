@@ -7,7 +7,7 @@ import { createClient } from '@/lib/utils/supabase/server'
 export default async function EditAttributePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
   const attributeRepo = new AttributeRepo(await createClient())
-  const attribute = await attributeRepo.getAttributeById(id)
+  const attribute = await attributeRepo.getById(id)
 
   if (!attribute) return notFound()
 

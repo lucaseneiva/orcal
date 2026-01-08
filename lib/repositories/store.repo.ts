@@ -12,7 +12,7 @@ export class StoreRepo {
   }
 
 
-  async findStoreByDomain(domain: string | null): Promise<Store | null> {
+  async findByDomain(domain: string | null): Promise<Store | null> {
     if (!domain) return null
 
 
@@ -25,7 +25,7 @@ export class StoreRepo {
     return error ? null : data
   }
 
-  async getStoreAttributes(storeId: string) {
+  async getAttributes(storeId: string) {
     const { data } = await this.supabase
       .from('attributes')
       .select(`

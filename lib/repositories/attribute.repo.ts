@@ -1,7 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js"
 import { Database } from "../types/database.types"
 
-
 export class AttributeRepo {
   private supabase
 
@@ -9,7 +8,7 @@ export class AttributeRepo {
     this.supabase = supabase
   }
 
-  async getAttributeById(id: string) {
+  async getById(id: string) {
     const { data, error } = await this.supabase
       .from('attributes')
       .select(`

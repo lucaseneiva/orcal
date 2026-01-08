@@ -10,7 +10,7 @@ export class ProductRepo {
     this.supabase = supabase
   }
 
-  async getStoreProducts(storeId: string) {
+  async getFromStore(storeId: string) {
 
     const { data } = await this.supabase
       .from('products')
@@ -92,7 +92,7 @@ export class ProductRepo {
   }
 
 
-  async getProductById(productId: string) {
+  async getById(productId: string) {
 
     const { data, error } = await this.supabase
       .from('products')

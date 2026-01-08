@@ -17,7 +17,7 @@ export default async function ProductsPage() {
   if (!store) redirect('/dashboard')
 
   const productRepo = new ProductRepo(await createClient())
-  const products = await productRepo.getStoreProducts(store.id)
+  const products = await productRepo.getFromStore(store.id)
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">

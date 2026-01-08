@@ -8,7 +8,7 @@ export default async function NewProductPage() {
   if (!store) return null
 
   const storeRepo = new StoreRepo(await createClient())
-  const allAttributes = await storeRepo.getStoreAttributes(store.id)
+  const allAttributes = await storeRepo.getAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

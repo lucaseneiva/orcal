@@ -9,7 +9,7 @@ export default async function AttributesPage() {
   if (!store) redirect('/dashboard')
 
   const storeRepo = new StoreRepo(await createClient())
-  const attributes = await storeRepo.getStoreAttributes(store.id)
+  const attributes = await storeRepo.getAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

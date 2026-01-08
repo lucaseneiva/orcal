@@ -13,12 +13,12 @@ export default async function EditProductPage({ params }: { params: Promise<{ id
 
 
   const productRepo = new ProductRepo(await createClient())
-  const product = await productRepo.getProductById(id)
+  const product = await productRepo.getById(id)
 
   if (!product) return notFound()
 
   const storeRepo = new StoreRepo(await createClient())
-  const allAttributes = await storeRepo.getStoreAttributes(store.id)
+  const allAttributes = await storeRepo.getAttributes(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

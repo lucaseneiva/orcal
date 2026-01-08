@@ -12,7 +12,7 @@ export default async function Home() {
   }
 
   const productRepo = new ProductRepo(await createClient())
-  const products = await productRepo.getStoreProducts(store.id)
+  const products = await productRepo.getFromStore(store.id)
   
   return (
     <StoreHome
