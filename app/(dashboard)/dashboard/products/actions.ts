@@ -68,17 +68,27 @@ export async function upsertProductAction(formData: FormData) {
   redirect('/dashboard/products')
 }
 
-
 export async function deleteProductAction(formData: FormData) {
-  const id = formData.get('id') as string
-  const productRepo = new ProductRepo(await createClient())
+  const id = formData.get('id') as string;
 
-   try {
-    await productRepo.deleteProduct(id)
-  } catch (error) {
-    return { error: 'Não foi possível deletar.' } 
+  // 1. Basic Validation
+  if (!id) {
+    return { error: 'ID do produto não fornecido.' };
   }
 
-  revalidatePath('/dashboard/products')
-  redirect('/dashboard/products')
+  const supabase = await createClient();
+  const productRepo = new ProductRepo(supabase);
+
+  try {
+    await productRepo.deleteProduct(id);
+  } catch (err) {
+    // 2. Log the actual error for debugging
+    console.error('Delete product error:', err);
+    // 3. Return a user-friendly message
+    return { error: 'Não foi possível deletar o produto.' };
+  }
+
+  // 4. Revalidate and Redirect OUTSIDE the try/catch block
+  revalidatePath('/dashboard/products');
+  redirect('/dashboard/products');
 }

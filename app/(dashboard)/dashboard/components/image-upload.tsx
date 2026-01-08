@@ -2,30 +2,28 @@
 
 import { createClient } from '@/lib/utils/supabase/client'
 import { useState } from 'react'
+import Image from 'next/image' // Import Next.js Image
 
 interface ImageUploadProps {
   defaultUrl?: string
   onUrlChange: (url: string) => void
 }
 
-// --- FUNÇÃO MÁGICA DE OTIMIZAÇÃO ---
 async function optimizeImage(file: File): Promise<File> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.readAsDataURL(file)
     
     reader.onload = (event) => {
-      const img = new Image()
+      const img = new window.Image() // Use window.Image to avoid conflict with next/image
       img.src = event.target?.result as string
       
       img.onload = () => {
-        // 1. Configurar dimensões máximas (1200x1200)
         const MAX_WIDTH = 1200
         const MAX_HEIGHT = 1200
         let width = img.width
         let height = img.height
 
-        // Lógica de redimensionamento mantendo proporção
         if (width > height) {
           if (width > MAX_WIDTH) {
             height *= MAX_WIDTH / width
@@ -38,49 +36,28 @@ async function optimizeImage(file: File): Promise<File> {
           }
         }
 
-        // 2. Criar Canvas para desenhar a nova imagem
         const canvas = document.createElement('canvas')
         canvas.width = width
         canvas.height = height
-        
         const ctx = canvas.getContext('2d')
-        if (!ctx) {
-          reject(new Error('Falha ao criar contexto do canvas'))
-          return
-        }
+        if (!ctx) return reject(new Error('Canvas context failed'))
 
-        // Desenhar imagem redimensionada
         ctx.drawImage(img, 0, 0, width, height)
 
-        // 3. Converter para Blob .AVIF com qualidade 80%
-        // 'image/avif' é suportado na maioria dos browsers modernos.
-        // Se o browser for muito antigo, ele pode cair para png/jpeg dependendo da implementação,
-        // mas hoje em dia Chrome, Firefox, Safari (recente) aceitam.
+        // AVIF is great, but ensure quality and fallback
         canvas.toBlob(
           (blob) => {
-            if (!blob) {
-              reject(new Error('Falha na conversão da imagem'))
-              return
-            }
-            
-            // Criar novo arquivo com extensão correta
+            if (!blob) return reject(new Error('Conversion failed'))
             const newName = file.name.replace(/\.[^/.]+$/, "") + ".avif"
-            const optimizedFile = new File([blob], newName, {
-              type: 'image/avif',
-              lastModified: Date.now(),
-            })
-
-            resolve(optimizedFile)
+            resolve(new File([blob], newName, { type: 'image/avif' }))
           },
           'image/avif', 
-          0.8 // Qualidade (0 a 1)
+          0.8
         )
       }
-      
-      img.onerror = (err) => reject(err)
+      img.onerror = reject
     }
-    
-    reader.onerror = (err) => reject(err)
+    reader.onerror = reject
   })
 }
 
@@ -93,42 +70,28 @@ export function ImageUpload({ defaultUrl, onUrlChange }: ImageUploadProps) {
     if (!originalFile) return
 
     setUploading(true)
-
     try {
-      // 1. OTIMIZAR ANTES DE ENVIAR
-      // Isso acontece no navegador do usuário
       const file = await optimizeImage(originalFile)
-      
       const supabase = createClient()
       
-      // Gera nome único.avif
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.avif`
-      const filePath = `${fileName}`
-
-      // 2. Upload do arquivo já leve
+      
       const { error: uploadError } = await supabase.storage
         .from('images')
-        .upload(filePath, file, {
-          contentType: 'image/avif', // Forçar cabeçalho correto
+        .upload(fileName, file, {
+          contentType: 'image/avif',
           cacheControl: '3600',
           upsert: false
         })
 
       if (uploadError) throw uploadError
 
-      // 3. Pegar URL Pública
-      const { data } = supabase.storage
-        .from('images')
-        .getPublicUrl(filePath)
-
-      const publicUrl = data.publicUrl
-
-      setPreview(publicUrl)
-      onUrlChange(publicUrl)
-
+      const { data } = supabase.storage.from('images').getPublicUrl(fileName)
+      setPreview(data.publicUrl)
+      onUrlChange(data.publicUrl)
     } catch (error) {
-      console.error('Erro no upload:', error)
-      alert('Erro ao processar imagem. Tente outra.')
+      console.error('Upload error:', error)
+      alert('Erro ao processar imagem.')
     } finally {
       setUploading(false)
     }
@@ -143,10 +106,12 @@ export function ImageUpload({ defaultUrl, onUrlChange }: ImageUploadProps) {
              <div className="text-gray-500 text-sm font-medium animate-pulse">Otimizando e enviando...</div>
           </div>
         ) : preview ? (
-          <img 
+          <Image 
             src={preview} 
-            alt="Preview" 
-            className="w-full h-full object-contain" 
+            alt="Product Preview" 
+            fill 
+            className="object-contain" // Replaces object-fit: contain
+            sizes="(max-width: 768px) 100vw, 400px"
           />
         ) : (
           <div className="text-gray-400 text-sm text-center px-4">
@@ -156,26 +121,20 @@ export function ImageUpload({ defaultUrl, onUrlChange }: ImageUploadProps) {
         )}
       </div>
 
-      <div>
+      <div className="flex items-center gap-3">
         <label className={`cursor-pointer inline-block bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition ${uploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-50'}`}>
-            {uploading ? 'Processando...' : 'Escolher Imagem'}
-          <input 
-            type="file" 
-            accept="image/*" 
-            onChange={handleUpload} 
-            disabled={uploading}
-            className="hidden" 
-          />
+          {uploading ? 'Processando...' : 'Escolher Imagem'}
+          <input type="file" accept="image/*" onChange={handleUpload} disabled={uploading} className="hidden" />
         </label>
         
         {preview && !uploading && (
-            <button 
-                type="button"
-                onClick={() => { setPreview(''); onUrlChange('') }}
-                className="ml-4 text-xs text-red-500 underline"
-            >
-                Remover
-            </button>
+          <button 
+            type="button"
+            onClick={() => { setPreview(''); onUrlChange('') }}
+            className="text-xs text-red-500 underline hover:text-red-700"
+          >
+            Remover
+          </button>
         )}
       </div>
     </div>

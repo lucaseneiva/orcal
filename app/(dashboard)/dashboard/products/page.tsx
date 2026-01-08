@@ -3,14 +3,11 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { ProductRepo } from '@/lib/repositories/product.repo'
 import { createClient } from '@/lib/utils/supabase/server'
+// Import the database type definitions
+import { Database } from '@/lib/types/database.types'
 
-
-interface Product {
-  id: string
-  name: string
-  description?: string
-  status?: 'active' | 'inactive'
-}
+// Use the Database helper to get the exact Row type from your products table
+type Product = Database['public']['Tables']['products']['Row']
 
 export default async function ProductsPage() {
   const store = await getCurrentStore()
@@ -24,7 +21,6 @@ export default async function ProductsPage() {
       <Link href="/dashboard/" className="text-sm text-gray-500 mb-4 block">← Voltar</Link>
 
       <div className="max-w-6xl mx-auto">
-
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Seus Produtos</h1>
@@ -38,10 +34,8 @@ export default async function ProductsPage() {
           </Link>
         </div>
 
-        {/* Content */}
         <div className="bg-white border rounded-xl overflow-hidden">
           {!products?.length ? (
-            // Empty State
             <div className="text-center py-16">
               <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -55,7 +49,6 @@ export default async function ProductsPage() {
               </Link>
             </div>
           ) : (
-            // Products Table
             <table className="w-full">
               <thead className="bg-gray-50 border-b">
                 <tr>
@@ -65,18 +58,20 @@ export default async function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {products.map((product: any) => (
+                {/* Now using the Product type generated from the database */}
+                {products.map((product: Product) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="p-4">
                       <div className="font-medium text-gray-900">{product.name}</div>
-
                     </td>
                     <td className="p-4">
-                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
-                        }`}>
-                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${product.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
-                          }`} />
-                        {product.status === 'active' ? 'Ativo' : 'Inativo'}
+                      <span className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
+                        product.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'
+                      }`}>
+                        <span className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
+                          product.status === 'active' ? 'bg-green-500' : 'bg-gray-500'
+                        }`} />
+                        {product.status === 'active' ? 'Ativo' : product.status === 'draft' ? 'Rascunho' : 'Inativo'}
                       </span>
                     </td>
                     <td className="p-4 text-right">

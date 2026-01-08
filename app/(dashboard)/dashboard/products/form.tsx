@@ -4,6 +4,27 @@ import { upsertProductAction, deleteProductAction } from './actions'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ImageUpload } from '../components/image-upload'
+import { Database } from '@/lib/types/database.types'
+
+// --- Types ---
+
+// Helpers for Supabase types
+type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
+
+export type ProductRaw = Tables<'products'>
+
+export interface ProductOption {
+  value_id: string
+  value_name: string
+  description: string | null
+  attribute_id: string
+  attribute_name: string
+  attribute_slug: string
+}
+
+export interface ProductWithDetails extends ProductRaw {
+  options: ProductOption[]
+}
 
 type Attribute = {
   id: string
@@ -11,17 +32,22 @@ type Attribute = {
   attribute_values: { id: string; name: string }[]
 }
 
+// Inside form.tsx
 type ProductFormProps = {
-  product?: any
+  // Use Partial or Omit to tell TS we don't need the database timestamps
+  product?: Partial<ProductWithDetails> 
   allAttributes: Attribute[]
 }
+
+// --- Component ---
 
 export function ProductForm({ product, allAttributes }: ProductFormProps) {
   
   const [imageUrl, setImageUrl] = useState(product?.image_url || '')
 
+  // Fixed 'any' by using ProductOption type
   const existingIds = new Set(
-    product?.options?.map((opt: any) => opt.value_id) || []
+    product?.options?.map((opt: ProductOption) => opt.value_id) || []
   )
 
   async function handleSubmit(formData: FormData) {
@@ -48,12 +74,12 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-            <input name="slug" defaultValue={product?.slug} className="w-full border rounded-lg p-2.5 bg-gray-50 outline-none text-gray-700 mb-1" placeholder="Automático se vazio" />
+            <input name="slug" defaultValue={product?.slug || ''} className="w-full border rounded-lg p-2.5 bg-gray-50 outline-none text-gray-700 mb-1" placeholder="Automático se vazio" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Descrição</label>
-            <textarea name="description" defaultValue={product?.description} rows={4} className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700 mb-1" />
+            <textarea name="description" defaultValue={product?.description || ''} rows={4} className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700 mb-1" />
           </div>
 
           <div>
