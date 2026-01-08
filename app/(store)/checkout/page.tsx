@@ -1,9 +1,10 @@
 'use client'
 
 import { useCart } from '@/app/context/cart-context'
-import { submitOrder } from './actions' // Vamos criar jajá
+import { submitOrder } from './actions'
 import { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image' // Importação adicionada
 
 export default function CheckoutPage() {
   const { items, removeFromCart, clearCart } = useCart()
@@ -27,6 +28,7 @@ export default function CheckoutPage() {
     setLoading(false)
   }
 
+  // View de Sucesso
   if (success) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center bg-gray-50">
@@ -42,6 +44,7 @@ export default function CheckoutPage() {
     )
   }
 
+  // View de Carrinho Vazio
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
@@ -52,13 +55,13 @@ export default function CheckoutPage() {
   }
 
   return (
-
     <div className="max-w-4xl mx-auto p-6 min-h-screen">
-      <Link href="/" className="text-lg text-gray-500 block">
+      <Link href="/" className="text-lg text-gray-500 block hover:text-gray-700 transition-colors">
         ← Voltar
       </Link>
-      <div className="p-4">
-      </div>
+      
+      <div className="p-4"></div>
+      
       <h1 className="text-2xl font-bold mb-8 text-gray-900">Finalizar Orçamento</h1>
 
       <div className="grid md:grid-cols-2 gap-12">
@@ -71,27 +74,45 @@ export default function CheckoutPage() {
                 {/* Botão remover */}
                 <button
                   onClick={() => removeFromCart(idx)}
-                  className="absolute top-2 right-2 text-gray-400 hover:text-red-500"
+                  className="absolute top-2 right-2 text-gray-400 hover:text-red-500 z-10 p-1"
+                  aria-label="Remover item"
                 >
                   ×
                 </button>
 
+                {/* Container da Imagem Otimizada */}
                 {item.imageUrl && (
-                  <img src={item.imageUrl} className="w-16 h-16 object-cover rounded bg-gray-100" />
+                  <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded bg-gray-100 border">
+                    <Image 
+                      src={item.imageUrl} 
+                      alt={item.productName}
+                      fill // Preenche o container de 16x16 (64px)
+                      className="object-cover"
+                      sizes="64px"
+                      // Importante para funcionar com seu Supabase local:
+                      unoptimized={
+                        item.imageUrl.startsWith("http://127.0.0.1") || 
+                        item.imageUrl.startsWith("http://localhost")
+                      }
+                    />
+                  </div>
                 )}
 
-                <div>
-                  <h3 className="font-bold text-gray-900">{item.productName}</h3>
+                <div className="flex-1">
+                  <h3 className="font-bold text-gray-900 pr-6">{item.productName}</h3>
                   <div className="text-sm text-gray-500 mt-1 space-y-0.5">
                     <p>Quantidade: <span className="font-medium text-black">{item.quantity}</span></p>
                     {item.options.map((opt, i) => (
-                      <p key={i}>{opt.name}: {opt.value}</p>
+                      <p key={i} className="text-xs">
+                        <span className="capitalize">{opt.name}</span>: <span className="text-gray-700">{opt.value}</span>
+                      </p>
                     ))}
                   </div>
                 </div>
               </div>
             ))}
           </div>
+          
           <div className="flex justify-center p-6">
             <Link href="/" prefetch={false}>
               <button
@@ -101,36 +122,46 @@ export default function CheckoutPage() {
               </button>
             </Link>
           </div>
-
         </div>
 
         {/* Formulário */}
-        <div className="bg-gray-50 p-6 rounded-xl h-fit">
+        <div className="bg-gray-50 p-6 rounded-xl h-fit border border-gray-100 shadow-sm">
           <h2 className="font-semibold text-gray-700 mb-4">Seus Dados</h2>
           <form action={handleSubmit} className="flex flex-col gap-4">
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Seu Nome</label>
-              <input name="name" required className="w-full border rounded p-2.5 outline-none focus:border-black text-gray-600" placeholder="João da Silva" />
+              <input 
+                name="name" 
+                required 
+                className="w-full border rounded p-2.5 outline-none focus:border-black transition-colors text-gray-600 bg-white" 
+                placeholder="João da Silva" 
+              />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">WhatsApp</label>
-              <input name="whatsapp" required type="tel" className="w-full border rounded p-2.5 outline-none focus:border-black text-gray-600" placeholder="(11) 99999-9999" />
+              <input 
+                name="whatsapp" 
+                required 
+                type="tel" 
+                className="w-full border rounded p-2.5 outline-none focus:border-black transition-colors text-gray-600 bg-white" 
+                placeholder="(11) 99999-9999" 
+              />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="mt-4 bg-black text-white w-full py-3 rounded-lg font-bold text-lg hover:bg-gray-800 disabled:opacity-70 flex justify-center"
+              className="mt-4 bg-black text-white w-full py-3 rounded-lg font-bold text-lg hover:bg-gray-800 disabled:opacity-70 flex justify-center transition-all active:scale-[0.98]"
             >
               {loading ? (
                 <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
               ) : 'Solicitar Orçamento'}
             </button>
 
-            <p className="text-xs text-gray-500 text-center mt-2">
-              Nenhum pagamento é realizado agora.
+            <p className="text-xs text-gray-400 text-center mt-2 px-4">
+              Ao solicitar, seus dados e a lista de itens serão enviados ao lojista via WhatsApp.
             </p>
           </form>
         </div>
