@@ -4,8 +4,8 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { AttributeRepo } from '@/lib/repositories/attribute.repo'
 
-// --- ATRIBUTO (PAI) ---
 
 export async function upsertAttribute(formData: FormData) {
   const supabase = await createClient()
@@ -14,16 +14,20 @@ export async function upsertAttribute(formData: FormData) {
 
   const id = formData.get('id') as string
   const name = formData.get('name') as string
-  
+
   const slug = name.toLowerCase().trim().replace(/\s+/g, '-')
   const payload = { name, slug, store_id: store.id }
 
+  const attributeRepo = new AttributeRepo(supabase)
+
   if (id) {
-    await supabase.from('attributes').update(payload).eq('id', id)
+    const { error } = await attributeRepo.update(id, payload)
+    if (error) console.error('Erro ao atualizar o atributo:', error)
   } else {
-    const { data, error } = await supabase.from('attributes').insert(payload).select().single()
+
+    const { error, data } = await attributeRepo.create(payload)
     if (error) console.error('Erro ao criar atributo:', error)
-    
+
     // Se criou novo, redireciona para edição
     if (data) redirect(`/dashboard/attributes/${data.id}/edit`)
   }
@@ -34,22 +38,22 @@ export async function upsertAttribute(formData: FormData) {
 
 export async function deleteAttribute(formData: FormData) {
   const supabase = await createClient()
+  const attributeRepo = new AttributeRepo(supabase)
   const id = formData.get('id') as string
-  await supabase.from('attributes').delete().eq('id', id)
-  
+
+  attributeRepo.delete(id)
+
   revalidatePath('/dashboard/attributes')
   redirect('/dashboard/attributes')
 }
 
-// --- VALORES (FILHOS) ---
-
 export async function createValue(formData: FormData) {
   const supabase = await createClient()
-  
+
   const attribute_id = formData.get('attribute_id') as string
   const name = formData.get('name') as string
   const description = formData.get('description') as string
-  
+
   console.log("Tentando criar valor:", { attribute_id, name, description }) // DEBUG LOG
 
   if (!name || !attribute_id) {
@@ -74,7 +78,7 @@ export async function createValue(formData: FormData) {
 
 export async function deleteValue(formData: FormData) {
   const supabase = await createClient()
-  
+
   const id = formData.get('id') as string
   const attribute_id = formData.get('attribute_id') as string
 
@@ -89,7 +93,7 @@ export async function updateValue(formData: FormData) {
   const id = formData.get('id') as string
   const name = formData.get('name') as string
   const attribute_id = formData.get('attribute_id') as string
-  
+
   // ALINHAMENTO: Pegando o valor do campo 'description'
   const description = formData.get('description') as string
 

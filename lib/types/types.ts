@@ -9,11 +9,19 @@ export type ProductRaw = Tables<'products'>
 export type Attribute = Tables<'attributes'>
 export type Store = Tables<'stores'>
 
+export type AttributeUpdate =
+  Database['public']['Tables']['attributes']['Update']
+
+export type AttributeInsert = 
+  Database['public']['Tables']['attributes']['Insert']
+
 export type ProductInsert =
   Database['public']['Tables']['products']['Insert']
 
 export type QuoteRequestInsert =
   Database['public']['Tables']['quote_requests']['Insert']
+
+
 
 // O Supabase não gera tipos para joins automaticamente, então criamos extensões
 export interface ProductOption {
