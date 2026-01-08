@@ -4,6 +4,8 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import * as Brevo from '@getbrevo/brevo'
 import { revalidatePath } from 'next/cache'
+import { QuoteRequestRepo } from '@/lib/repositories/quote-request.repo'
+import { QuoteStatus } from '@/lib/types/types'
 
 // Initialize Brevo Client
 const apiInstance = new Brevo.TransactionalEmailsApi()
@@ -13,31 +15,36 @@ apiInstance.setApiKey(
 )
 
 export async function submitOrder(formData: FormData) {
-  const supabase = await createClient()
   const store = await getCurrentStore()
 
   if (!store) return { success: false, error: 'Loja indisponível' }
 
+  const supabase = await createClient()
+  const quoteRequestRepo = new QuoteRequestRepo(supabase)
+
   const name = formData.get('name') as string
   const whatsapp = formData.get('whatsapp') as string
   const cartJson = formData.get('cart_items') as string
-  
+
   const items = JSON.parse(cartJson)
 
-  // 1. Salvar no Supabase (Unchanged)
-  const { error: dbError } = await supabase.from('quote_requests').insert({
+  const payload = {
     store_id: store.id,
     customer_name: name,
     customer_whatsapp: whatsapp,
     items: items,
     total_items: items.length,
-    status: 'pending'
-  })
+    status: "pending" as QuoteStatus
+  }
 
-  if (dbError) {
-    console.error('Erro DB:', dbError)
+  try {
+    quoteRequestRepo.create(payload)
+  } catch (error) {
     return { success: false, error: 'Erro interno ao salvar pedido.' }
   }
+
+
+
 
   // 2. Enviar Notificação por Email (Brevo)
   try {
@@ -60,21 +67,21 @@ export async function submitOrder(formData: FormData) {
       <h3>Itens Solicitados:</h3>
       ${itemsHtml}
       <br/>
-      <a href="https://wa.me/55${whatsapp.replace(/\D/g,'')}">Iniciar conversa no WhatsApp</a>
+      <a href="https://wa.me/55${whatsapp.replace(/\D/g, '')}">Iniciar conversa no WhatsApp</a>
     `
 
     // Create the email object
     const sendSmtpEmail = new Brevo.SendSmtpEmail()
-    
+
     sendSmtpEmail.subject = `Novo Orçamento de ${name}`
     sendSmtpEmail.htmlContent = emailHtml
-    
+
     // IMPORTANT: This email must be verified in your Brevo account "Senders" list
-    sendSmtpEmail.sender = { 
-      name: "no-reply", 
-      email: "no-reply@orcal.com.br" 
+    sendSmtpEmail.sender = {
+      name: "no-reply",
+      email: "no-reply@orcal.com.br"
     }
-    
+
     sendSmtpEmail.to = [
       { email: adminEmail, name: "Admin" }
     ]

@@ -1,20 +1,21 @@
 import { Database } from '@/lib/types/database.types'
 
-// Helpers nativos para facilitar
+// Helpers nativos
 type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
 type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T]
 
-// 1. Tipos diretos do Banco (Fonte da Verdade)
+// Tipos diretos do Banco (Fonte da Verdade)
 export type ProductRaw = Tables<'products'>
 export type Attribute = Tables<'attributes'>
 export type Store = Tables<'stores'>
 
 export type ProductInsert =
   Database['public']['Tables']['products']['Insert']
-// 2. Tipos Compostos (Joins)
-// O Supabase não gera tipos para joins automaticamente, então criamos extensões
 
-// Exemplo: Opção de produto vinda do join complexo
+export type QuoteRequestInsert =
+  Database['public']['Tables']['quote_requests']['Insert']
+
+// O Supabase não gera tipos para joins automaticamente, então criamos extensões
 export interface ProductOption {
   value_id: string
   value_name: string
