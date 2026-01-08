@@ -1,19 +1,21 @@
-import { createClient } from '@/lib/utils/supabase/server'
-import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { redirect } from 'next/navigation'
-import { QuoteRequestCard } from './components/QuoteRequestCard'
-import { QuoteRequestRepo } from '@/lib/repositories/quote-request.repo'
+import { createClient } from "@/lib/utils/supabase/server";
+import { getCurrentStore } from "@/lib/utils/get-current-store";
+import { redirect } from "next/navigation";
+import { QuoteRequestCard } from "./components/QuoteRequestCard";
+import { QuoteRequestRepo } from "@/lib/repositories/quote-request.repo";
+// Import the interface to ensure we are aligning correctly
+import type { QuoteRequest } from "./components/QuoteRequestCard";
 
 export default async function quoteRequestsPage() {
-  const store = await getCurrentStore()
-  
-  if (!store) redirect('/')
+  const store = await getCurrentStore();
 
-  const supabase = await createClient()
-  const quoteRequestRepo = new QuoteRequestRepo(supabase)
-  const quoteRequests = await quoteRequestRepo.getFromStore(store.id)
+  if (!store) redirect("/");
 
-  if (!quoteRequests || quoteRequests.length === 0) {
+  const supabase = await createClient();
+  const quoteRequestRepo = new QuoteRequestRepo(supabase);
+  const rawQuoteRequests = await quoteRequestRepo.getFromStore(store.id);
+
+  if (!rawQuoteRequests || rawQuoteRequests.length === 0) {
     return (
       <div className="p-8 text-center">
         <h1 className="text-2xl font-bold mb-2">Pedidos de Orçamento</h1>
@@ -21,10 +23,25 @@ export default async function quoteRequestsPage() {
           <p className="text-gray-500">Nenhum pedido recebido ainda.</p>
         </div>
       </div>
-    )
+    );
   }
 
-  const newquoteRequestsCount = quoteRequests.filter(o => !o.viewed).length
+  const quoteRequests: QuoteRequest[] = rawQuoteRequests.map((order) => ({
+    ...order,
+    // Fix boolean: null/undefined becomes false
+    viewed: !!order.viewed,
+
+    // Fix string: fallback to empty string or ISO date if null
+    created_at: order.created_at || new Date().toISOString(),
+
+    // FIX "Unexpected any": Cast through unknown instead of any
+    items: order.items as unknown as QuoteRequest["items"],
+
+    // Fix numbers: fallback to 0 if null
+    total_items: order.total_items ?? 0,
+  }));
+
+  const newquoteRequestsCount = quoteRequests.filter((o) => !o.viewed).length;
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -34,10 +51,12 @@ export default async function quoteRequestsPage() {
           <p className="text-sm text-gray-500 mt-1">
             {newquoteRequestsCount > 0 ? (
               <span className="text-blue-600 font-semibold">
-                {newquoteRequestsCount} novo{newquoteRequestsCount > 1 ? 's' : ''} pedido{newquoteRequestsCount > 1 ? 's' : ''}
+                {newquoteRequestsCount} novo
+                {newquoteRequestsCount > 1 ? "s" : ""} pedido
+                {newquoteRequestsCount > 1 ? "s" : ""}
               </span>
             ) : (
-              'Todos os pedidos visualizados'
+              "Todos os pedidos visualizados"
             )}
           </p>
         </div>
@@ -53,5 +72,5 @@ export default async function quoteRequestsPage() {
         ))}
       </div>
     </div>
-  )
+  );
 }
