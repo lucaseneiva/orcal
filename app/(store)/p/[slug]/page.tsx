@@ -4,8 +4,8 @@ import { getCurrentStore } from '@/lib/utils/get-current-store'
 import ProductForm from './components/product-form'
 import Link from 'next/link'
 import AttributeDetails from './components/attribute-options'
-import { blob } from 'stream/consumers'
 import { createClient } from '@/lib/utils/supabase/server'
+import Image from 'next/image' // Importado o componente Image
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -24,7 +24,7 @@ export default async function ProductPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header com botão voltar */}
-      <div className="bg-white border-b border-gray-200 top-0 z-10">
+      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
             href="/" 
@@ -43,12 +43,15 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           
           {/* Coluna da Imagem */}
-          <div className="lg lg:top-24 h-fit">
-            <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 aspect-square">
-              <img
+          <div className="lg:sticky lg:top-24 h-fit">
+            <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 aspect-square relative">
+              <Image
                 src={product.image_url ?? "/placeholder.png"}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                fill // Preenche o container aspect-square
+                priority // Carrega a imagem com prioridade (Melhora LCP)
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
               />
             </div>
           </div>
@@ -77,7 +80,7 @@ export default async function ProductPage({ params }: PageProps) {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
           <AttributeDetails 
             options={product.options}
-            brandColor={store.primary_color || store.primary_color || '#000000'}
+            brandColor={store.primary_color || '#000000'} /* store.secondary_color */ //future use
           />
         </div>
       </main>
