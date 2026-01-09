@@ -1,29 +1,22 @@
 import { Database } from '@/lib/types/database.types'
 
-// Helpers nativos
+// --- Helpers do Supabase ---
 type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
-type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T]
+//type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T]
 
-// Tipos diretos do Banco (Fonte da Verdade)
+// --- Tipos do Banco de Dados ---
 export type ProductRaw = Tables<'products'>
 export type Attribute = Tables<'attributes'>
 export type Store = Tables<'stores'>
 
-export type AttributeUpdate =
-  Database['public']['Tables']['attributes']['Update']
+export type AttributeUpdate = Database['public']['Tables']['attributes']['Update']
+export type AttributeInsert = Database['public']['Tables']['attributes']['Insert']
+export type ProductInsert = Database['public']['Tables']['products']['Insert']
+export type QuoteRequestInsert = Database['public']['Tables']['quote_requests']['Insert']
 
-export type AttributeInsert = 
-  Database['public']['Tables']['attributes']['Insert']
+// --- Tipos de Domínio / App ---
 
-export type ProductInsert =
-  Database['public']['Tables']['products']['Insert']
-
-export type QuoteRequestInsert =
-  Database['public']['Tables']['quote_requests']['Insert']
-
-
-
-// O Supabase não gera tipos para joins automaticamente, então criamos extensões
+// 1. Opção de Produto (Vem do Join no Repository)
 export interface ProductOption {
   value_id: string
   value_name: string
@@ -33,22 +26,25 @@ export interface ProductOption {
   attribute_slug: string
 }
 
-// Exemplo: Produto completo com as opções (usado no front)
+// 2. Produto com Detalhes (Usado na Página de Produto)
 export interface ProductWithDetails extends ProductRaw {
   options: ProductOption[]
-  // Se tiver preço no futuro, adicione aqui
 }
 
-// Exemplo: Pedido com itens (JSON)
-export type QuoteStatus = Database['public']['Enums']['quote_status'] // Se for enum no banco
-// ou export type OrderStatus = 'pending' | 'contacted' ...
+// 3. Tipos do Carrinho e Pedido (CORREÇÃO PARA O EMAIL SERVICE)
+export type CartItemOption = {
+  name: string
+  value: string
+}
 
-export interface QuoteRequestItem {
+export type CartItem = {
+  productId?: string
   productName: string
   quantity: number
-  price?: number
-  options?: {
-    name: string
-    value: string
-  }[]
+  imageUrl?: string
+  // 'options' é opcional pois o produto pode não ter variações
+  options?: CartItemOption[] 
 }
+
+// Alias para manter compatibilidade se você já usou QuoteRequestItem em outros lugares
+export type QuoteRequestItem = CartItem

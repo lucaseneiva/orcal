@@ -2,46 +2,21 @@
 
 import { useState } from 'react'
 import { ChevronDown } from 'lucide-react'
-
-type ProductOption = {
-  value_id: string
-  value_name: string
-  description: string | null
-  attribute_id: string
-  attribute_name: string
-  attribute_slug: string
-}
+import { GroupedAttribute } from '@/lib/utils/product-logic'
 
 interface AttributeDetailsProps {
-  options: ProductOption[]
+  groupedOptions: GroupedAttribute[] // Receives pre-calculated groups
   brandColor?: string
 }
 
-export default function AttributeDetails({ options, brandColor = '#000000' }: AttributeDetailsProps) {
+export default function AttributeDetails({ groupedOptions, brandColor = '#000000' }: AttributeDetailsProps) {
   const [expandedAttribute, setExpandedAttribute] = useState<string | null>(null)
 
-  // Agrupar opções por atributo
-  const groupedAttributes = options.reduce((acc, opt) => {
-    if (!acc[opt.attribute_id]) {
-      acc[opt.attribute_id] = {
-        id: opt.attribute_id,
-        name: opt.attribute_name,
-        slug: opt.attribute_slug,
-        values: []
-      }
-    }
-    acc[opt.attribute_id].values.push(opt)
-    return acc
-  }, {} as Record<string, { id: string, name: string, slug: string, values: ProductOption[] }>)
-
-  const attributeGroups = Object.values(groupedAttributes)
-
-  // Filtrar grupos que possuem pelo menos um valor com descrição
-  const groupsWithDescriptions = attributeGroups.filter(group => 
+  // Filter groups that have at least one value with a description
+  const groupsWithDescriptions = groupedOptions.filter(group => 
     group.values.some(val => val.description)
   )
 
-  // SE NÃO HOUVER DESCRIÇÕES, RETORNA NULL (A caixa branca não existirá)
   if (groupsWithDescriptions.length === 0) {
     return null
   }
@@ -51,7 +26,6 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
   }
 
   return (
-    /* O container visual agora fica aqui dentro */
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8 mt-8">
       <h3 className="text-lg font-bold text-gray-900 mb-6">Detalhes das Opções</h3>
       
@@ -61,7 +35,6 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
           
           return (
             <div key={group.id} className="border border-gray-100 rounded-lg overflow-hidden">
-              {/* Header - Clicável */}
               <button
                 onClick={() => toggleAttribute(group.id)}
                 className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
@@ -75,7 +48,6 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
                 />
               </button>
 
-              {/* Conteúdo - Expansível */}
               {isExpanded && (
                 <div className="p-4 bg-white space-y-4">
                   {group.values.map((val) => {
