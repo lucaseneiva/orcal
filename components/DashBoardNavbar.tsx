@@ -1,7 +1,7 @@
-// components/dashboard-navbar.tsx
 'use client';
 import { signout } from '@/app/login/actions';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 type DashboardNavbarProps = {
   store: {
@@ -13,26 +13,49 @@ type DashboardNavbarProps = {
 };
 
 export function DashboardNavbar({ store, userEmail }: DashboardNavbarProps) {
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const controlNavbar = () => {
+      const currentScrollY = window.scrollY;
+
+      // Always show if at the top (or negative scroll on safari)
+      if (currentScrollY <= 10) {
+        setIsVisible(true);
+      } else {
+        // Show if scrolling UP, Hide if scrolling DOWN
+        if (currentScrollY < lastScrollY) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', controlNavbar);
+    return () => window.removeEventListener('scroll', controlNavbar);
+  }, [lastScrollY]);
+
   return (
     <nav
-      className="border-b sticky top-0 z-50 shadow-sm"
+      className={`border-b fixed w-full top-0 z-50 shadow-sm transition-transform duration-300 ease-in-out ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}
       style={{ backgroundColor: store.primary_color }}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
         {/* Logo + Title Section */}
         <div className="flex items-center gap-4">
           {store.logo_url ? (
-            /* 
-               Container relativo com largura/altura definida 
-               para o componente Image fill 
-            */
             <div className="relative h-10 w-32">
               <Image
                 src={store.logo_url}
                 alt={`Logo ${store.name}`}
                 fill
                 className="object-contain object-left"
-                priority // Carrega o logo imediatamente (melhora LCP)
+                priority
                 sizes="128px"
               />
             </div>
@@ -42,7 +65,7 @@ export function DashboardNavbar({ store, userEmail }: DashboardNavbarProps) {
             </span>
           )}
           
-          <div className="hidden sm:block h-6 w-px bg-white/20" /> {/* Divisor visual */}
+          <div className="hidden sm:block h-6 w-px bg-white/20" />
           
           <span className="text-sm font-semibold text-white/90">
             Painel Administrativo

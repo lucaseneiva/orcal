@@ -6,7 +6,6 @@ import { CartProvider } from "@/app/context/cart-context";
 import { StoreNotFound } from "@/components/StoreNotFound";
 import { getCurrentStore } from '@/lib/utils/get-current-store';
 import { Footer } from "@/components/Footer";
-import { notFound } from 'next/navigation';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,28 +30,15 @@ export default async function RootLayout({
 
   const store = await getCurrentStore();
 
-  // if (!store) {
-  //   return (
-  //     <html lang="pt-BR">
-  //       <body>
-  //         <StoreNotFound />
-  //       </body>
-  //     </html>
-  //   );
-  // }
-
   if (!store) {
     const headerStack = await headers();
     const host = headerStack.get('host');
     const xForwardedHost = headerStack.get('x-forwarded-host');
-    
-    // Verificando se a URL do banco existe (não mostre o valor, apenas se existe)
-    // Substitua 'DATABASE_URL' pelo nome exato da sua variável de ambiente
     const dbUrlStatus = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "✅ Carregada" : "❌ NÃO ENCONTRADA";
 
     return (
       <html lang="pt-BR">
-        <body className="bg-gray-100 p-10 font-sans">
+        <body className="bg-gray-100 p-10 font-sans min-h-screen">
           <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-xl border-l-4 border-red-500">
             <h1 className="text-2xl font-bold text-red-600 mb-4">Debug - Store Not Found</h1>
             
@@ -78,12 +64,11 @@ export default async function RootLayout({
 
               <div className="mt-6 pt-4 border-t">
                  <p className="text-sm text-gray-600">
-                   <strong>Ação:</strong> Copie EXATAMENTE o valor do campo <u>Host Recebido</u> e coloque na coluna <code>domain</code> do seu banco de dados (sem https://, sem barra no final).
+                   <strong>Ação:</strong> Copie EXATAMENTE o valor do campo <u>Host Recebido</u> e coloque na coluna <code>domain</code> do seu banco de dados.
                  </p>
               </div>
             </div>
           </div>
-          {/* Componente original abaixo para garantir que nada quebrou visualmente */}
           <div className="opacity-50 mt-10 pointer-events-none">
              <StoreNotFound />
           </div>
@@ -92,14 +77,18 @@ export default async function RootLayout({
     );
   }
 
-  // Verificando se a URL do banco existe (não mostre o valor, apenas se existe)
-  // Substitua 'DATABASE_URL' pelo nome exato da sua variável de ambiente
-
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-
-        <CartProvider>{<div className="mx-auto bg-gray-50">{children}</div>}</CartProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+        <CartProvider>
+          {/* 
+            1. flex-1: Makes this div grow to fill available space, pushing footer down.
+            2. pt-16: Adds padding top equal to header height (4rem/64px) so content isn't hidden.
+          */}
+          <div className="mx-auto bg-gray-50 w-full flex-1 pt-16">
+            {children}
+          </div>
+        </CartProvider>
 
         <Footer storeName={store.name} />
       </body>

@@ -3,7 +3,8 @@
 import { useCart } from '@/app/context/cart-context';
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image"; // Importado para otimização
+import Image from "next/image";
+import { useEffect, useState } from 'react';
 
 type StoreNavbarProps = {
   store: {
@@ -17,9 +18,34 @@ export function StoreNavbar({ store }: StoreNavbarProps) {
   const { items } = useCart();
   const cartCount = items.length;
   
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const controlNavbar = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY <= 10) {
+        setIsVisible(true);
+      } else {
+        if (currentScrollY < lastScrollY) {
+          setIsVisible(true);
+        } else {
+          setIsVisible(false);
+        }
+      }
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener('scroll', controlNavbar);
+    return () => window.removeEventListener('scroll', controlNavbar);
+  }, [lastScrollY]);
+  
   return (
     <nav
-      className="border-b sticky w-full top-0 z-50 shadow-sm" // Alterado de w-dvw para w-full
+      className={`border-b fixed w-full top-0 z-50 shadow-sm transition-transform duration-300 ease-in-out ${
+        isVisible ? 'translate-y-0' : '-translate-y-full'
+      }`}
       style={{ backgroundColor: store.primary_color }}
     >
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
@@ -27,14 +53,13 @@ export function StoreNavbar({ store }: StoreNavbarProps) {
         <div className="flex items-center">
           <Link href="/" className="flex items-center">
             {store.logo_url ? (
-              /* Container com tamanho definido para o Next.js Image */
               <div className="relative h-10 w-32 sm:w-40">
                 <Image
                   src={store.logo_url}
                   alt={`Logo ${store.name}`}
                   fill
                   className="object-contain object-left"
-                  priority // Prioridade máxima: Melhora o LCP (Header)
+                  priority
                   sizes="(max-width: 768px) 128px, 160px"
                 />
               </div>
