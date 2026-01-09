@@ -23,8 +23,8 @@ Nós usamos um fluxo híbrido. Não rodamos o banco localmente, usamos o projeto
 
 3. Gerar os tipos do TypeScript (para o Next.js não reclamar):
    ```bash
-   npx supabase gen types typescript --project-id "ID_DO_PROJETO_DEV" --schema public > lib/types/supabase.ts
-   npx supabase gen types typescript --local --schema public > lib/types/supabase.ts #(SOMENTE LOCAL)
+   npx supabase gen types typescript --project-id "ID_DO_PROJETO_DEV" --schema public > lib/types/database.types.ts
+   npx supabase gen types typescript --local --schema public > lib/types/database.types.ts #(SOMENTE LOCAL)
    ```
 
 4. Enviar as mudanças para **PROD**:
