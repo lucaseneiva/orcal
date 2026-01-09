@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { manageAttributeValue } from '../actions'
+import { createValue, deleteAttribute, updateValue,  } from '../actions'
 
 export function useAttributeValues() {
   const formRef = useRef<HTMLFormElement>(null)
@@ -8,27 +8,15 @@ export function useAttributeValues() {
   const handleCreate = async (formData: FormData) => {
     formData.append('_action', 'create')
     
-    // 1. Call Server Action
-    const result = await manageAttributeValue(formData)
+    await createValue(formData)
     
-    // 2. Handle Result
-    if (!result.success) {
-      alert(result.error) // Simple error handling
-    } else {
-      formRef.current?.reset() // Success
-    }
   }
 
   const handleUpdate = async (formData: FormData) => {
     formData.append('_action', 'update')
     
-    const result = await manageAttributeValue(formData)
+    const result = await updateValue(formData)
 
-    if (!result.success) {
-      alert(result.error)
-    } else {
-      setEditingId(null)
-    }
   }
 
   const handleDelete = async (id: string, attributeId: string) => {
@@ -37,11 +25,8 @@ export function useAttributeValues() {
     formData.append('id', id)
     formData.append('attribute_id', attributeId)
     
-    const result = await manageAttributeValue(formData)
+    const result = await deleteAttribute(formData)
     
-    if (!result.success) {
-      alert(result.error)
-    }
   }
 
   return {
