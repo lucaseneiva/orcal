@@ -1,12 +1,15 @@
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
+import Image from 'next/image'
+import { Image as ImageIcon, ChevronLeft } from 'lucide-react'
+import { createClient } from '@/lib/utils/supabase/server'
 import { ProductRepo } from '@/lib/repositories/product.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
+import { groupProductOptions } from '@/lib/utils/product-logic'
+
+// Components
 import ProductForm from './components/product-form'
-import Link from 'next/link'
 import AttributeDetails from './components/attribute-options'
-import { createClient } from '@/lib/utils/supabase/server'
-import Image from 'next/image'
-import { Image as ImageIcon, ChevronLeft } from 'lucide-react' 
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -14,17 +17,19 @@ type PageProps = {
 
 export default async function ProductPage({ params }: PageProps) {
   const store = await getCurrentStore()
-  if (store == null) notFound()
+  if (!store) notFound()
 
   const { slug } = await params
   const productRepo = new ProductRepo(await createClient())
   const product = await productRepo.getStoreProduct(store.id, slug)
   
   if (!product) return notFound()
+
+  // OPTIMIZATION: Calculate groupings on Server once.
+  const groupedOptions = groupProductOptions(product.options)
   
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header com botão voltar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
@@ -40,7 +45,7 @@ export default async function ProductPage({ params }: PageProps) {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           
-          {/* Coluna da Imagem */}
+          {/* Image Column */}
           <div className="lg:sticky lg:top-24 h-fit">
             <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 aspect-square relative">
               {product.image_url ? (
@@ -61,7 +66,7 @@ export default async function ProductPage({ params }: PageProps) {
             </div>
           </div>
           
-          {/* Coluna do Formulário */}
+          {/* Form Column */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8 h-fit">
             <div className="mb-6">
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -75,16 +80,19 @@ export default async function ProductPage({ params }: PageProps) {
                 </div>
               )}
             </div>
-            <ProductForm product={product} store={store} />
+
+            {/* Pass pre-calculated groups to Form */}
+            <ProductForm 
+              product={product} 
+              groupedOptions={groupedOptions} 
+              store={store} 
+            />
           </div>
         </div>
 
-        {/* 
-            Removido o wrapper <div> daqui. 
-            O próprio componente AttributeDetails gerencia sua caixa branca agora.
-        */}
+        {/* Pass pre-calculated groups to Details */}
         <AttributeDetails 
-          options={product.options}
+          groupedOptions={groupedOptions}
           brandColor={store.primary_color || '#000000'}
         />
       </main>

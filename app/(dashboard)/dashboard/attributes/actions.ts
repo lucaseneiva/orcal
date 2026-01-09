@@ -15,18 +15,17 @@ export async function upsertAttribute(formData: FormData) {
 
   const id = formData.get('id') as string
   const name = formData.get('name') as string
-
   const slug = name.toLowerCase().trim().replace(/\s+/g, '-')
   const payload = { name, slug, store_id: store.id }
-
-  const attributeRepo = new AttributeRepo(supabase)
+  const repo = new AttributeRepo(supabase)
 
   if (id) {
-    const { error } = await attributeRepo.update(id, payload)
-    if (error) console.error('Erro ao atualizar o atributo:', error)
+    // Update
+    const { error } = await repo.update(id, payload)
+    if (error) return { success: false, error: 'Erro ao atualizar' }
   } else {
 
-    const { error, data } = await attributeRepo.create(payload)
+    const { error, data } = await repo.create(payload)
     if (error) console.error('Erro ao criar atributo:', error)
 
     if (data) redirect(`/dashboard/attributes/${data.id}/edit`)
@@ -38,18 +37,18 @@ export async function upsertAttribute(formData: FormData) {
 
 export async function deleteAttribute(formData: FormData) {
   const supabase = await createClient()
-  const attributeRepo = new AttributeRepo(supabase)
+  const repo = new AttributeRepo(supabase)
   const id = formData.get('id') as string
 
-  attributeRepo.delete(id)
-
+  await repo.delete(id)
   revalidatePath('/dashboard/attributes')
   redirect('/dashboard/attributes')
 }
 
 export async function createValue(formData: FormData) {
-  
+
   const attribute_id = formData.get('attribute_id') as string
+  const id = formData.get('id') as string
   const name = formData.get('name') as string
   const description = formData.get('description') as string
 
