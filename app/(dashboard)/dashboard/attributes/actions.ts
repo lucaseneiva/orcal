@@ -5,7 +5,8 @@ import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { AttributeRepo } from '@/lib/repositories/attribute.repo'
-
+import { AttributeValueRepo } from '@/lib/repositories/attribute-value.repo'
+import { AttributeValueInsert } from '@/lib/types/types'
 
 export async function upsertAttribute(formData: FormData) {
   const supabase = await createClient()
@@ -28,7 +29,6 @@ export async function upsertAttribute(formData: FormData) {
     const { error, data } = await attributeRepo.create(payload)
     if (error) console.error('Erro ao criar atributo:', error)
 
-    // Se criou novo, redireciona para edição
     if (data) redirect(`/dashboard/attributes/${data.id}/edit`)
   }
 
@@ -48,31 +48,28 @@ export async function deleteAttribute(formData: FormData) {
 }
 
 export async function createValue(formData: FormData) {
-  const supabase = await createClient()
-
+  
   const attribute_id = formData.get('attribute_id') as string
   const name = formData.get('name') as string
   const description = formData.get('description') as string
-
-  console.log("Tentando criar valor:", { attribute_id, name, description }) // DEBUG LOG
 
   if (!name || !attribute_id) {
     console.error("Dados incompletos para criar valor")
     return
   }
 
-  const { error } = await supabase.from('attribute_values').insert({
-    attribute_id,
-    name,
-    description: description || null // Garantindo que usa a coluna 'meta'
-  })
+  const supabase = await createClient()
 
-  if (error) {
-    console.error("Erro Supabase Create:", error.message)
-    throw new Error(error.message) // Isso vai aparecer no console do servidor
+  const attributeValueRepo = new AttributeValueRepo(supabase) 
+
+  const payload: AttributeValueInsert = {
+    name: name,
+    attribute_id: attribute_id,
+    description: description
   }
 
-  // Importante: Revalidar a página exata onde o formulário está
+  attributeValueRepo.create(payload)
+
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
 

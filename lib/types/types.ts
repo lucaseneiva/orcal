@@ -21,7 +21,8 @@ export type ProductInsert =
 export type QuoteRequestInsert =
   Database['public']['Tables']['quote_requests']['Insert']
 
-
+export type AttributeValueInsert =
+  Database['public']['Tables']['attribute_values']['Insert']
 
 // O Supabase não gera tipos para joins automaticamente, então criamos extensões
 export interface ProductOption {
