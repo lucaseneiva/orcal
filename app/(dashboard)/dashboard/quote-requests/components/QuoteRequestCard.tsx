@@ -18,7 +18,8 @@ interface QuoteRequestItem {
 export interface QuoteRequest {
   id: string;
   customer_name: string;
-  customer_whatsapp: string;
+  customer_whatsapp: string | null;
+  email: string | null;
   viewed: boolean | null; // Allow null from DB
   created_at: string | null; // Allow null from DB
   total_items: number;
@@ -190,7 +191,10 @@ export function QuoteRequestCard({ order }: QuoteRequestCardProps) {
                   <strong>Nome:</strong> {order.customer_name}
                 </p>
                 <p className="text-sm">
-                  <strong>Tel:</strong> {order.customer_whatsapp}
+                  <strong>Email:</strong> {order.email || 'Email não fornecido'}
+                </p>
+                <p className="text-sm">
+                  <strong>Tel:</strong> {order.customer_whatsapp || 'Telefone não fornecido'}
                 </p>
               </div>
             </div>
