@@ -1,6 +1,8 @@
+// components/dashboard-navbar.tsx
 'use client';
 import { signout } from '@/app/login/actions';
 import Image from 'next/image';
+import Link from 'next/link'; // Import Link
 import { useEffect, useState } from 'react';
 
 type DashboardNavbarProps = {
@@ -20,7 +22,7 @@ export function DashboardNavbar({ store, userEmail }: DashboardNavbarProps) {
     const controlNavbar = () => {
       const currentScrollY = window.scrollY;
 
-      // Always show if at the top (or negative scroll on safari)
+      // Always show if at the top
       if (currentScrollY <= 10) {
         setIsVisible(true);
       } else {
@@ -48,24 +50,30 @@ export function DashboardNavbar({ store, userEmail }: DashboardNavbarProps) {
       <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
         {/* Logo + Title Section */}
         <div className="flex items-center gap-4">
-          {store.logo_url ? (
-            <div className="relative h-10 w-32">
-              <Image
-                src={store.logo_url}
-                alt={`Logo ${store.name}`}
-                fill
-                className="object-contain object-left"
-                priority
-                sizes="128px"
-              />
-            </div>
-          ) : (
-            <span className="text-xl font-bold tracking-tight text-white">
-              {store.name}
-            </span>
-          )}
+          {/* Wrapped in Link to /dashboard */}
+          <Link 
+            href="/dashboard" 
+            className="flex items-center gap-4 hover:opacity-80 transition-opacity"
+          >
+            {store.logo_url ? (
+              <div className="relative h-10 w-32">
+                <Image
+                  src={store.logo_url}
+                  alt={`Logo ${store.name}`}
+                  fill
+                  className="object-contain object-left"
+                  priority
+                  sizes="128px"
+                />
+              </div>
+            ) : (
+              <span className="text-xl font-bold tracking-tight text-white">
+                {store.name}
+              </span>
+            )}
+          </Link>
           
-          <div className="hidden sm:block h-6 w-px bg-white/20" />
+          <div className="hidden sm:block h-6 w-px bg-white/20" /> 
           
           <span className="text-sm font-semibold text-white/90">
             Painel Administrativo
