@@ -2,6 +2,7 @@ interface FooterProps {
   storeName: string;
 }
 
+
 export function Footer({ storeName }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
