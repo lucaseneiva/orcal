@@ -145,6 +145,17 @@ export default function CheckoutPage() {
               </div>
 
               <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 ml-1">Seu melhor Email</label>
+                <input 
+                  name="email" 
+                  required 
+                  type="tel" 
+                  className="w-full bg-gray-50 border border-transparent rounded-xl p-4 outline-none focus:bg-white focus:border-black transition-all text-gray-900 placeholder:text-gray-400" 
+                  placeholder="seuemail@dominio.com" 
+                />
+              </div>
+
+              <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-2 ml-1">WhatsApp para Contato</label>
                 <input 
                   name="whatsapp" 

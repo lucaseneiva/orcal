@@ -34,6 +34,7 @@ export async function submitOrder(formData: FormData) {
   if (!store) return { success: false, error: 'Loja indisponível' }
 
   const name = formData.get('name') as string
+  const email = formData.get('email') as string
   const whatsapp = formData.get('whatsapp') as string
   const cartJson = formData.get('cart_items') as string
   
@@ -45,6 +46,7 @@ export async function submitOrder(formData: FormData) {
   const orderPayload: QuoteRequestInsert = {
     store_id: store.id,
     customer_name: name,
+    email: email,
     customer_whatsapp: whatsapp,
     // Cast de unknown para Json satisfaz o TS e o linter
     items: (items as unknown) as Json, 
