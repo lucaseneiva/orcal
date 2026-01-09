@@ -6,7 +6,6 @@ import Link from 'next/link'
 import AttributeDetails from './components/attribute-options'
 import { createClient } from '@/lib/utils/supabase/server'
 import Image from 'next/image'
-// 1. Import the icon (aliased as ImageIcon to avoid conflict with next/image)
 import { Image as ImageIcon, ChevronLeft } from 'lucide-react' 
 
 type PageProps = {
@@ -25,13 +24,13 @@ export default async function ProductPage({ params }: PageProps) {
   
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Header com botão voltar */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <Link 
             href="/" 
             className="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors font-medium"
           >
-            {/* 2. Bonus: Replaced your manual SVG with a Lucide Icon */}
             <ChevronLeft className="w-5 h-5 mr-1" />
             Voltar para loja
           </Link>
@@ -41,10 +40,9 @@ export default async function ProductPage({ params }: PageProps) {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12">
           
+          {/* Coluna da Imagem */}
           <div className="lg:sticky lg:top-24 h-fit">
             <div className="bg-white rounded-xl overflow-hidden shadow-sm border border-gray-200 aspect-square relative">
-              
-              {/* 3. Conditional Rendering Logic */}
               {product.image_url ? (
                 <Image
                   src={product.image_url}
@@ -55,15 +53,15 @@ export default async function ProductPage({ params }: PageProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-gray-400">
+                <div className="w-full h-full bg-gray-50 flex flex-col items-center justify-center text-gray-300">
                   <ImageIcon size={48} strokeWidth={1.5} />
                   <span className="mt-2 text-sm font-medium">Sem imagem</span>
                 </div>
               )}
-
             </div>
           </div>
           
+          {/* Coluna do Formulário */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8 h-fit">
             <div className="mb-6">
               <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -81,12 +79,14 @@ export default async function ProductPage({ params }: PageProps) {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8">
-          <AttributeDetails 
-            options={product.options}
-            brandColor={store.primary_color || '#000000'}
-          />
-        </div>
+        {/* 
+            Removido o wrapper <div> daqui. 
+            O próprio componente AttributeDetails gerencia sua caixa branca agora.
+        */}
+        <AttributeDetails 
+          options={product.options}
+          brandColor={store.primary_color || '#000000'}
+        />
       </main>
     </div>
   )

@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { ChevronDown } from 'lucide-react'
 
 type ProductOption = {
   value_id: string
@@ -19,7 +20,7 @@ interface AttributeDetailsProps {
 export default function AttributeDetails({ options, brandColor = '#000000' }: AttributeDetailsProps) {
   const [expandedAttribute, setExpandedAttribute] = useState<string | null>(null)
 
-  // Group options by attribute
+  // Agrupar opções por atributo
   const groupedAttributes = options.reduce((acc, opt) => {
     if (!acc[opt.attribute_id]) {
       acc[opt.attribute_id] = {
@@ -35,11 +36,12 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
 
   const attributeGroups = Object.values(groupedAttributes)
 
-  // Filter groups that have at least one value with description
+  // Filtrar grupos que possuem pelo menos um valor com descrição
   const groupsWithDescriptions = attributeGroups.filter(group => 
     group.values.some(val => val.description)
   )
 
+  // SE NÃO HOUVER DESCRIÇÕES, RETORNA NULL (A caixa branca não existirá)
   if (groupsWithDescriptions.length === 0) {
     return null
   }
@@ -49,19 +51,17 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
   }
 
   return (
-    <div className="mt-8 border-t border-gray-200 pt-8">
-      <h3 className="text-lg font-bold text-gray-900 mb-4">Detalhes das Opções</h3>
+    /* O container visual agora fica aqui dentro */
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 lg:p-8 mt-8">
+      <h3 className="text-lg font-bold text-gray-900 mb-6">Detalhes das Opções</h3>
       
       <div className="space-y-3">
         {groupsWithDescriptions.map((group) => {
           const isExpanded = expandedAttribute === group.id
-          const hasAnyDescription = group.values.some(val => val.description)
           
-          if (!hasAnyDescription) return null
-
           return (
-            <div key={group.id} className="border border-gray-200 rounded-lg overflow-hidden">
-              {/* Header - Clickable */}
+            <div key={group.id} className="border border-gray-100 rounded-lg overflow-hidden">
+              {/* Header - Clicável */}
               <button
                 onClick={() => toggleAttribute(group.id)}
                 className="w-full flex items-center justify-between p-4 bg-gray-50 hover:bg-gray-100 transition-colors text-left"
@@ -69,17 +69,13 @@ export default function AttributeDetails({ options, brandColor = '#000000' }: At
                 <span className="font-semibold text-gray-900 capitalize">
                   {group.name}
                 </span>
-                <svg
-                  className={`w-5 h-5 text-gray-600 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+                <ChevronDown 
+                  size={20}
+                  className={`text-gray-500 transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`}
+                />
               </button>
 
-              {/* Content - Expandable */}
+              {/* Conteúdo - Expansível */}
               {isExpanded && (
                 <div className="p-4 bg-white space-y-4">
                   {group.values.map((val) => {
