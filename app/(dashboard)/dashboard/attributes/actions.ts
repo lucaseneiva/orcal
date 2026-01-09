@@ -20,7 +20,6 @@ export async function upsertAttribute(formData: FormData) {
   const repo = new AttributeRepo(supabase)
 
   if (id) {
-    // Update
     const { error } = await repo.update(id, payload)
     if (error) return { success: false, error: 'Erro ao atualizar' }
   } else {
@@ -59,7 +58,7 @@ export async function createValue(formData: FormData) {
 
   const supabase = await createClient()
 
-  const attributeValueRepo = new AttributeValueRepo(supabase) 
+  const attributeValueRepo = new AttributeValueRepo(supabase)
 
   const payload: AttributeValueInsert = {
     name: name,
@@ -78,7 +77,9 @@ export async function deleteValue(formData: FormData) {
   const id = formData.get('id') as string
   const attribute_id = formData.get('attribute_id') as string
 
-  await supabase.from('attribute_values').delete().eq('id', id)
+  const repo = new AttributeValueRepo(supabase)
+
+  await repo.delete(id)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
@@ -89,24 +90,16 @@ export async function updateValue(formData: FormData) {
   const id = formData.get('id') as string
   const name = formData.get('name') as string
   const attribute_id = formData.get('attribute_id') as string
-
-  // ALINHAMENTO: Pegando o valor do campo 'description'
   const description = formData.get('description') as string
 
-  console.log("UPDATE - Recebido:", { id, name, description }) // Debug no terminal
-
-  const { error } = await supabase
-    .from('attribute_values')
-    .update({
-      name,
-      description: description || null, // Salvando na coluna correta
-    })
-    .eq('id', id)
-
-  if (error) {
-    console.error("Erro ao atualizar:", error)
-    throw error
+  const payload = {
+    name,
+    description: description || null,
   }
+
+  const repo = new AttributeValueRepo(supabase)
+  
+  const { error } = await repo.update(id, payload)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }

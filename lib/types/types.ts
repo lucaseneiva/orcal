@@ -1,10 +1,8 @@
 import { Database } from '@/lib/types/database.types'
 
-// --- Helpers do Supabase ---
 type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
 //type Enums<T extends keyof Database['public']['Enums']> = Database['public']['Enums'][T]
 
-// --- Tipos do Banco de Dados ---
 export type ProductRaw = Tables<'products'>
 export type Attribute = Tables<'attributes'>
 export type Store = Tables<'stores'>
@@ -17,8 +15,10 @@ export type QuoteRequestInsert = Database['public']['Tables']['quote_requests'][
 export type AttributeValueInsert =
   Database['public']['Tables']['attribute_values']['Insert']
 
-// O Supabase não gera tipos para joins automaticamente, então criamos extensões
-// 1. Opção de Produto (Vem do Join no Repository)
+export type AttributeValueUpdate =
+  Database['public']['Tables']['attribute_values']['Update']
+
+
 export interface ProductOption {
   value_id: string
   value_name: string
