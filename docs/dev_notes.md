@@ -47,3 +47,5 @@ O comando `db push` leva apenas as **Tabelas**. Ele **NÃO** leva os dados.
 - `npx supabase start` - Iniciar o contaienr do projeto
 - `git push --mirror backup` - Backup
 ---
+
+teste remote gitlab
