@@ -15,7 +15,7 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
   const cartCount = 0; 
 
   return (
-    <main className="min-h-screen bg-slate-50 font-sans pb-20">
+    <main className="p-0">
       <header 
         className="py-12 px-6 border-b"
         style={{ 

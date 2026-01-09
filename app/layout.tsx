@@ -81,11 +81,8 @@ export default async function RootLayout({
     <html lang="pt-BR">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
         <CartProvider>
-          {/* 
-            1. flex-1: Makes this div grow to fill available space, pushing footer down.
-            2. pt-16: Adds padding top equal to header height (4rem/64px) so content isn't hidden.
-          */}
-          <div className="mx-auto bg-gray-50 w-full flex-1 pt-16">
+          {}
+          <div className="mx-auto bg-gray-100 w-full flex-1">
             {children}
           </div>
         </CartProvider>
