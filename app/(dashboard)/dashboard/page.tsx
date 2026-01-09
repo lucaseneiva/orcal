@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 import { createClient } from '@/lib/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
@@ -13,7 +12,7 @@ export default async function AdminDashboard() {
   const store = await getCurrentStore()
 
   return (
-    <div className="p-10 bg-white min-h-screen">
+    <div className="p-10">
       <div className="max-w-2xl mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-6">
           {/* Card de Produtos */}

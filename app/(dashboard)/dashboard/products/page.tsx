@@ -17,7 +17,7 @@ export default async function ProductsPage() {
   const products = await productRepo.getFromStore(store.id)
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="p-6">
       <Link href="/dashboard/" className="text-sm text-gray-500 mb-4 block">← Voltar</Link>
 
       <div className="max-w-6xl mx-auto">
