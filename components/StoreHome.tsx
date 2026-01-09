@@ -1,8 +1,7 @@
-import { Search, ShoppingBag } from 'lucide-react'
+import { Search, ShoppingBag, PackageSearch } from 'lucide-react' // 1. Adicionado PackageSearch
 import { ProductCard } from '@/components/ProductCard'
 import { Database } from '@/lib/types/database.types'
 
-// 1. Tipagem Estrita vinda do Banco de Dados
 type Store = Database['public']['Tables']['stores']['Row']
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -13,7 +12,6 @@ interface StoreHomeProps {
 }
 
 export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
-  // 2. cartCount agora será usado no botão flutuante para otimizar a UX
   const cartCount = 0; 
 
   return (
@@ -21,7 +19,7 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
       <header 
         className="py-12 px-6 border-b"
         style={{ 
-          backgroundColor: `${primaryColor}08`, // 5% de opacidade
+          backgroundColor: `${primaryColor}08`,
         }}
       >
         <div className="max-w-4xl mx-auto text-center space-y-6">
@@ -32,7 +30,6 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
             Selecione os itens e monte seu pedido de orçamento online.
           </p>
           
-          {/* Barra de Busca Otimizada */}
           <div className="relative max-w-xl mx-auto shadow-lg rounded-xl overflow-hidden bg-white border border-slate-100">
             <input 
               type="text" 
@@ -52,7 +49,6 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
         </div>
       </header>
 
-      {/* Grid de Produtos */}
       <section className="max-w-6xl mx-auto py-12 px-6">
         <div className="flex justify-between items-end mb-8">
           <div>
@@ -62,8 +58,11 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
         </div>
         
         {products.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-dashed">
-            <p className="text-slate-400">Nenhum produto disponível no momento.</p>
+          /* 2. Estado Vazio com Ícone Lucide */
+          <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center">
+            <PackageSearch size={48} className="text-slate-300 mb-4" strokeWidth={1.5} />
+            <p className="text-slate-400 font-medium">Nenhum produto disponível no momento.</p>
+            <p className="text-slate-300 text-sm">Tente voltar mais tarde ou entrar em contato.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -73,7 +72,8 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
                 name={product.name}
                 description={product.description || ''}
                 id={product.id}
-                imageUrl={product.image_url || '/placeholder.png'}
+                /* 3. Passamos a URL original. Se for null, o ProductCard exibirá o ícone */
+                imageUrl={product.image_url} 
                 color={primaryColor}
                 slug={product.slug}
               />
@@ -82,7 +82,6 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
         )}
       </section>
 
-      {/* 3. Botão Flutuante de Carrinho (Otimização de UX e fix de cartCount) */}
       {cartCount > 0 && (
         <div className="fixed bottom-6 right-6 z-50">
           <button 
