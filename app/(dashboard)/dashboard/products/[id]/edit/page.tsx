@@ -1,4 +1,4 @@
-import { ProductRepo } from '@/lib/data/product.repo'
+import { ProductRepo } from '@/lib/data/products'
 import { StoreRepo } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'

@@ -5,7 +5,7 @@ import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { AttributeRepo } from '@/lib/data/attributes'
-import { AttributeValueRepo } from '@/lib/data/attribute-values'
+import { createAttributeValue, deleteAttributeValue, updateAttributeValue } from '@/lib/data/mutations/attribute-values'
 import { AttributeValueInsert } from '@/lib/types/types'
 
 export async function upsertAttribute(formData: FormData) {
@@ -56,9 +56,6 @@ export async function createValue(formData: FormData) {
     return
   }
 
-  const supabase = await createClient()
-
-  const attributeValueRepo = new AttributeValueRepo(supabase)
 
   const payload: AttributeValueInsert = {
     name: name,
@@ -66,7 +63,7 @@ export async function createValue(formData: FormData) {
     description: description
   }
 
-  attributeValueRepo.create(payload)
+  await createAttributeValue(payload)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
@@ -77,16 +74,12 @@ export async function deleteValue(formData: FormData) {
   const id = formData.get('id') as string
   const attribute_id = formData.get('attribute_id') as string
 
-  const repo = new AttributeValueRepo(supabase)
-
-  await repo.delete(id)
+  await deleteAttributeValue(id)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
 
 export async function updateValue(formData: FormData) {
-  const supabase = await createClient()
-
   const id = formData.get('id') as string
   const name = formData.get('name') as string
   const attribute_id = formData.get('attribute_id') as string
@@ -97,9 +90,8 @@ export async function updateValue(formData: FormData) {
     description: description || null,
   }
 
-  const repo = new AttributeValueRepo(supabase)
   
-  const { error } = await repo.update(id, payload)
+  await updateAttributeValue(id, payload)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
