@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { ProductRepo } from '@/lib/data/products'
 import { slugify } from '@/lib/utils/slugfy'
-import { ProductAttributesRepo } from '@/lib/data/product-attributes'
+import { replaceAll } from '@/lib/data/mutations/product-attributes'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {
@@ -39,22 +39,10 @@ export async function upsertProductAction(formData: FormData) {
 
     }
 
-    
     const productRepo = new ProductRepo(await createClient())
     const product = await productRepo.upsert(id, store.id, productPayload)
     
-    // 5. Sincroniza atributos
-    const attributesRepo = new ProductAttributesRepo(await createClient())
-    
-    // Escolha uma das estratégias:
-    
-    // Opção A: Simples (delete + insert) - usa a atual
-    await attributesRepo.replaceAll(product.id, selectedAttributeIds)
-    
-    // Opção B: Eficiente (diff) - recomendada se tiver timestamps
-    // await attributesRepo.syncAttributes(product.id, selectedAttributeIds)
-
-    // 6. Revalida e redireciona
+    replaceAll(product.id, selectedAttributeIds)
     
     
   } catch (error) {
