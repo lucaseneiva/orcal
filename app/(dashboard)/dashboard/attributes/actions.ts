@@ -4,8 +4,8 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { AttributeRepo } from '@/lib/repositories/attribute.repo'
-import { AttributeValueRepo } from '@/lib/repositories/attribute-value.repo'
+import { AttributeRepo } from '@/lib/data/attributes'
+import { AttributeValueRepo } from '@/lib/data/attribute-values'
 import { AttributeValueInsert } from '@/lib/types/types'
 
 export async function upsertAttribute(formData: FormData) {

@@ -4,9 +4,9 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ProductRepo } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/data/product.repo'
 import { slugify } from '@/lib/utils/slugfy'
-import { ProductAttributesRepo } from '@/lib/repositories/product-attributes.repo'
+import { ProductAttributesRepo } from '@/lib/data/product-attributes'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {

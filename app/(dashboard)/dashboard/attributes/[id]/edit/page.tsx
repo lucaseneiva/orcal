@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/utils/supabase/server'
-import { AttributeRepo } from '@/lib/repositories/attribute.repo'
+import { AttributeRepo } from '@/lib/data/attributes'
 import { AttributeWithValues } from '@/lib/types/attribute.types'
 
 // Components

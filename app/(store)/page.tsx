@@ -1,7 +1,7 @@
 import { StoreNotFound } from '@/components/StoreNotFound'
 import { StoreHome } from '@/components/StoreHome'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { ProductRepo } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/data/product.repo'
 import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function Home() {

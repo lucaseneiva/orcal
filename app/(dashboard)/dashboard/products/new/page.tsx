@@ -1,5 +1,5 @@
 import { ProductForm } from '../form'
-import { StoreRepo } from '@/lib/repositories/store.repo'
+import { StoreRepo } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { createClient } from '@/lib/utils/supabase/server'
 

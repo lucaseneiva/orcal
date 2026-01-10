@@ -1,6 +1,6 @@
 import { cache } from 'react';
 import { headers } from 'next/headers';
-import { StoreRepo } from '@/lib/repositories/store.repo';
+import { StoreRepo } from '@/lib/data/stores';
 import { createClient } from './supabase/server';
 
 export const getCurrentStore = cache(async () => {

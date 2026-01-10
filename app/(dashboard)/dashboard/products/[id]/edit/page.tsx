@@ -1,5 +1,5 @@
-import { ProductRepo } from '@/lib/repositories/product.repo'
-import { StoreRepo } from '@/lib/repositories/store.repo'
+import { ProductRepo } from '@/lib/data/product.repo'
+import { StoreRepo } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'

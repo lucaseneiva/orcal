@@ -2,7 +2,7 @@ import { createClient } from "@/lib/utils/supabase/server";
 import { getCurrentStore } from "@/lib/utils/get-current-store";
 import { redirect } from "next/navigation";
 import { QuoteRequestCard } from "./components/QuoteRequestCard";
-import { QuoteRequestRepo } from "@/lib/repositories/quote-request.repo";
+import { QuoteRequestRepo } from "@/lib/data/quote-requests";
 // Import the interface to ensure we are aligning correctly
 import type { QuoteRequest } from "./components/QuoteRequestCard";
 

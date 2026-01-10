@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Image as ImageIcon, ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/utils/supabase/server'
-import { ProductRepo } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/data/product.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { groupProductOptions } from '@/lib/utils/product-logic'
 

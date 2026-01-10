@@ -1,7 +1,7 @@
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { ProductRepo } from '@/lib/repositories/product.repo'
+import { ProductRepo } from '@/lib/data/product.repo'
 import { createClient } from '@/lib/utils/supabase/server'
 // Import the database type definitions
 import { Database } from '@/lib/types/database.types'

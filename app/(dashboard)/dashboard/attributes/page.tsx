@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { StoreRepo } from '@/lib/repositories/store.repo'
+import { StoreRepo } from '@/lib/data/stores'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/utils/supabase/server'
 import { AttributeWithValues } from '@/lib/types/attribute.types'
