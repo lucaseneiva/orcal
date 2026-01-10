@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { upsertAttribute, deleteAttribute } from '../actions'
+import { upsertAttribute, deleteAttributeAction } from '../actions'
 import { AttributeWithValues } from '@/lib/types/attribute.types'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
@@ -14,13 +14,6 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithVa
     setLoading(true)
     const result = await upsertAttribute(formData)
     
-    // If we get a result back, it means there was an error 
-    // (Success redirects automatically in the server action)
-    if (result && !result.success) {
-      alert(result.error)
-      setLoading(false)
-    }
-    // If success, the page redirects, so we don't need to unset loading
   }
 
   // Wrapper to handle the Delete action
@@ -28,7 +21,7 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithVa
     if (!confirm('Excluir atributo e todos os seus valores?')) return
     
     setLoading(true)
-    await deleteAttribute(formData)
+    await deleteAttributeAction(formData)
     // Redirects happen on server
   }
 

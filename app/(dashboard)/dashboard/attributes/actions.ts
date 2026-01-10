@@ -4,7 +4,7 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { AttributeRepo } from '@/lib/data/attributes'
+import { createAttribute, updateAttribute, deleteAttribute } from '@/lib/data/mutations/attributes'
 import { createAttributeValue, deleteAttributeValue, updateAttributeValue } from '@/lib/data/mutations/attribute-values'
 import { AttributeValueInsert } from '@/lib/types/types'
 
@@ -17,29 +17,23 @@ export async function upsertAttribute(formData: FormData) {
   const name = formData.get('name') as string
   const slug = name.toLowerCase().trim().replace(/\s+/g, '-')
   const payload = { name, slug, store_id: store.id }
-  const repo = new AttributeRepo(supabase)
+
 
   if (id) {
-    const { error } = await repo.update(id, payload)
-    if (error) return { success: false, error: 'Erro ao atualizar' }
+    await updateAttribute(id, payload)
   } else {
-
-    const { error, data } = await repo.create(payload)
-    if (error) console.error('Erro ao criar atributo:', error)
-
-    if (data) redirect(`/dashboard/attributes/${data.id}/edit`)
+    await createAttribute(payload)
   }
 
   revalidatePath('/dashboard/attributes')
   redirect('/dashboard/attributes')
 }
 
-export async function deleteAttribute(formData: FormData) {
-  const supabase = await createClient()
-  const repo = new AttributeRepo(supabase)
+export async function deleteAttributeAction(formData: FormData) {
   const id = formData.get('id') as string
 
-  await repo.delete(id)
+  await deleteAttribute(id)
+
   revalidatePath('/dashboard/attributes')
   redirect('/dashboard/attributes')
 }

@@ -1,10 +1,8 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/utils/supabase/server'
-import { AttributeRepo } from '@/lib/data/attributes'
+import { getAttributeById } from '@/lib/data/queries/attributes'
 import { AttributeWithValues } from '@/lib/types/attribute.types'
-
-// Components
 import { AttributeHeaderForm } from '../../components/attribute-header-form'
 import { AttributeValuesManager } from '../../components/attribute-values-manager'
 
@@ -16,9 +14,9 @@ export default async function EditAttributePage({ params }: PageProps) {
   const { id } = await params
   
   const supabase = await createClient()
-  const attributeRepo = new AttributeRepo(supabase)
   
-  const attributeData = await attributeRepo.getById(id)
+  
+  const attributeData = await getAttributeById(id)
   if (!attributeData) return notFound()
 
   // Use the shared type instead of 'as unknown'
