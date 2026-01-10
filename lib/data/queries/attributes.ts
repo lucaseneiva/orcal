@@ -22,3 +22,22 @@ export async function getAttributeById(id: string) {
 
   return data
 }
+
+export async function getAttributesByStoreId(storeId: string) {
+  const supabase = await createClient()
+
+  const { data } = await supabase
+    .from('attributes')
+    .select(`
+        id,
+        name,
+        slug,
+        attribute_values (
+          id,
+          name
+        )
+      `)
+    .eq('store_id', storeId)
+
+  return data || []
+}

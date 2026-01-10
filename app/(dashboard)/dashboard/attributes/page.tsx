@@ -1,17 +1,14 @@
 import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { StoreRepo } from '@/lib/data/stores'
+import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/utils/supabase/server'
 import { AttributeWithValues } from '@/lib/types/attribute.types'
 
 export default async function AttributesPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const storeRepo = new StoreRepo(await createClient())
-  // The repo should return the type compatible with AttributeWithValues
-  const attributes = await storeRepo.getAttributes(store.id) as AttributeWithValues[]
+  const attributes = await getAttributesByStoreId(store.id) as AttributeWithValues[]
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

@@ -1,5 +1,5 @@
 import { getProductById } from '@/lib/data/queries/products'
-import { StoreRepo } from '@/lib/data/stores'
+import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
@@ -29,8 +29,8 @@ export default async function EditProductPage({ params }: PageProps) {
   if (!productData) return notFound()
 
   // 5. Fetch Attributes for the sidebar configuration
-  const storeRepo = new StoreRepo(supabase)
-  const allAttributes = await storeRepo.getAttributes(store.id)
+
+  const allAttributes = await getAttributesByStoreId(store.id)
 
   /**
    * 6. FIX: Format and Cast the product

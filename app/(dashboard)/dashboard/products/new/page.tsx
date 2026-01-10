@@ -1,14 +1,12 @@
 import { ProductForm } from '../form'
-import { StoreRepo } from '@/lib/data/stores'
+import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function NewProductPage() {
   const store = await getCurrentStore()
   if (!store) return null
 
-  const storeRepo = new StoreRepo(await createClient())
-  const allAttributes = await storeRepo.getAttributes(store.id)
+  const allAttributes = await getAttributesByStoreId(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
