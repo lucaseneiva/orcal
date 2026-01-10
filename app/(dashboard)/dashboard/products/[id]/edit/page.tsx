@@ -1,4 +1,4 @@
-import { ProductRepo } from '@/lib/data/products'
+import { getProductById } from '@/lib/data/queries/products'
 import { StoreRepo } from '@/lib/data/stores'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
@@ -22,8 +22,8 @@ export default async function EditProductPage({ params }: PageProps) {
   const supabase = await createClient()
 
   // 3. Fetch Product data
-  const productRepo = new ProductRepo(supabase)
-  const productData = await productRepo.getById(id)
+  
+  const productData = await getProductById(id)
 
   // 4. Handle 404
   if (!productData) return notFound()

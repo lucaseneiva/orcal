@@ -1,10 +1,9 @@
 'use server'
 
-import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { ProductRepo } from '@/lib/data/products'
+import { deleteProduct, upsertProduct } from '@/lib/data/mutations/products'
 import { slugify } from '@/lib/utils/slugfy'
 import { replaceAll } from '@/lib/data/mutations/product-attributes'
 import { ProductInsert } from '@/lib/types/types'
@@ -27,7 +26,7 @@ export async function upsertProductAction(formData: FormData) {
     if (!slug?.trim()) {
       slug = slugify(name)
     }
-
+  
     
     const productPayload: ProductInsert = {
       name,
@@ -39,8 +38,8 @@ export async function upsertProductAction(formData: FormData) {
 
     }
 
-    const productRepo = new ProductRepo(await createClient())
-    const product = await productRepo.upsert(id, store.id, productPayload)
+    
+    const product = await upsertProduct(id, store.id, productPayload)
     
     replaceAll(product.id, selectedAttributeIds)
     
@@ -64,11 +63,8 @@ export async function deleteProductAction(formData: FormData) {
     return { error: 'ID do produto não fornecido.' };
   }
 
-  const supabase = await createClient();
-  const productRepo = new ProductRepo(supabase);
-
   try {
-    await productRepo.deleteProduct(id);
+    await deleteProduct(id);
   } catch (err) {
     // 2. Log the actual error for debugging
     console.error('Delete product error:', err);

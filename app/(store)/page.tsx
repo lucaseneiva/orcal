@@ -1,7 +1,7 @@
 import { StoreNotFound } from '@/components/StoreNotFound'
 import { StoreHome } from '@/components/StoreHome'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { ProductRepo } from '@/lib/data/products'
+import { getAllProductsByStoreId } from '@/lib/data/queries/products'
 import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function Home() {
@@ -11,8 +11,7 @@ export default async function Home() {
     return <StoreNotFound />
   }
 
-  const productRepo = new ProductRepo(await createClient())
-  const products = await productRepo.getFromStore(store.id)
+  const products = await getAllProductsByStoreId(store.id)
   
   return (
     <StoreHome
