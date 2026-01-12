@@ -56,7 +56,7 @@ export async function getProductBySlugAndStoreId(storeId: string, slug: string):
   // --- TRANSFORMAÇÃO DE DADOS ---
 
   const options: ProductOption[] = data.products_options.map((pav: any) => {
-    const val = pav.attribute_values;
+    const val = pav.options;
     const attr = val.attributes;
 
     return {
