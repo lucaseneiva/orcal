@@ -1,10 +1,9 @@
-import './globals.css';
+import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/app/context/cart-context";
-import { StoreNotFound } from "@/components/StoreNotFound"; // We will update this component
-import { getCurrentStore } from '@/lib/utils/get-current-store';
-import { Footer } from "@/components/Footer";
-import { headers } from 'next/headers'; // Import headers to pass data down if needed
+import { StoreNotFound } from "@/components/StoreNotFound";
+import { getCurrentStore } from "@/lib/utils/get-current-store";
+import { headers } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,14 +27,14 @@ export default async function RootLayout({
 }>) {
   const store = await getCurrentStore();
 
-  // SEPARATION OF CONCERNS: 
+  // SEPARATION OF CONCERNS:
   // The layout detects the error, but delegates the UI to a specific component.
   if (!store) {
     // We pass the debug data as props so the component can decide to show it or not
     const headersList = await headers();
     const debugData = {
-      host: headersList.get('host'),
-      xForwardedHost: headersList.get('x-forwarded-host'),
+      host: headersList.get("host"),
+      xForwardedHost: headersList.get("x-forwarded-host"),
     };
 
     return (
@@ -50,13 +49,12 @@ export default async function RootLayout({
   // HAPPY PATH: Render the actual app
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+      >
         <CartProvider>
-          <div className="mx-auto bg-gray-100 w-full flex-1">
-            {children}
-          </div>
+          <div className="mx-auto bg-gray-100 w-full flex-1">{children}</div>
         </CartProvider>
-        <Footer storeName={store.name} />
       </body>
     </html>
   );
