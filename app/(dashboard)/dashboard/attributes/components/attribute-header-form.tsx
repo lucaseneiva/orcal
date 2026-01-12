@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { upsertAttribute, deleteAttributeAction } from '../actions'
-import { AttributeWithValues } from '@/lib/types/attribute.types'
+import { AttributeWithOptions } from '@/lib/types/types'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 
-export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithValues }) {
+export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOptions}) {
   const [loading, setLoading] = useState(false)
 
   // Wrapper to handle the Upsert action

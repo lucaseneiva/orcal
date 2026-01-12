@@ -7,8 +7,8 @@ export async function getCurrentAttributeIds(productId: string): Promise<string[
   const supabase = await createClient();
 
   const { data, error } = await supabase
-    .from('product_attribute_values')
-    .select('attribute_value_id')
+    .from('products_options')
+    .select('option_id')
     .eq('product_id', productId)
 
   if (error) {
@@ -16,5 +16,5 @@ export async function getCurrentAttributeIds(productId: string): Promise<string[
     return []
   }
 
-  return data?.map(item => item.attribute_value_id) || []
+  return data?.map(item => item.option_id) || []
 }

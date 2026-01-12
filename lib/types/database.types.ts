@@ -9,44 +9,6 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      attribute_values: {
-        Row: {
-          attribute_id: string
-          created_at: string | null
-          description: string | null
-          display_order: number | null
-          id: string
-          name: string
-          updated_at: string | null
-        }
-        Insert: {
-          attribute_id: string
-          created_at?: string | null
-          description?: string | null
-          display_order?: number | null
-          id?: string
-          name: string
-          updated_at?: string | null
-        }
-        Update: {
-          attribute_id?: string
-          created_at?: string | null
-          description?: string | null
-          display_order?: number | null
-          id?: string
-          name?: string
-          updated_at?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "attribute_values_attribute_id_fkey"
-            columns: ["attribute_id"]
-            isOneToOne: false
-            referencedRelation: "attributes"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       attributes: {
         Row: {
           created_at: string | null
@@ -85,32 +47,40 @@ export type Database = {
           },
         ]
       }
-      product_attribute_values: {
+      options: {
         Row: {
-          attribute_value_id: string
-          product_id: string
+          attribute_id: string
+          created_at: string | null
+          description: string | null
+          display_order: number | null
+          id: string
+          name: string
+          updated_at: string | null
         }
         Insert: {
-          attribute_value_id: string
-          product_id: string
+          attribute_id: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          name: string
+          updated_at?: string | null
         }
         Update: {
-          attribute_value_id?: string
-          product_id?: string
+          attribute_id?: string
+          created_at?: string | null
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          name?: string
+          updated_at?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "product_attribute_values_attribute_value_id_fkey"
-            columns: ["attribute_value_id"]
+            foreignKeyName: "attribute_values_attribute_id_fkey"
+            columns: ["attribute_id"]
             isOneToOne: false
-            referencedRelation: "attribute_values"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "product_attribute_values_product_id_fkey"
-            columns: ["product_id"]
-            isOneToOne: false
-            referencedRelation: "products"
+            referencedRelation: "attributes"
             referencedColumns: ["id"]
           },
         ]
@@ -158,6 +128,36 @@ export type Database = {
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      products_options: {
+        Row: {
+          option_id: string
+          product_id: string
+        }
+        Insert: {
+          option_id: string
+          product_id: string
+        }
+        Update: {
+          option_id?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_attribute_values_attribute_value_id_fkey"
+            columns: ["option_id"]
+            isOneToOne: false
+            referencedRelation: "options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_attribute_values_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]

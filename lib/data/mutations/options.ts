@@ -1,11 +1,11 @@
 import { createClient } from "@/lib/utils/supabase/server";
-import { AttributeValueInsert, AttributeUpdate } from "../../types/types";
+import { OptionInsert, OptionUpdate } from "../../types/types";
 
-export async function createAttributeValue(payload: AttributeValueInsert) {
+export async function createOption(payload: OptionInsert) {
     const supabase = await createClient()
 
     const { data, error } = await supabase
-        .from('attribute_values')
+        .from('options')
         .insert(payload)
         .select()
         .single()
@@ -17,11 +17,11 @@ export async function createAttributeValue(payload: AttributeValueInsert) {
     return data
 }
 
-export async function updateAttributeValue(id: string, payload: AttributeUpdate) {
+export async function updateOption(id: string, payload: OptionUpdate) {
     const supabase = await createClient()
 
     const { error, data } = await supabase
-        .from('attribute_values')
+        .from('options')
         .update(payload)
         .eq('id', id)
         .select()
@@ -34,11 +34,11 @@ export async function updateAttributeValue(id: string, payload: AttributeUpdate)
     return data
 }
 
-export async function deleteAttributeValue(id: string) {
+export async function deleteOption(id: string) {
     const supabase = await createClient()
 
     const { error } = await supabase
-        .from('attribute_values')
+        .from('options')
         .delete()
         .eq('id', id)
 

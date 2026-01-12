@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
 import { redirect } from 'next/navigation'
-import { AttributeWithValues } from '@/lib/types/attribute.types'
+import { Options } from '@react-email/render'
 
 export default async function AttributesPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const attributes = await getAttributesByStoreId(store.id) as AttributeWithValues[]
+  const attributes = await getAttributesByStoreId(store.id)
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
@@ -37,7 +37,7 @@ export default async function AttributesPage() {
                   <tr key={attr.id} className="hover:bg-gray-50">
                     <td className="p-4 font-medium text-gray-700">{attr.name}</td>
                     <td className="p-4 text-sm text-gray-500">
-                      {attr.attribute_values?.map(v => v.name).join(', ') || '-'}
+                      {attr.options.map(v => v.name).join(', ') || '-'}
                     </td>
                     <td className="p-4 text-right">
                       <Link 

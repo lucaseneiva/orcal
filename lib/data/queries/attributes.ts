@@ -7,10 +7,8 @@ export async function getAttributeById(id: string) {
     .from('attributes')
     .select(`
         *,
-        attribute_values (
-          id,
-          name,
-          description
+        options (
+          *
         )
       `)
     .eq('id', id)
@@ -29,12 +27,9 @@ export async function getAttributesByStoreId(storeId: string) {
   const { data } = await supabase
     .from('attributes')
     .select(`
-        id,
-        name,
-        slug,
-        attribute_values (
-          id,
-          name
+        *,
+        options (
+          *
         )
       `)
     .eq('store_id', storeId)

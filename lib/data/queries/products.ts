@@ -31,8 +31,8 @@ export async function getProductBySlugAndStoreId(storeId: string, slug: string):
     .from('products')
     .select(`
       *,
-      product_attribute_values (
-        attribute_values (
+      products_options (
+        options (
           id,
           name,
           description, 
@@ -55,7 +55,7 @@ export async function getProductBySlugAndStoreId(storeId: string, slug: string):
 
   // --- TRANSFORMAÇÃO DE DADOS ---
 
-  const options: ProductOption[] = data.product_attribute_values.map((pav: any) => {
+  const options: ProductOption[] = data.products_options.map((pav: any) => {
     const val = pav.attribute_values;
     const attr = val.attributes;
 
@@ -101,8 +101,8 @@ export async function getProductById(productId: string) {
         image_url,
         status,
         store_id,
-        product_attribute_values (
-          attribute_values (
+        products_options (
+          options (
             id,
             name,
             description
@@ -114,18 +114,14 @@ export async function getProductById(productId: string) {
 
   if (error || !data) return null
 
-  // --- TRANSFORMAÇÃO IMPORTANTE ---
-  // Precisamos converter o retorno aninhado do banco para o formato "plano"
-  // que o nosso formulário espera (array de options)
-
-  const options = data.product_attribute_values.map((pav: any) => ({
-    value_id: pav.attribute_values.id,
-    value_name: pav.attribute_values.name
+  const options = data.products_options.map((pav: any) => ({
+    value_id: pav.options.id,
+    value_name: pav.options.name
   }))
 
   return {
     ...data,
-    options // O formulário vai usar isso para marcar os checkboxes
+    options
   }
 }
 

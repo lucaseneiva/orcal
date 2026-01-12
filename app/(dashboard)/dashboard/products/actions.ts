@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { deleteProduct, upsertProduct } from '@/lib/data/mutations/products'
 import { slugify } from '@/lib/utils/slugfy'
-import { replaceAll } from '@/lib/data/mutations/product-attributes'
+import { replaceAll } from '@/lib/data/mutations/products-attributes'
 import { ProductInsert } from '@/lib/types/types'
 
 export async function upsertProductAction(formData: FormData) {

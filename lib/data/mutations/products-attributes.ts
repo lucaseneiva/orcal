@@ -2,7 +2,7 @@ import { createClient } from "../../utils/supabase/server"
 
 type AttributeRelation = {
   product_id: string
-  attribute_value_id: string
+  option_id: string
 }
 
 /**
@@ -12,7 +12,7 @@ export async function replaceAll(productId: string, newAttributeIds: string[]) {
   const supabase = await createClient();
 
   const { error: deleteError } = await supabase
-    .from('product_attribute_values')
+    .from('products_options')
     .delete()
     .eq('product_id', productId)
 
@@ -25,11 +25,11 @@ export async function replaceAll(productId: string, newAttributeIds: string[]) {
 
   const payload: AttributeRelation[] = newAttributeIds.map(valueId => ({
     product_id: productId,
-    attribute_value_id: valueId
+    option_id: valueId
   }))
 
   const { error: insertError } = await supabase
-    .from('product_attribute_values')
+    .from('products_options')
     .insert(payload)
 
   if (insertError) {

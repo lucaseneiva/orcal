@@ -5,7 +5,7 @@ import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
 import { createClient } from '@/lib/utils/supabase/server'
 // Import the interface from the form file
-import { ProductWithDetails } from '../../form'
+import { ProductWithDetails } from '@/lib/types/types'
 
 interface PageProps {
   params: Promise<{ id: string }>

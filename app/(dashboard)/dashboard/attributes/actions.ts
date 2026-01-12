@@ -5,8 +5,8 @@ import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createAttribute, updateAttribute, deleteAttribute } from '@/lib/data/mutations/attributes'
-import { createAttributeValue, deleteAttributeValue, updateAttributeValue } from '@/lib/data/mutations/attribute-values'
-import { AttributeValueInsert } from '@/lib/types/types'
+import { createOption, deleteOption, updateOption } from '@/lib/data/mutations/options'
+import { OptionInsert } from '@/lib/types/types'
 
 export async function upsertAttribute(formData: FormData) {
   const supabase = await createClient()
@@ -51,13 +51,13 @@ export async function createValue(formData: FormData) {
   }
 
 
-  const payload: AttributeValueInsert = {
+  const payload: OptionInsert = {
     name: name,
     attribute_id: attribute_id,
     description: description
   }
 
-  await createAttributeValue(payload)
+  await createOption(payload)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
@@ -68,7 +68,7 @@ export async function deleteValue(formData: FormData) {
   const id = formData.get('id') as string
   const attribute_id = formData.get('attribute_id') as string
 
-  await deleteAttributeValue(id)
+  await deleteOption(id)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
@@ -85,7 +85,7 @@ export async function updateValue(formData: FormData) {
   }
 
   
-  await updateAttributeValue(id, payload)
+  await updateOption(id, payload)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
