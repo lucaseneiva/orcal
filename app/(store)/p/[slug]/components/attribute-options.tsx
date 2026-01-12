@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react'
 import { GroupedAttribute } from '@/lib/utils/product-logic'
 
 interface AttributeDetailsProps {
-  groupedOptions: GroupedAttribute[] // Receives pre-calculated groups
+  groupedOptions: GroupedAttribute[]
   brandColor?: string
 }
 

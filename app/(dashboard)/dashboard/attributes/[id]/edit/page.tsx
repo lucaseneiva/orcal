@@ -1,4 +1,3 @@
-import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { getAttributeById } from '@/lib/data/queries/attributes'
 import { AttributeHeaderForm } from '../../components/attribute-header-form'

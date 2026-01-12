@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 export default async function EditProductPage({ params }: PageProps) {
-  // 1. Await params (Required in Next.js 15+)
+  // 1. Await params
   const { id } = await params
   
   // 2. Get Store and Auth context
@@ -32,12 +32,7 @@ export default async function EditProductPage({ params }: PageProps) {
 
   const allAttributes = await getAttributesByStoreId(store.id)
 
-  /**
-   * 6. FIX: Format and Cast the product
-   * We use 'as unknown as ProductWithDetails' because the repository 
-   * returns specific columns that don't include system fields like 
-   * 'created_at', which the strict ProductRaw type requires.
-   */
+  //6. Format and Cast the product
   const formattedProduct = {
     ...productData,
     options: productData.options || []

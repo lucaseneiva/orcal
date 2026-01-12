@@ -1,12 +1,9 @@
-import './globals.css';
-import { headers } from 'next/headers';
-import type { Metadata } from "next";
+import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/app/context/cart-context";
 import { StoreNotFound } from "@/components/StoreNotFound";
-import { getCurrentStore } from '@/lib/utils/get-current-store';
-import { Footer } from "@/components/Footer";
-import { notFound } from 'next/navigation';
+import { getCurrentStore } from "@/lib/utils/get-current-store";
+import { headers } from "next/headers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Plataforma de Orçamentos",
   description: "SaaS",
 };
@@ -28,80 +25,34 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   const store = await getCurrentStore();
 
-  // if (!store) {
-  //   return (
-  //     <html lang="pt-BR">
-  //       <body>
-  //         <StoreNotFound />
-  //       </body>
-  //     </html>
-  //   );
-  // }
-
+  {/* Errors & Fallbacks */}
   if (!store) {
-    const headerStack = await headers();
-    const host = headerStack.get('host');
-    const xForwardedHost = headerStack.get('x-forwarded-host');
-    
-    // Verificando se a URL do banco existe (não mostre o valor, apenas se existe)
-    // Substitua 'DATABASE_URL' pelo nome exato da sua variável de ambiente
-    const dbUrlStatus = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? "✅ Carregada" : "❌ NÃO ENCONTRADA";
+    const headersList = await headers();
+    const debugData = {
+      host: headersList.get("host"),
+      xForwardedHost: headersList.get("x-forwarded-host"),
+    };
 
     return (
       <html lang="pt-BR">
-        <body className="bg-gray-100 p-10 font-sans">
-          <div className="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow-xl border-l-4 border-red-500">
-            <h1 className="text-2xl font-bold text-red-600 mb-4">Debug - Store Not Found</h1>
-            
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 rounded border">
-                <p className="font-bold text-gray-700 uppercase text-xs mb-1">Host Recebido (Next.js):</p>
-                <code className="bg-black text-green-400 p-2 rounded block text-sm break-all">
-                  {host}
-                </code>
-              </div>
-
-              <div className="p-4 bg-gray-50 rounded border">
-                <p className="font-bold text-gray-700 uppercase text-xs mb-1">X-Forwarded-Host (Proxy):</p>
-                <code className="bg-black text-yellow-400 p-2 rounded block text-sm break-all">
-                  {xForwardedHost || "Nenhum"}
-                </code>
-              </div>
-
-              <div className="p-4 bg-blue-50 rounded border border-blue-200">
-                <p className="font-bold text-blue-800 uppercase text-xs mb-1">Status da Variável de Banco:</p>
-                <p className="font-mono text-lg">{dbUrlStatus}</p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t">
-                 <p className="text-sm text-gray-600">
-                   <strong>Ação:</strong> Copie EXATAMENTE o valor do campo <u>Host Recebido</u> e coloque na coluna <code>domain</code> do seu banco de dados (sem https://, sem barra no final).
-                 </p>
-              </div>
-            </div>
-          </div>
-          {/* Componente original abaixo para garantir que nada quebrou visualmente */}
-          <div className="opacity-50 mt-10 pointer-events-none">
-             <StoreNotFound />
-          </div>
+        <body className="bg-gray-100 min-h-screen flex items-center justify-center">
+          <StoreNotFound debugData={debugData} />
         </body>
       </html>
     );
   }
 
-  // Verificando se a URL do banco existe (não mostre o valor, apenas se existe)
-  // Substitua 'DATABASE_URL' pelo nome exato da sua variável de ambiente
-
+  {/* App render */}
   return (
     <html lang="pt-BR">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-
-        <CartProvider>{<div className="mx-auto bg-gray-50">{children}</div>}</CartProvider>
-
-        <Footer storeName={store.name} />
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+      >
+        <CartProvider>
+          <div className="mx-auto bg-gray-100 w-full flex-1">{children}</div>
+        </CartProvider>
       </body>
     </html>
   );
