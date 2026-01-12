@@ -55,7 +55,7 @@ export function AttributeValuesManager({ attribute }: { attribute: AttributeWith
             )
           }
 
-          // View Mode
+          {/* View Mode */}
           return (
             <div key={val.id} className="group flex items-center justify-between p-3 bg-gray-50 border rounded-lg hover:border-gray-300 transition-all">
               <div>

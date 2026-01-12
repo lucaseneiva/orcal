@@ -8,8 +8,7 @@ interface Props {
 }
 
 export function StoreNotFound({ debugData }: Props) {
-  // Only show debug info if we are in development, or if a specific prop is passed
-  // You can toggle this boolean to hide/show the scary red box
+
   const showDebug = process.env.NODE_ENV === 'development'; 
   
   return (

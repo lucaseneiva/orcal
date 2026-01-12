@@ -6,8 +6,6 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { ProductRepo } from '@/lib/repositories/product.repo'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { groupProductOptions } from '@/lib/utils/product-logic'
-
-// Components
 import ProductForm from './components/product-form'
 import AttributeDetails from './components/attribute-options'
 
@@ -25,7 +23,7 @@ export default async function ProductPage({ params }: PageProps) {
   
   if (!product) return notFound()
 
-  // OPTIMIZATION: Calculate groupings on Server once.
+  // Calculate groupings on Server once.
   const groupedOptions = groupProductOptions(product.options)
   
   return (

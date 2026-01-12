@@ -3,7 +3,6 @@ import { getCurrentStore } from "@/lib/utils/get-current-store";
 import { redirect } from "next/navigation";
 import { QuoteRequestCard } from "./components/QuoteRequestCard";
 import { QuoteRequestRepo } from "@/lib/repositories/quote-request.repo";
-// Import the interface to ensure we are aligning correctly
 import type { QuoteRequest } from "./components/QuoteRequestCard";
 
 export default async function quoteRequestsPage() {
@@ -28,16 +27,12 @@ export default async function quoteRequestsPage() {
 
   const quoteRequests: QuoteRequest[] = rawQuoteRequests.map((order) => ({
     ...order,
-    // Fix boolean: null/undefined becomes false
     viewed: !!order.viewed,
 
-    // Fix string: fallback to empty string or ISO date if null
     created_at: order.created_at || new Date().toISOString(),
 
-    // FIX "Unexpected any": Cast through unknown instead of any
     items: order.items as unknown as QuoteRequest["items"],
 
-    // Fix numbers: fallback to 0 if null
     total_items: order.total_items ?? 0,
   }));
 

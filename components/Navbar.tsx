@@ -1,11 +1,10 @@
-// components/Navbar.tsx
 'use client';
 
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from 'react';
 import { ShoppingBag } from "lucide-react";
-import { signout } from '@/app/login/actions'; // Adjust path
+import { signout } from '@/app/login/actions'; 
 import { useCart } from '@/app/context/cart-context';
 
 type NavbarProps = {

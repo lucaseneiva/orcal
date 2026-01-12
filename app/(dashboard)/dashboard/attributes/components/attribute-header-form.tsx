@@ -9,18 +9,14 @@ import { Loader2 } from 'lucide-react'
 export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithValues }) {
   const [loading, setLoading] = useState(false)
 
-  // Wrapper to handle the Upsert action
   async function handleUpsert(formData: FormData) {
     setLoading(true)
     const result = await upsertAttribute(formData)
     
-    // If we get a result back, it means there was an error 
-    // (Success redirects automatically in the server action)
     if (result && !result.success) {
       alert(result.error)
       setLoading(false)
     }
-    // If success, the page redirects, so we don't need to unset loading
   }
 
   // Wrapper to handle the Delete action

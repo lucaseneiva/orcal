@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useCheckout } from './hooks/useCheckout'
-
-// Components
 import { CheckoutSuccess } from './components/checkout-success'
 import { EmptyCartView } from './components/empty-cart-view'
 import { CartItemList } from './components/cart-item-list'

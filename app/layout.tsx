@@ -27,10 +27,8 @@ export default async function RootLayout({
 }>) {
   const store = await getCurrentStore();
 
-  // SEPARATION OF CONCERNS:
-  // The layout detects the error, but delegates the UI to a specific component.
+  {/* Errors & Fallbacks */}
   if (!store) {
-    // We pass the debug data as props so the component can decide to show it or not
     const headersList = await headers();
     const debugData = {
       host: headersList.get("host"),
@@ -46,7 +44,7 @@ export default async function RootLayout({
     );
   }
 
-  // HAPPY PATH: Render the actual app
+  {/* App render */}
   return (
     <html lang="pt-BR">
       <body
