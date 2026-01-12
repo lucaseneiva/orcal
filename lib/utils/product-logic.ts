@@ -37,7 +37,7 @@ export function getDefaultSelections(options: ProductOption[]): Record<string, s
 
   options.forEach((opt) => {
     if (!seenAttributes.has(opt.attribute_id)) {
-      defaults[opt.attribute_id] = opt.value_id
+      defaults[opt.attribute_id] = opt.option_id
       seenAttributes.add(opt.attribute_id)
     }
   })

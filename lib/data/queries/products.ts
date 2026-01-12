@@ -12,18 +12,6 @@ export async function getAllProductsByStoreId(storeId: string) {
   return data || []
 }
 
-// export async function getProductBySlugAndStoreId(slug: string, storeId: string) {
-//   const supabase = await createClient();
-
-//   const { data } = await supabase
-//     .from('products')
-//     .select('*')
-//     .eq('slug', slug)
-//     .eq('store_id', storeId)
-//     .single()
-//   return data || null
-// }
-
 export async function getProductBySlugAndStoreId(storeId: string, slug: string): Promise<ProductWithDetails | null> {
   const supabase = await createClient();
 
@@ -56,14 +44,13 @@ export async function getProductBySlugAndStoreId(storeId: string, slug: string):
   // --- TRANSFORMAÇÃO DE DADOS ---
 
   const options: ProductOption[] = data.products_options.map((pav: any) => {
-    const val = pav.options;
-    const attr = val.attributes;
+    const opt = pav.options;
+    const attr = opt.attributes;
 
     return {
-      value_id: val.id,
-      value_name: val.name,
-      description: val.description,
-      attribute_value_description: val.description,
+      option_id: opt.id,
+      option_name: opt.name,
+      option_description: opt.description,
       attribute_id: attr.id,
       attribute_name: attr.name,
       attribute_slug: attr.slug,

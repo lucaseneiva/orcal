@@ -17,7 +17,7 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
   const [imageUrl, setImageUrl] = useState(product?.image_url || '')
 
   const existingIds = new Set(
-    product?.options?.map((opt: ProductOption) => opt.value_id) || []
+    product?.options?.map((opt: ProductOption) => opt.option_id) || []
   )
 
   async function handleSubmit(formData: FormData) {
