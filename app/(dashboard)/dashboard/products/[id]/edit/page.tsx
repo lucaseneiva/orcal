@@ -5,7 +5,7 @@ import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
 import { createClient } from '@/lib/utils/supabase/server'
 // Import the interface from the form file
-import { ProductWithDetails } from '@/lib/types/types'
+import { ProductWithOptions } from '@/lib/types/types'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -36,7 +36,7 @@ export default async function EditProductPage({ params }: PageProps) {
   const formattedProduct = {
     ...productData,
     options: productData.options || []
-  } as unknown as ProductWithDetails
+  } as unknown as ProductWithOptions
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">

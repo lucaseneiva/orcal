@@ -4,11 +4,11 @@ import { upsertProductAction, deleteProductAction } from './actions'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ImageUpload } from '../components/image-upload'
-import { Attribute, AttributeWithOptions, ProductWithDetails } from '@/lib/types/types'
+import { Attribute, AttributeWithOptions, ProductWithOptions } from '@/lib/types/types'
 import { ProductOption } from '@/lib/types/types'
 
 type ProductFormProps = {
-  product?: Partial<ProductWithDetails> 
+  product?: Partial<ProductWithOptions> 
   allAttributes: AttributeWithOptions[]
 }
 

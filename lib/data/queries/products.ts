@@ -1,5 +1,5 @@
 import { createClient } from '@/lib/utils/supabase/server'
-import { ProductWithDetails, ProductOption } from '@/lib/types/types'
+import { ProductWithOptions, ProductOption } from '@/lib/types/types'
 
 
 export async function getAllProductsByStoreId(storeId: string) {
@@ -12,10 +12,12 @@ export async function getAllProductsByStoreId(storeId: string) {
   return data || []
 }
 
-export async function getProductBySlugAndStoreId(storeId: string, slug: string): Promise<ProductWithDetails | null> {
+async function getProductWithOptions(
+  filters: { storeId?: string; slug?: string; id?: string }
+): Promise<ProductWithOptions | null> {
   const supabase = await createClient();
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('products')
     .select(`
       *,
@@ -23,7 +25,7 @@ export async function getProductBySlugAndStoreId(storeId: string, slug: string):
         options (
           id,
           name,
-          description, 
+          description,
           attributes (
             id,
             name,
@@ -31,93 +33,46 @@ export async function getProductBySlugAndStoreId(storeId: string, slug: string):
           )
         )
       )
-    `)
-    .eq('store_id', storeId)
-    .eq('slug', slug)
-    .single();
+    `);
+
+  if (filters.storeId) query = query.eq('store_id', filters.storeId);
+  if (filters.slug) query = query.eq('slug', filters.slug);
+  if (filters.id) query = query.eq('id', filters.id);
+
+  const { data, error } = await query.single();
 
   if (error || !data) {
     console.error('Produto não encontrado:', error);
     return null;
   }
 
-  // --- TRANSFORMAÇÃO DE DADOS ---
-
-  const options: ProductOption[] = data.products_options.map((pav: any) => {
-    const opt = pav.options;
-    const attr = opt.attributes;
-
-    return {
-      option_id: opt.id,
-      option_name: opt.name,
-      option_description: opt.description,
-      attribute_id: attr.id,
-      attribute_name: attr.name,
-      attribute_slug: attr.slug,
-    };
-  });
-
-  const product: ProductWithDetails = {
-    id: data.id,
-    name: data.name,
-    description: data.description,
-    image_url: data.image_url,
-    slug: data.slug,
-    options: options,
-    created_at: data.created_at,
-    status: data.status,
-    updated_at: data.updated_at,
-    store_id: data.store_id,
-    display_order: data.display_order
-  };
-
-  return product;
-}
-
-
-export async function getProductById(productId: string) {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase
-    .from('products')
-    .select(`
-        id,
-        name,
-        description,
-        slug,
-        image_url,
-        status,
-        store_id,
-        products_options (
-          options (
-            id,
-            name,
-            description
-          )
-        )
-      `)
-    .eq('id', productId)
-    .single()
-
-  if (error || !data) return null
-
-  const options = data.products_options.map((pav: any) => ({
-    value_id: pav.options.id,
-    value_name: pav.options.name
-  }))
+  const productOptions: ProductOption[] = data.products_options.map((po: any) => ({
+    option_id: po.options.id,
+    option_name: po.options.name,
+    option_description: po.options.description,
+    attribute_id: po.options.attributes?.id,
+    attribute_name: po.options.attributes?.name,
+    attribute_slug: po.options.attributes?.slug,
+  }));
 
   return {
     ...data,
-    options
-  }
+    options: productOptions
+  };
 }
 
+export async function getProductBySlugAndStoreId(
+  storeId: string,
+  slug: string
+): Promise<ProductWithOptions | null> {
+  return getProductWithOptions({ storeId, slug });
+}
 
-
-
-
-
-
+export async function getProductById(
+  productId: string
+): Promise<ProductWithOptions | null> {
+  return getProductWithOptions({ id: productId });
+}
 
 
 

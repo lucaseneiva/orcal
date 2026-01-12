@@ -29,7 +29,7 @@ export interface ProductOption {
   attribute_slug: string
 }
 
-export interface ProductWithDetails extends ProductRaw {
+export interface ProductWithOptions extends ProductRaw {
   options: ProductOption[]
 }
 
