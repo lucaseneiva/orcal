@@ -1,10 +1,10 @@
 'use client'
 
-import { AttributeWithValues } from '@/lib/types/attribute.types'
+import { AttributeWithOptions } from '@/lib/types/types'
 import { useAttributeValues } from '../hooks/useAttributeValues'
 import { Edit2, Trash2, X, Check, Info } from 'lucide-react'
 
-export function AttributeValuesManager({ attribute }: { attribute: AttributeWithValues }) {
+export function AttributeValuesManager({ attribute }: { attribute: AttributeWithOptions }) {
   const { 
     formRef, editingId, startEditing, cancelEditing, 
     handleCreate, handleUpdate, handleDelete 
@@ -18,13 +18,13 @@ export function AttributeValuesManager({ attribute }: { attribute: AttributeWith
 
       {/* List */}
       <div className="space-y-3">
-        {attribute.attribute_values.length === 0 && (
+        {attribute.options.length === 0 && (
           <p className="text-gray-400 text-sm text-center py-4 border-2 border-dashed rounded-lg">
             Nenhum valor cadastrado.
           </p>
         )}
 
-        {attribute.attribute_values.map((val) => {
+        {attribute.options.map((val) => {
           const isEditing = editingId === val.id
 
           if (isEditing) {

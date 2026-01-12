@@ -1,22 +1,18 @@
 'use client'
 
 import Link from 'next/link'
-import { upsertAttribute, deleteAttribute } from '../actions'
-import { AttributeWithValues } from '@/lib/types/attribute.types'
+import { upsertAttribute, deleteAttributeAction } from '../actions'
+import { AttributeWithOptions } from '@/lib/types/types'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 
-export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithValues }) {
+export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOptions}) {
   const [loading, setLoading] = useState(false)
 
   async function handleUpsert(formData: FormData) {
     setLoading(true)
     const result = await upsertAttribute(formData)
     
-    if (result && !result.success) {
-      alert(result.error)
-      setLoading(false)
-    }
   }
 
   // Wrapper to handle the Delete action
@@ -24,7 +20,7 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithVa
     if (!confirm('Excluir atributo e todos os seus valores?')) return
     
     setLoading(true)
-    await deleteAttribute(formData)
+    await deleteAttributeAction(formData)
     // Redirects happen on server
   }
 

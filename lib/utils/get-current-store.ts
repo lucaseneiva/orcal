@@ -1,7 +1,6 @@
 import { cache } from 'react';
 import { headers } from 'next/headers';
-import { StoreRepo } from '@/lib/repositories/store.repo';
-import { createClient } from './supabase/server';
+import { findByDomain } from '@/lib/data/queries/stores';
 
 export const getCurrentStore = cache(async () => {
   const headerStack = await headers();
@@ -12,8 +11,7 @@ export const getCurrentStore = cache(async () => {
 
   console.log('[DEBUG] Host final processado:', host);
 
-  const storeRepo = new StoreRepo(await createClient())
-  const store = await storeRepo.findByDomain(host || null);
+  const store = await findByDomain(host || null);
 
   if (!store) return null;
   return store;

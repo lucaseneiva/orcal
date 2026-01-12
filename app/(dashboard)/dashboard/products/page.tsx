@@ -1,19 +1,14 @@
-import { getCurrentStore } from "@/lib/utils/get-current-store";
-import Link from "next/link";
-import { redirect } from "next/navigation";
-import { ProductRepo } from "@/lib/repositories/product.repo";
-import { createClient } from "@/lib/utils/supabase/server";
-import { Database } from "@/lib/types/database.types";
-
-// Use the Database helper to get the exact Row type from your products table
-type Product = Database["public"]["Tables"]["products"]["Row"];
+import { getCurrentStore } from '@/lib/utils/get-current-store'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { getAllProductsByStoreId } from '@/lib/data/queries/products'
+import { ProductRaw } from '@/lib/types/types'
 
 export default async function ProductsPage() {
   const store = await getCurrentStore();
   if (!store) redirect("/dashboard");
 
-  const productRepo = new ProductRepo(await createClient());
-  const products = await productRepo.getFromStore(store.id);
+  const products = await getAllProductsByStoreId(store.id)
 
   return (
     <div className="p-6">
@@ -82,7 +77,8 @@ export default async function ProductsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {products.map((product: Product) => (
+                {/* Now using the Product type generated from the database */}
+                {products.map((product: ProductRaw) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="p-4">
                       <div className="font-medium text-gray-900">

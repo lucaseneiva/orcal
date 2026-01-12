@@ -2,7 +2,8 @@ import { createClient } from "@/lib/utils/supabase/server";
 import { getCurrentStore } from "@/lib/utils/get-current-store";
 import { redirect } from "next/navigation";
 import { QuoteRequestCard } from "./components/QuoteRequestCard";
-import { QuoteRequestRepo } from "@/lib/repositories/quote-request.repo";
+import { getQuoteRequestsByStoreId } from "@/lib/data/queries/quote-requests";
+// Import the interface to ensure we are aligning correctly
 import type { QuoteRequest } from "./components/QuoteRequestCard";
 
 export default async function quoteRequestsPage() {
@@ -11,8 +12,8 @@ export default async function quoteRequestsPage() {
   if (!store) redirect("/");
 
   const supabase = await createClient();
-  const quoteRequestRepo = new QuoteRequestRepo(supabase);
-  const rawQuoteRequests = await quoteRequestRepo.getFromStore(store.id);
+  
+  const rawQuoteRequests = await getQuoteRequestsByStoreId(store.id);
 
   if (!rawQuoteRequests || rawQuoteRequests.length === 0) {
     return (

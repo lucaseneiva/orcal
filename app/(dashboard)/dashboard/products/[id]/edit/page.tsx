@@ -1,10 +1,11 @@
-import { ProductRepo } from '@/lib/repositories/product.repo'
-import { StoreRepo } from '@/lib/repositories/store.repo'
+import { getProductById } from '@/lib/data/queries/products'
+import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ProductForm } from '../../form'
 import { createClient } from '@/lib/utils/supabase/server'
-import { ProductWithDetails } from '../../form'
+// Import the interface from the form file
+import { ProductWithDetails } from '@/lib/types/types'
 
 interface PageProps {
   params: Promise<{ id: string }>
@@ -21,15 +22,15 @@ export default async function EditProductPage({ params }: PageProps) {
   const supabase = await createClient()
 
   // 3. Fetch Product data
-  const productRepo = new ProductRepo(supabase)
-  const productData = await productRepo.getById(id)
+  
+  const productData = await getProductById(id)
 
   // 4. Handle 404
   if (!productData) return notFound()
 
   // 5. Fetch Attributes for the sidebar configuration
-  const storeRepo = new StoreRepo(supabase)
-  const allAttributes = await storeRepo.getAttributes(store.id)
+
+  const allAttributes = await getAttributesByStoreId(store.id)
 
   //6. Format and Cast the product
   const formattedProduct = {

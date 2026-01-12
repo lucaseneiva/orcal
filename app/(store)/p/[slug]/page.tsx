@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Image as ImageIcon, ChevronLeft } from 'lucide-react'
 import { createClient } from '@/lib/utils/supabase/server'
-import { ProductRepo } from '@/lib/repositories/product.repo'
+import { getProductBySlugAndStoreId} from '@/lib/data/queries/products'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { groupProductOptions } from '@/lib/utils/product-logic'
 import ProductForm from './components/product-form'
@@ -18,8 +18,7 @@ export default async function ProductPage({ params }: PageProps) {
   if (!store) notFound()
 
   const { slug } = await params
-  const productRepo = new ProductRepo(await createClient())
-  const product = await productRepo.getStoreProduct(store.id, slug)
+  const product = await getProductBySlugAndStoreId(store.id, slug)
   
   if (!product) return notFound()
 

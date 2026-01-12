@@ -4,48 +4,18 @@ import { upsertProductAction, deleteProductAction } from './actions'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ImageUpload } from '../components/image-upload'
-import { Database } from '@/lib/types/database.types'
+import { Attribute, AttributeWithOptions, ProductWithDetails } from '@/lib/types/types'
+import { ProductOption } from '@/lib/types/types'
 
-// --- Types ---
-
-// Helpers for Supabase types
-type Tables<T extends keyof Database['public']['Tables']> = Database['public']['Tables'][T]['Row']
-
-export type ProductRaw = Tables<'products'>
-
-export interface ProductOption {
-  value_id: string
-  value_name: string
-  description: string | null
-  attribute_id: string
-  attribute_name: string
-  attribute_slug: string
-}
-
-export interface ProductWithDetails extends ProductRaw {
-  options: ProductOption[]
-}
-
-type Attribute = {
-  id: string
-  name: string
-  attribute_values: { id: string; name: string }[]
-}
-
-// Inside form.tsx
 type ProductFormProps = {
-  // Use Partial or Omit to tell TS we don't need the database timestamps
   product?: Partial<ProductWithDetails> 
-  allAttributes: Attribute[]
+  allAttributes: AttributeWithOptions[]
 }
-
-// --- Component ---
 
 export function ProductForm({ product, allAttributes }: ProductFormProps) {
   
   const [imageUrl, setImageUrl] = useState(product?.image_url || '')
 
-  // Fixed 'any' by using ProductOption type
   const existingIds = new Set(
     product?.options?.map((opt: ProductOption) => opt.value_id) || []
   )
@@ -114,7 +84,7 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
               <div key={attr.id}>
                 <h4 className="text-sm font-semibold text-gray-800 mb-2 uppercase tracking-wider">{attr.name}</h4>
                 <div className="space-y-2">
-                  {attr.attribute_values.map((val) => (
+                  {attr.options.map((val) => (
                     <label key={val.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
                       <input 
                         type="checkbox"
