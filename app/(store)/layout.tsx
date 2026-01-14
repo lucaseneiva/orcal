@@ -19,7 +19,7 @@ export default async function StoreLayout({
         {children}
       </main>
 
-      <Footer storeName={store.name} />
+      <Footer storeName={store.name} primaryColor={store.primary_color}/>
     </div>
   );
 }

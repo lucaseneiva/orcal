@@ -28,7 +28,7 @@ export default async function DashboardLayout({
         {children}
       </main>
 
-      <Footer storeName={store.name} />
+      <Footer storeName={store.name} primaryColor={store.primary_color}/>
     </div>
   );
 }
