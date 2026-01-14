@@ -4,6 +4,7 @@ import { CartProvider } from "@/app/context/cart-context";
 import { StoreNotFound } from "@/components/StoreNotFound";
 import { getCurrentStore } from "@/lib/utils/get-current-store";
 import { headers } from "next/headers";
+import { ToasterProvider } from "@/components/providers/ToasterProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,6 +53,7 @@ export default async function RootLayout({
       >
         <CartProvider>
           <div className="mx-auto bg-gray-100 w-full flex-1">{children}</div>
+          <ToasterProvider />
         </CartProvider>
       </body>
     </html>

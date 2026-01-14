@@ -15,6 +15,18 @@ export async function findByDomain(domain: string | null): Promise<Store | null>
   return error ? null : data
 }
 
+export async function getStoreOwnerEmail(storeId: string): Promise<string | null> {
+  const supabase = await createClient()
 
+  // Busca o email na tabela profiles vinculado a esta loja
+  // Assumindo que o primeiro perfil encontrado é o admin/dono
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('email')
+    .eq('store_id', storeId)
+    .limit(1)
+    .single()
 
-
+  if (error || !data) return null
+  return data.email
+}

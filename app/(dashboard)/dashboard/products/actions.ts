@@ -6,48 +6,64 @@ import { redirect } from 'next/navigation'
 import { deleteProduct, upsertProduct } from '@/lib/data/mutations/products'
 import { slugify } from '@/lib/utils/slugfy'
 import { replaceAll } from '@/lib/data/mutations/products-attributes'
+import { ProductSchema } from '@/lib/validators'
 import { ProductInsert } from '@/lib/types/types'
+import { verifyStoreAccess } from '@/lib/utils/verify-store-acess'
 
 export async function upsertProductAction(formData: FormData) {
   try {
-    // 1. Validação inicial
     const store = await getCurrentStore()
+
     if (!store) throw new Error("Loja não encontrada")
 
-    // 2. Extrai dados do form
-    const id = formData.get('id') as string | null
-    const name = formData.get('name') as string
-    const description = formData.get('description') as string
-    const image_url = formData.get('image_url') as string
-    const status = null
+    await verifyStoreAccess(store.id)
+
     const selectedAttributeIds = formData.getAll('selected_values') as string[]
-    
-    let slug = formData.get('slug') as string
-    if (!slug?.trim()) {
-      slug = slugify(name)
+
+    const rawData = {
+      id: formData.get('id') || '',
+      name: formData.get('name') || '',
+      description: formData.get('description') || '',
+      image_url: formData.get('image_url') || '',
+      slug: formData.get('slug') || '',
+      status: formData.get('status') || '',
     }
-  
-    
+
+    const result = ProductSchema.safeParse(rawData)
+
+    if (!result.success) {
+      const errorMessage = result.error.issues
+        .map((issue) => issue.message)
+        .join('. ')
+      return { error: errorMessage }
+    }
+
+    const data = result.data
+
+    let finalSlug = data.slug
+    if (!finalSlug || finalSlug.trim() === '') {
+      finalSlug = slugify(data.name)
+    }
+
     const productPayload: ProductInsert = {
-      name,
-      description,
-      image_url,
-      slug,
-      status,
+      name: data.name,
+      description: data.description || null,
+      image_url: data.image_url || null,
+      slug: finalSlug,
+      status: (data.status as "active" | "inactive" | "draft") || 'active',
       store_id: store.id,
-
     }
 
-    
-    const product = await upsertProduct(id, store.id, productPayload)
-    
-    replaceAll(product.id, selectedAttributeIds)
-    
-    
+    const product = await upsertProduct(data.id || null, store.id, productPayload)
+
+    if (product?.id) {
+      await replaceAll(product.id, selectedAttributeIds)
+    }
+
   } catch (error) {
     console.error('Erro ao salvar produto:', error)
-    return { 
-      error: error instanceof Error ? error.message : 'Erro ao salvar produto' 
+    return {
+      error: error instanceof Error ? error.message : 'Erro interno ao salvar produto'
     }
   }
 
@@ -58,7 +74,6 @@ export async function upsertProductAction(formData: FormData) {
 export async function deleteProductAction(formData: FormData) {
   const id = formData.get('id') as string;
 
-  // 1. Basic Validation
   if (!id) {
     return { error: 'ID do produto não fornecido.' };
   }
@@ -66,13 +81,10 @@ export async function deleteProductAction(formData: FormData) {
   try {
     await deleteProduct(id);
   } catch (err) {
-    // 2. Log the actual error for debugging
     console.error('Delete product error:', err);
-    // 3. Return a user-friendly message
     return { error: 'Não foi possível deletar o produto.' };
   }
 
-  // 4. Revalidate and Redirect OUTSIDE the try/catch block
   revalidatePath('/dashboard/products');
   redirect('/dashboard/products');
 }

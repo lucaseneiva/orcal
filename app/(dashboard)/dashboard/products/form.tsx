@@ -4,16 +4,16 @@ import { upsertProductAction, deleteProductAction } from './actions'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ImageUpload } from '../components/image-upload'
-import { Attribute, AttributeWithOptions, ProductWithOptions } from '@/lib/types/types'
-import { ProductOption } from '@/lib/types/types'
+import { AttributeWithOptions, ProductWithOptions, ProductOption } from '@/lib/types/types'
+import { toast } from 'sonner'
 
 type ProductFormProps = {
-  product?: Partial<ProductWithOptions> 
+  product?: Partial<ProductWithOptions>
   allAttributes: AttributeWithOptions[]
 }
 
 export function ProductForm({ product, allAttributes }: ProductFormProps) {
-  
+
   const [imageUrl, setImageUrl] = useState(product?.image_url || '')
 
   const existingIds = new Set(
@@ -22,21 +22,27 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
 
   async function handleSubmit(formData: FormData) {
     const result = await upsertProductAction(formData)
-    if (result?.error) alert(result.error)
+    if (result?.error) {
+      toast.error(result.error)
+    }
   }
 
   async function handleDelete(formData: FormData) {
+    if (!confirm('Tem certeza que deseja excluir?')) return;
+
     const result = await deleteProductAction(formData)
-    if (result?.error) alert(result.error)
+    if (result?.error) {
+      toast.error(result.error)
+    }
   }
 
   return (
     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
-      
+
       <div className="md:col-span-2 bg-white p-6 rounded-xl border shadow-sm h-fit">
         <form id="product-form" action={handleSubmit} className="flex flex-col gap-5">
           {product?.id && <input type="hidden" name="id" value={product.id} />}
-          
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
             <input name="name" defaultValue={product?.name} required className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700 mb-1" />
@@ -54,10 +60,10 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Imagem do Produto</label>
-            
-            <ImageUpload 
-                defaultUrl={imageUrl} 
-                onUrlChange={(url) => setImageUrl(url)} 
+
+            <ImageUpload
+              defaultUrl={imageUrl}
+              onUrlChange={(url) => setImageUrl(url)}
             />
 
             <input type="hidden" name="image_url" value={imageUrl} />
@@ -86,7 +92,7 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
                 <div className="space-y-2">
                   {attr.options.map((val) => (
                     <label key={val.id} className="flex items-center gap-2 cursor-pointer hover:bg-gray-50 p-1 rounded">
-                      <input 
+                      <input
                         type="checkbox"
                         form="product-form"
                         name="selected_values"
@@ -104,25 +110,25 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
         )}
 
         <div className="mt-8 pt-6 border-t">
-            <button 
-              type="submit"
-              form="product-form"
-              className="w-full px-5 py-2.5 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800"
-            >
-              {product ? 'Salvar Tudo' : 'Criar Produto'}
-            </button>
-            <Link href="/dashboard/products" className="block text-center mt-3 text-sm text-gray-500 hover:text-black">
-                Cancelar
-            </Link>
+          <button
+            type="submit"
+            form="product-form"
+            className="w-full px-5 py-2.5 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800"
+          >
+            {product?.id ? 'Salvar Tudo' : 'Criar Produto'}
+          </button>
+          <Link href="/dashboard/products" className="block text-center mt-3 text-sm text-gray-500 hover:text-black">
+            Cancelar
+          </Link>
         </div>
 
         {product?.id && (
-             <div className="mt-4 pt-4 border-t border-red-100 text-center">
-             <form action={handleDelete}>
-               <input type="hidden" name="id" value={product.id} />
-               <button type="submit" className="text-xs text-red-600 underline">Excluir Produto</button>
-             </form>
-           </div>
+          <div className="mt-4 pt-4 border-t border-red-100 text-center">
+            <form action={handleDelete}>
+              <input type="hidden" name="id" value={product.id} />
+              <button type="submit" className="text-xs text-red-600 underline">Excluir Produto</button>
+            </form>
+          </div>
         )}
       </div>
     </div>

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { createClient } from "@/lib/utils/supabase/client";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ImageUploadProps {
   defaultUrl?: string;
@@ -70,6 +71,8 @@ export function ImageUpload({ defaultUrl, onUrlChange }: ImageUploadProps) {
     if (!originalFile) return;
 
     setUploading(true);
+    const toastId = toast.loading("Otimizando imagem...");
+
     try {
       const file = await optimizeImage(originalFile);
       const supabase = createClient();
@@ -89,9 +92,11 @@ export function ImageUpload({ defaultUrl, onUrlChange }: ImageUploadProps) {
       const { data } = supabase.storage.from("images").getPublicUrl(fileName);
       setPreview(data.publicUrl);
       onUrlChange(data.publicUrl);
+
+      toast.success("Imagem enviada!", { id: toastId });
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Erro ao processar imagem.");
+      toast.error("Erro ao processar imagem.", { id: toastId });
     } finally {
       setUploading(false);
     }
