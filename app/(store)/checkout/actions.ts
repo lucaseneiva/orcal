@@ -6,7 +6,8 @@ import { revalidatePath } from 'next/cache'
 import { sendOrderNotificationEmail } from '@/lib/services/email.service'
 import { getStoreOwnerEmail } from '@/lib/data/queries/stores'
 import { Json } from '@/lib/types/database.types'
-import { CartItem, QuoteRequestInsert } from '@/lib/types/types'
+import { QuoteRequestInsert } from '@/lib/types/types'
+import { QuoteRequestSchema } from '@/lib/validators'
 
 export async function submitOrder(formData: FormData) {
   const supabase = await createClient()
@@ -14,34 +15,31 @@ export async function submitOrder(formData: FormData) {
 
   if (!store) return { success: false, error: 'Loja indisponível' }
 
-  // Extract data
-  const name = formData.get('name') as string
-  const email = formData.get('email') as string
-  const whatsapp = formData.get('whatsapp') as string
-  const cartJson = formData.get('cart_items') as string
-
-  if (!cartJson) return { success: false, error: 'Carrinho vazio' }
-
-  // 1. Validate / Parse Items
-  let items: CartItem[] = []
-  try {
-    items = JSON.parse(cartJson)
-  } catch (e) {
-    return { success: false, error: 'Dados do carrinho inválidos', e }
+  const rawData = {
+    name: formData.get('name'),
+    email: formData.get('email'),
+    whatsapp: formData.get('whatsapp'),
+    cart_items: formData.get('cart_items')
   }
 
-  // 2. Prepare DB Payload
+  const validation = QuoteRequestSchema.safeParse(rawData)
+
+  if (!validation.success) {
+    return { success: false, error: validation.error.issues[0].message }
+  }
+
+  const { name, email, whatsapp, cart_items } = validation.data
+
   const orderPayload: QuoteRequestInsert = {
     store_id: store.id,
     customer_name: name,
     email: email,
     customer_whatsapp: whatsapp,
-    items: (items as unknown) as Json,
-    total_items: items.length,
+    items: (cart_items as unknown) as Json,
+    total_items: cart_items.length,
     status: 'pending'
   }
 
-  // 3. Database Insert
   const { error: dbError } = await supabase
     .from('quote_requests')
     .insert(orderPayload)
@@ -51,8 +49,6 @@ export async function submitOrder(formData: FormData) {
     return { success: false, error: 'Erro interno ao salvar pedido.' }
   }
 
-  // 4. Send Email
-  // Fetch the merchant email linked to this store
   const merchantEmail = await getStoreOwnerEmail(store.id)
 
   if (merchantEmail) {
@@ -61,7 +57,7 @@ export async function submitOrder(formData: FormData) {
       customerName: name,
       customerEmail: email,
       customerWhatsapp: whatsapp,
-      items: items
+      items: cart_items
     })
   } else {
     console.warn(`[Checkout] Pedido criado, mas loja ${store.id} não possui email de admin configurado.`)

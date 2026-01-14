@@ -1,17 +1,17 @@
 import { useState, useRef } from 'react'
-import { createValue, deleteValue, updateValue } from '../actions'
+import { createOptonAction, deleteOptionAction, updateOptionAction } from '../actions'
 
 export function useAttributeValues() {
   const formRef = useRef<HTMLFormElement>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const handleCreate = async (formData: FormData) => {
-    await createValue(formData)
+    await createOptonAction(formData)
     formRef.current?.reset()
   }
 
   const handleUpdate = async (formData: FormData) => {
-    await updateValue(formData)
+    await updateOptionAction(formData)
     setEditingId(null)
   }
 
@@ -20,7 +20,7 @@ export function useAttributeValues() {
     formData.append('id', id)
     formData.append('attribute_id', attributeId)
     
-    await deleteValue(formData) // 🔥 ERA ISSO! Estava chamando deleteAttribute
+    await deleteOptionAction(formData) // 🔥 ERA ISSO! Estava chamando deleteAttribute
   }
 
   return {

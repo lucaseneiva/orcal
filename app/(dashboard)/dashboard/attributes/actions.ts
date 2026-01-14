@@ -1,23 +1,38 @@
 'use server'
 
-import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createAttribute, updateAttribute, deleteAttribute } from '@/lib/data/mutations/attributes'
 import { createOption, deleteOption, updateOption } from '@/lib/data/mutations/options'
 import { OptionInsert } from '@/lib/types/types'
+import { AttributeSchema, OptionSchema } from '@/lib/validators' // Import Zod Schemas
+import { slugify } from '@/lib/utils/slugfy'
 
 export async function upsertAttribute(formData: FormData) {
-  const supabase = await createClient()
   const store = await getCurrentStore()
   if (!store) throw new Error("Loja não encontrada")
 
-  const id = formData.get('id') as string
-  const name = formData.get('name') as string
-  const slug = name.toLowerCase().trim().replace(/\s+/g, '-')
-  const payload = { name, slug, store_id: store.id }
+  const rawData = {
+    id: formData.get('id') || '',
+    name: formData.get('name') || '',
+  }
 
+  const validation = AttributeSchema.safeParse(rawData)
+
+  if (!validation.success) {
+    throw new Error(validation.error.issues[0].message)
+  }
+
+  const { id, name } = validation.data
+
+  const slug = slugify(name)
+
+  const payload = {
+    name,
+    slug,
+    store_id: store.id
+  }
 
   if (id) {
     await updateAttribute(id, payload)
@@ -31,6 +46,7 @@ export async function upsertAttribute(formData: FormData) {
 
 export async function deleteAttributeAction(formData: FormData) {
   const id = formData.get('id') as string
+  if (!id) throw new Error("ID inválido")
 
   await deleteAttribute(id)
 
@@ -38,23 +54,26 @@ export async function deleteAttributeAction(formData: FormData) {
   redirect('/dashboard/attributes')
 }
 
-export async function createValue(formData: FormData) {
+export async function createOptonAction(formData: FormData) {
+  const rawData = {
+    attribute_id: formData.get('attribute_id'),
+    name: formData.get('name'),
+    description: formData.get('description')
+  }
 
-  const attribute_id = formData.get('attribute_id') as string
-  const id = formData.get('id') as string
-  const name = formData.get('name') as string
-  const description = formData.get('description') as string
+  const validation = OptionSchema.omit({ id: true }).safeParse(rawData)
 
-  if (!name || !attribute_id) {
-    console.error("Dados incompletos para criar valor")
+  if (!validation.success) {
+    console.error("Validation Error:", validation.error.issues[0].message)
     return
   }
 
+  const { attribute_id, name, description } = validation.data
 
   const payload: OptionInsert = {
-    name: name,
-    attribute_id: attribute_id,
-    description: description
+    name,
+    attribute_id,
+    description: description || null
   }
 
   await createOption(payload)
@@ -62,30 +81,42 @@ export async function createValue(formData: FormData) {
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
 
-export async function deleteValue(formData: FormData) {
-  const supabase = await createClient()
+export async function updateOptionAction(formData: FormData) {
+  const rawData = {
+    id: formData.get('id'),
+    attribute_id: formData.get('attribute_id'),
+    name: formData.get('name'),
+    description: formData.get('description')
+  }
 
-  const id = formData.get('id') as string
-  const attribute_id = formData.get('attribute_id') as string
+  const validation = OptionSchema.safeParse(rawData)
 
-  await deleteOption(id)
+  if (!validation.success) {
+    console.error("Validation Error:", validation.error.issues[0].message)
+    return
+  }
 
-  revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
-}
-
-export async function updateValue(formData: FormData) {
-  const id = formData.get('id') as string
-  const name = formData.get('name') as string
-  const attribute_id = formData.get('attribute_id') as string
-  const description = formData.get('description') as string
+  const { id, attribute_id, name, description } = validation.data
 
   const payload = {
     name,
     description: description || null,
   }
 
-  
-  await updateOption(id, payload)
+  if (id) {
+    await updateOption(id, payload)
+  }
+
+  revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
+}
+
+export async function deleteOptionAction(formData: FormData) {
+  const id = formData.get('id') as string
+  const attribute_id = formData.get('attribute_id') as string
+
+  if (!id) return
+
+  await deleteOption(id)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
