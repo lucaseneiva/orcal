@@ -10,7 +10,7 @@ interface NewLeadEmailProps {
   customerName: string;
   customerEmail: string;
   customerWhatsapp: string;
-  items: EmailItem[]; // Trocado de any[] para EmailItem[]
+  items: EmailItem[];
   tenantName: string;
 }
 

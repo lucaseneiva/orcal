@@ -9,7 +9,6 @@ import { Loader2 } from 'lucide-react'
 export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOptions}) {
   const [loading, setLoading] = useState(false)
 
-  // Wrapper to handle the Upsert action
   async function handleUpsert(formData: FormData) {
     setLoading(true)
     const result = await upsertAttribute(formData)

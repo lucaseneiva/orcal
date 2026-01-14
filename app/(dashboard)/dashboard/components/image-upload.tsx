@@ -1,8 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import { createClient } from "@/lib/utils/supabase/client";
 import { useState } from "react";
-import Image from "next/image"; // Import Next.js Image
 
 interface ImageUploadProps {
   defaultUrl?: string;
@@ -15,7 +15,7 @@ async function optimizeImage(file: File): Promise<File> {
     reader.readAsDataURL(file);
 
     reader.onload = (event) => {
-      const img = new window.Image(); // Use window.Image to avoid conflict with next/image
+      const img = new window.Image();
       img.src = event.target?.result as string;
 
       img.onload = () => {
@@ -114,7 +114,7 @@ export function ImageUpload({ defaultUrl, onUrlChange }: ImageUploadProps) {
             fill
             className="object-contain"
             sizes="(max-width: 768px) 100vw, 400px"
-            // ADICIONE ESTA LINHA ABAIXO:
+
             unoptimized={
               preview.startsWith("http://127.0.0.1") ||
               preview.startsWith("http://localhost")

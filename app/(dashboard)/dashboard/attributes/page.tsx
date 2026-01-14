@@ -11,7 +11,8 @@ export default async function AttributesPage() {
   const attributes = await getAttributesByStoreId(store.id)
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
+    <div className="p-6">
+      <Link href="/dashboard/" className="text-sm text-gray-500 mb-4 block">← Voltar</Link>
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Seus Atributos</h1>

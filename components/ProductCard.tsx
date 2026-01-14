@@ -1,14 +1,13 @@
 'use client'
 import Link from "next/link";
 import Image from "next/image";
-// 1. Importamos o ícone (com alias para não conflitar com o componente Image)
 import { Image as ImageIcon } from "lucide-react";
 
 type ProductProps = {
   id: string
   name: string
   description: string
-  imageUrl: string | null // Ajustado para aceitar null
+  imageUrl: string | null 
   color: string
   slug: string
 }
@@ -29,7 +28,7 @@ export function ProductCard({ name, description, imageUrl, color, slug }: Produc
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         ) : (
-          /* 2. Placeholder usando Lucide */
+          /* 2. Placeholder */
           <div className="w-full h-full flex flex-col items-center justify-center text-slate-300">
             <ImageIcon size={40} strokeWidth={1.5} />
             <span className="text-xs mt-2 font-medium">Sem imagem</span>
