@@ -8,11 +8,15 @@ import { slugify } from '@/lib/utils/slugfy'
 import { replaceAll } from '@/lib/data/mutations/products-attributes'
 import { ProductSchema } from '@/lib/validators'
 import { ProductInsert } from '@/lib/types/types'
+import { verifyStoreAccess } from '@/lib/utils/verify-store-acess'
 
 export async function upsertProductAction(formData: FormData) {
   try {
     const store = await getCurrentStore()
+
     if (!store) throw new Error("Loja não encontrada")
+
+    await verifyStoreAccess(store.id)
 
     const selectedAttributeIds = formData.getAll('selected_values') as string[]
 
