@@ -38,11 +38,11 @@ export default function ProductForm({ product, groupedOptions, store }: ProductF
     // Map selections to readable string for the Cart
     const selectedOptionsReadable = groupedOptions.map(group => {
       const selectedValueId = selections[group.id]
-      const selectedOption = group.values.find(v => v.value_id === selectedValueId)
+      const selectedOption = group.values.find(v => v.option_id === selectedValueId)
       
       return {
         name: group.name,
-        value: selectedOption?.value_name || 'Padrão'
+        value: selectedOption?.option_name || 'Padrão'
       }
     })
 
@@ -73,8 +73,8 @@ export default function ProductForm({ product, groupedOptions, store }: ProductF
                 onChange={(e) => handleSelectionChange(attrGroup.id, e.target.value)}
               >
                 {attrGroup.values.map((val) => (
-                  <option key={val.value_id} value={val.value_id}>
-                    {val.value_name}
+                  <option key={val.option_id} value={val.option_id}>
+                    {val.option_name}
                   </option>
                 ))}
               </select>

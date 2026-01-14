@@ -20,8 +20,8 @@ export interface QuoteRequest {
   customer_name: string;
   customer_whatsapp: string | null;
   email: string | null;
-  viewed: boolean | null; // Allow null from DB
-  created_at: string | null; // Allow null from DB
+  viewed: boolean | null; 
+  created_at: string | null;
   total_items: number;
   items: QuoteRequestItem[];
 }
@@ -125,7 +125,7 @@ export function QuoteRequestCard({ order }: QuoteRequestCardProps) {
                 Itens do Pedido
               </h4>
               <ul className="space-y-3">
-                {/* Fixed: item: QuoteRequestItem */}
+                {/* QuoteRequestItem */}
                 {order.items.map((item: QuoteRequestItem, idx: number) => (
                   <li
                     key={idx}
@@ -137,7 +137,7 @@ export function QuoteRequestCard({ order }: QuoteRequestCardProps) {
                       </p>
                       {item.options && item.options.length > 0 && (
                         <div className="mt-1 flex flex-wrap gap-1">
-                          {/* Fixed: opt: QuoteItemOption */}
+                          {/* QuoteItemOption */}
                           {item.options.map(
                             (opt: QuoteItemOption, i: number) => (
                               <span

@@ -5,7 +5,7 @@ import { ChevronDown } from 'lucide-react'
 import { GroupedAttribute } from '@/lib/utils/product-logic'
 
 interface AttributeDetailsProps {
-  groupedOptions: GroupedAttribute[] // Receives pre-calculated groups
+  groupedOptions: GroupedAttribute[]
   brandColor?: string
 }
 
@@ -14,7 +14,7 @@ export default function AttributeDetails({ groupedOptions, brandColor = '#000000
 
   // Filter groups that have at least one value with a description
   const groupsWithDescriptions = groupedOptions.filter(group => 
-    group.values.some(val => val.description)
+    group.values.some(val => val.option_description)
   )
 
   if (groupsWithDescriptions.length === 0) {
@@ -51,15 +51,15 @@ export default function AttributeDetails({ groupedOptions, brandColor = '#000000
               {isExpanded && (
                 <div className="p-4 bg-white space-y-4">
                   {group.values.map((val) => {
-                    if (!val.description) return null
+                    if (!val.option_description) return null
                     
                     return (
-                      <div key={val.value_id} className="border-l-4 pl-4 py-2" style={{ borderColor: brandColor }}>
+                      <div key={val.option_id} className="border-l-4 pl-4 py-2" style={{ borderColor: brandColor }}>
                         <h4 className="font-semibold text-gray-900 mb-1">
-                          {val.value_name}
+                          {val.option_name}
                         </h4>
                         <p className="text-sm text-gray-600 leading-relaxed">
-                          {val.description}
+                          {val.option_description}
                         </p>
                       </div>
                     )

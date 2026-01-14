@@ -4,11 +4,11 @@ import { upsertProductAction, deleteProductAction } from './actions'
 import Link from 'next/link'
 import { useState } from 'react'
 import { ImageUpload } from '../components/image-upload'
-import { Attribute, AttributeWithOptions, ProductWithDetails } from '@/lib/types/types'
+import { Attribute, AttributeWithOptions, ProductWithOptions } from '@/lib/types/types'
 import { ProductOption } from '@/lib/types/types'
 
 type ProductFormProps = {
-  product?: Partial<ProductWithDetails> 
+  product?: Partial<ProductWithOptions> 
   allAttributes: AttributeWithOptions[]
 }
 
@@ -17,7 +17,7 @@ export function ProductForm({ product, allAttributes }: ProductFormProps) {
   const [imageUrl, setImageUrl] = useState(product?.image_url || '')
 
   const existingIds = new Set(
-    product?.options?.map((opt: ProductOption) => opt.value_id) || []
+    product?.options?.map((opt: ProductOption) => opt.option_id) || []
   )
 
   async function handleSubmit(formData: FormData) {

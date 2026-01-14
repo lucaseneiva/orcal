@@ -21,15 +21,15 @@ export interface AttributeWithOptions extends AttributeRow {
 }
 
 export interface ProductOption {
-  value_id: string
-  value_name: string
-  description: string | null
+  option_id: string
+  option_name: string
+  option_description: string | null
   attribute_id: string
   attribute_name: string
   attribute_slug: string
 }
 
-export interface ProductWithDetails extends ProductRaw {
+export interface ProductWithOptions extends ProductRaw {
   options: ProductOption[]
 }
 
@@ -43,9 +43,7 @@ export type CartItem = {
   productName: string
   quantity: number
   imageUrl?: string
-  // 'options' é opcional pois o produto pode não ter variações
   options?: CartItemOption[] 
 }
 
-// Alias para manter compatibilidade se você já usou QuoteRequestItem em outros lugares
 export type QuoteRequestItem = CartItem

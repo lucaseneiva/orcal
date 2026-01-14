@@ -1,4 +1,4 @@
-import { Search, ShoppingBag, PackageSearch } from 'lucide-react' // 1. Adicionado PackageSearch
+import { Search, ShoppingBag, PackageSearch } from 'lucide-react'
 import { ProductCard } from '@/components/ProductCard'
 import { Database } from '@/lib/types/database.types'
 
@@ -15,7 +15,7 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
   const cartCount = 0; 
 
   return (
-    <main className="min-h-screen bg-slate-50 font-sans pb-20">
+    <main className="p-0">
       <header 
         className="py-12 px-6 border-b"
         style={{ 
@@ -58,7 +58,7 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
         </div>
         
         {products.length === 0 ? (
-          /* 2. Estado Vazio com Ícone Lucide */
+          /* Empty State */
           <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-slate-300 flex flex-col items-center justify-center">
             <PackageSearch size={48} className="text-slate-300 mb-4" strokeWidth={1.5} />
             <p className="text-slate-400 font-medium">Nenhum produto disponível no momento.</p>
@@ -72,7 +72,6 @@ export function StoreHome({ store, products, primaryColor }: StoreHomeProps) {
                 name={product.name}
                 description={product.description || ''}
                 id={product.id}
-                /* 3. Passamos a URL original. Se for null, o ProductCard exibirá o ícone */
                 imageUrl={product.image_url} 
                 color={primaryColor}
                 slug={product.slug}

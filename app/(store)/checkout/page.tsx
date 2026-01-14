@@ -3,8 +3,6 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useCheckout } from './hooks/useCheckout'
-
-// Components
 import { CheckoutSuccess } from './components/checkout-success'
 import { EmptyCartView } from './components/empty-cart-view'
 import { CartItemList } from './components/cart-item-list'
@@ -29,7 +27,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-6 min-h-screen">
+    <div className="max-w-5xl mx-auto p-6">
       <Link href="/" className="text-sm font-medium text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-2 mb-8 w-fit">
         <ArrowLeft className="w-4 h-4" />
         Continuar Comprando

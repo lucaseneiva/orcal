@@ -35,7 +35,7 @@ export async function submitOrder(formData: FormData) {
     customer_name: name,
     email: email,
     customer_whatsapp: whatsapp,
-    items: (items as unknown) as Json, // Safe cast for Supabase
+    items: (items as unknown) as Json,
     total_items: items.length,
     status: 'pending'
   }
@@ -50,7 +50,7 @@ export async function submitOrder(formData: FormData) {
     return { success: false, error: 'Erro interno ao salvar pedido.' }
   }
 
-  // 4. Send Email (Non-blocking usually, but awaited here for safety)
+  // 4. Send Email
   await sendOrderNotificationEmail({
     customerName: name,
     customerEmail: email,
