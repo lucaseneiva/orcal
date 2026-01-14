@@ -4,8 +4,9 @@ import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { sendOrderNotificationEmail } from '@/lib/services/email.service'
+import { getStoreOwnerEmail } from '@/lib/data/queries/stores'
 import { Json } from '@/lib/types/database.types'
-import { CartItem, QuoteRequestInsert } from '@/lib/types/types' 
+import { CartItem, QuoteRequestInsert } from '@/lib/types/types'
 
 export async function submitOrder(formData: FormData) {
   const supabase = await createClient()
@@ -18,7 +19,7 @@ export async function submitOrder(formData: FormData) {
   const email = formData.get('email') as string
   const whatsapp = formData.get('whatsapp') as string
   const cartJson = formData.get('cart_items') as string
-  
+
   if (!cartJson) return { success: false, error: 'Carrinho vazio' }
 
   // 1. Validate / Parse Items
@@ -51,12 +52,20 @@ export async function submitOrder(formData: FormData) {
   }
 
   // 4. Send Email
-  await sendOrderNotificationEmail({
-    customerName: name,
-    customerEmail: email,
-    customerWhatsapp: whatsapp,
-    items: items
-  })
+  // Fetch the merchant email linked to this store
+  const merchantEmail = await getStoreOwnerEmail(store.id)
+
+  if (merchantEmail) {
+    await sendOrderNotificationEmail({
+      merchantEmail,
+      customerName: name,
+      customerEmail: email,
+      customerWhatsapp: whatsapp,
+      items: items
+    })
+  } else {
+    console.warn(`[Checkout] Pedido criado, mas loja ${store.id} não possui email de admin configurado.`)
+  }
 
   revalidatePath('/dashboard/orders')
   return { success: true }
