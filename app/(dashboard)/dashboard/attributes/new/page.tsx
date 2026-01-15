@@ -3,7 +3,7 @@ import { AttributeHeaderForm } from '../components/attribute-header-form'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import NotFound from '@/app/not-found'
 
-export async function NewAttributePage() {
+export default async function NewAttributePage() {
 
   const store = await getCurrentStore()
   if (!store) return NotFound()
