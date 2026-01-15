@@ -10,7 +10,7 @@ interface ProductFormProps {
   product: {
     id: string
     name: string
-    image_url: string
+    image_url: string | null
     options: ProductOption[]
     quantity_tiers?: number[]
     
