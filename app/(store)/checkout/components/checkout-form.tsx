@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { Loader2, ArrowRight, Info } from 'lucide-react'
 
 type CheckoutFormProps = {
@@ -18,6 +19,27 @@ export function CheckoutForm({
   submitLabel = 'Solicitar Orçamento',
   infoText = 'Este é um pedido de orçamento. O pagamento e a entrega serão combinados diretamente com o vendedor após o contato.',
 }: CheckoutFormProps) {
+  const [phone, setPhone] = useState('')
+
+  const formatPhoneNumber = (value: string) => {
+    // Remove tudo que não é número
+    const digits = value.replace(/\D/g, '')
+
+    // Aplica a máscara (99) 99999-9999
+    if (digits.length <= 2) {
+      return digits
+    } else if (digits.length <= 7) {
+      return `(${digits.slice(0, 2)}) ${digits.slice(2)}`
+    } else {
+      return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`
+    }
+  }
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneNumber(e.target.value)
+    setPhone(formatted)
+  }
+
   return (
     <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-xl lg:sticky lg:top-8">
       <h2 className="text-xl font-bold text-slate-900 mb-6">
@@ -58,8 +80,11 @@ export function CheckoutForm({
             name="whatsapp"
             required
             type="tel"
+            value={phone}
+            onChange={handlePhoneChange}
             className="w-full bg-slate-50 border border-transparent rounded-xl p-4 outline-none focus:bg-white focus:border-slate-900 transition-all text-slate-900 placeholder:text-slate-400"
             placeholder="(00) 00000-0000"
+            maxLength={15}
           />
         </div>
 

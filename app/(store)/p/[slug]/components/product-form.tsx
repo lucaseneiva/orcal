@@ -10,8 +10,10 @@ interface ProductFormProps {
   product: {
     id: string
     name: string
+    image_url: string
     options: ProductOption[]
     quantity_tiers?: number[]
+    
   }
   groupedOptions: GroupedAttribute[]
   store: {
@@ -50,6 +52,7 @@ export default function ProductForm({ product, groupedOptions, store }: ProductF
       productId: product.id,
       productName: product.name,
       quantity: quantity,
+      imageUrl: product.image_url ?? undefined,
       options: selectedOptionsReadable
     })
     
