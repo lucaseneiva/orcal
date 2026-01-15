@@ -96,18 +96,16 @@ export default async function ProductsPage() {
 
                     <td className="p-4">
                       <span
-                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          product.status === 'active'
-                            ? 'bg-green-100 text-green-700'
-                            : 'bg-gray-100 text-gray-700'
-                        }`}
+                        className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${product.status === 'active'
+                          ? 'bg-green-100 text-green-700'
+                          : 'bg-gray-100 text-gray-700'
+                          }`}
                       >
                         <span
-                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                            product.status === 'active'
-                              ? 'bg-green-500'
-                              : 'bg-gray-500'
-                          }`}
+                          className={`w-1.5 h-1.5 rounded-full mr-1.5 ${product.status === 'active'
+                            ? 'bg-green-500'
+                            : 'bg-gray-500'
+                            }`}
                         />
                         {product.status === 'active'
                           ? 'Ativo'
@@ -120,8 +118,8 @@ export default async function ProductsPage() {
                     <td className="p-4 text-right">
                       <Link
                         href={`/dashboard/products/${product.id}/edit`}
-                        className="text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
-                        style={{ backgroundColor: primaryColor }}
+                        className="px-5 py-2.5 text-sm font-medium hover:opacity-80 transition-opacity "
+                        style={{ color: primaryColor }}
                       >
                         Editar
                       </Link>
