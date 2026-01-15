@@ -6,7 +6,13 @@ import { AttributeWithOptions } from '@/lib/types/types'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'
 
-export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOptions}) {
+export function AttributeHeaderForm({ 
+  attribute, 
+  primaryColor = '#000000'
+}: { 
+  attribute?: AttributeWithOptions, 
+  primaryColor?: string 
+}) {
   const [loading, setLoading] = useState(false)
 
   async function handleUpsert(formData: FormData) {
@@ -15,13 +21,11 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOp
     
   }
 
-  // Wrapper to handle the Delete action
   async function handleDelete(formData: FormData) {
     if (!confirm('Excluir atributo e todos os seus valores?')) return
     
     setLoading(true)
     await deleteAttributeAction(formData)
-    // Redirects happen on server
   }
 
   return (
@@ -42,7 +46,7 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOp
         )}
       </div>
 
-      {/* Point to the client wrapper, not the server action directly */}
+      
       <form action={handleUpsert} className="flex flex-col gap-4">
         {attribute?.id && <input type="hidden" name="id" value={attribute.id} />}
         
@@ -54,7 +58,8 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOp
             placeholder="Ex: Cor, Tamanho"
             required
             disabled={loading}
-            className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 focus:ring-black text-gray-700 disabled:bg-gray-100"
+            className="w-full border rounded-lg p-2.5 outline-none focus:ring-2 text-gray-700 disabled:bg-gray-100"
+            style={{ '--tw-ring-color': primaryColor } as React.CSSProperties} // Dynamic ring color
           />
         </div>
 
@@ -65,7 +70,8 @@ export function AttributeHeaderForm({ attribute }: { attribute?: AttributeWithOp
           <button 
             type="submit" 
             disabled={loading}
-            className="px-4 py-2 text-sm bg-black text-white rounded hover:bg-gray-800 flex-1 flex items-center justify-center gap-2"
+            className="px-4 py-2 text-sm text-white rounded hover:opacity-90 flex-1 flex items-center justify-center gap-2 transition-opacity"
+            style={{ backgroundColor: primaryColor }} // Apply primary color
           >
             {loading && <Loader2 className="animate-spin w-4 h-4" />}
             {attribute ? 'Salvar Nome' : 'Criar e Adicionar Valores →'}

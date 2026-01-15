@@ -2,13 +2,13 @@ import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
 import { redirect } from 'next/navigation'
-import { Options } from '@react-email/render'
 
 export default async function AttributesPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
   const attributes = await getAttributesByStoreId(store.id)
+  const primaryColor = store.primary_color
 
   return (
     <div className="p-6">
@@ -16,7 +16,11 @@ export default async function AttributesPage() {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Seus Atributos</h1>
-          <Link href="/dashboard/attributes/new" className="bg-black text-white px-4 py-2 rounded text-sm font-bold hover:bg-gray-800">
+          <Link
+            href="/dashboard/attributes/new"
+            style={{ backgroundColor: primaryColor }}
+            className="text-white px-4 py-2 rounded text-sm font-bold hover:opacity-90 transition-opacity"
+          >
             + Novo Atributo
           </Link>
         </div>
@@ -41,9 +45,10 @@ export default async function AttributesPage() {
                       {attr.options.map(v => v.name).join(', ') || '-'}
                     </td>
                     <td className="p-4 text-right">
-                      <Link 
-                        href={`/dashboard/attributes/${attr.id}/edit`} 
-                        className="text-sm font-medium text-blue-600 hover:text-blue-900"
+                      <Link
+                        href={`/dashboard/attributes/${attr.id}/edit`}
+                        className="text-sm font-medium hover:underline"
+                        style={{ color: primaryColor }}
                       >
                         Editar
                       </Link>
