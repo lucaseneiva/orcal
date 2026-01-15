@@ -49,7 +49,8 @@ export default async function EditProductPage({ params }: PageProps) {
 
       <ProductForm 
         product={formattedProduct} 
-        allAttributes={allAttributes} 
+        allAttributes={allAttributes}
+        primaryColor={store.primary_color}
       />
     </div>
   )

@@ -13,7 +13,7 @@ export default async function NewProductPage() {
       <div className="max-w-4xl mx-auto mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Novo Produto</h1>
       </div>
-      <ProductForm allAttributes={allAttributes} />
+      <ProductForm allAttributes={allAttributes} primaryColor={store.primary_color}/>
     </div>
   )
 } 

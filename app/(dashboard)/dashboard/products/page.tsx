@@ -5,9 +5,10 @@ import { getAllProductsByStoreId } from '@/lib/data/queries/products'
 import { ProductRaw } from '@/lib/types/types'
 
 export default async function ProductsPage() {
-  const store = await getCurrentStore();
-  if (!store) redirect("/dashboard");
+  const store = await getCurrentStore()
+  if (!store) redirect('/dashboard')
 
+  const primaryColor = store.primary_color ?? '#000000'
   const products = await getAllProductsByStoreId(store.id)
 
   return (
@@ -19,12 +20,15 @@ export default async function ProductsPage() {
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Seus Produtos</h1>
+            <h1 className="text-3xl font-bold text-gray-900">
+              Seus Produtos
+            </h1>
           </div>
 
           <Link
             href="/dashboard/products/new"
-            className="bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800"
+            className="text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
+            style={{ backgroundColor: primaryColor }}
           >
             + Novo Produto
           </Link>
@@ -48,15 +52,19 @@ export default async function ProductsPage() {
                   />
                 </svg>
               </div>
+
               <h3 className="text-lg font-semibold mb-2">
                 Nenhum produto cadastrado
               </h3>
+
               <p className="text-gray-500 mb-6">
                 Comece adicionando seu primeiro produto.
               </p>
+
               <Link
                 href="/dashboard/products/new"
-                className="inline-block bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800"
+                className="inline-block text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
+                style={{ backgroundColor: primaryColor }}
               >
                 + Cadastrar Primeiro Produto
               </Link>
@@ -76,8 +84,8 @@ export default async function ProductsPage() {
                   </th>
                 </tr>
               </thead>
+
               <tbody className="divide-y">
-                {/* Now using the Product type generated from the database */}
                 {products.map((product: ProductRaw) => (
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="p-4">
@@ -85,32 +93,35 @@ export default async function ProductsPage() {
                         {product.name}
                       </div>
                     </td>
+
                     <td className="p-4">
                       <span
                         className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                          product.status === "active"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-700"
+                          product.status === 'active'
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-gray-100 text-gray-700'
                         }`}
                       >
                         <span
                           className={`w-1.5 h-1.5 rounded-full mr-1.5 ${
-                            product.status === "active"
-                              ? "bg-green-500"
-                              : "bg-gray-500"
+                            product.status === 'active'
+                              ? 'bg-green-500'
+                              : 'bg-gray-500'
                           }`}
                         />
-                        {product.status === "active"
-                          ? "Ativo"
-                          : product.status === "draft"
-                            ? "Rascunho"
-                            : "Inativo"}
+                        {product.status === 'active'
+                          ? 'Ativo'
+                          : product.status === 'draft'
+                            ? 'Rascunho'
+                            : 'Inativo'}
                       </span>
                     </td>
+
                     <td className="p-4 text-right">
                       <Link
                         href={`/dashboard/products/${product.id}/edit`}
-                        className="bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-800"
+                        className="text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
+                        style={{ backgroundColor: primaryColor }}
                       >
                         Editar
                       </Link>
@@ -123,5 +134,5 @@ export default async function ProductsPage() {
         </div>
       </div>
     </div>
-  );
+  )
 }
