@@ -30,16 +30,15 @@ export function ProductForm({
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
       
-      {/* 1. Formulário Principal (Escondido visualmente, mas envolve os inputs principais) */}
+      {/* Formulário Principal */}
       <form id="main-form" action={handleSubmit} className="contents">
-        {/* Renderiza a coluna da esquerda (Inputs principais) */}
         <ProductMainInfo 
           product={product} 
           primaryColor={primaryColor} 
         />
       </form>
 
-      {/* 2. Barra Lateral (Inputs vinculados via form="main-form") */}
+      {/* Barra Lateral */}
       <ProductSettingsSidebar 
         productId={product?.id}
         allAttributes={allAttributes}
