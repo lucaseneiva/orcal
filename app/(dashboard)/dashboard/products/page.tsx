@@ -2,12 +2,12 @@ import { getCurrentStore } from '@/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/utils/supabase/server'
-import { ProductHeader } from './components/product-header'
 import { ProductList } from './components/product-list'
 import { ProductEmptyState } from './components/product-empty-state'
+import { DashboardPageHeader } from '../components/dashboard-page-header'
 
 export default async function ProductsPage() {
-  
+
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
@@ -22,13 +22,20 @@ export default async function ProductsPage() {
 
   return (
     <div className="p-6">
-      <Link href="/dashboard/" className="text-sm text-gray-500 mb-4 block">
-        ← Voltar
-      </Link>
+      <DashboardPageHeader
+        title="Produtos"
+        backHref="/dashboard"
+      >
+        <Link
+          href="/dashboard/products/new"
+          className="text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition shadow-sm active:translate-y-0.5"
+          style={{ backgroundColor: primaryColor }}
+        >
+          + Novo Produto
+        </Link>
+      </DashboardPageHeader>
 
       <div className="max-w-6xl mx-auto">
-
-        <ProductHeader primaryColor={primaryColor} />
 
         <div className="bg-white border rounded-xl overflow-hidden">
           {products && products.length > 0 ? (
