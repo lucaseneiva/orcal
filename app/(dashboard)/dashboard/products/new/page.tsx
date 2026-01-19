@@ -25,7 +25,7 @@ export default async function NewProductPage() {
     <div className="p-8 bg-gray-50 min-h-screen">
       <DashboardPageHeader
         title="Novo Produto"
-        backHref="/dashboard"
+        backHref="/dashboard/products"
       />
       <ProductForm allAttributes={allAttributes} primaryColor={store.primary_color} />
     </div>

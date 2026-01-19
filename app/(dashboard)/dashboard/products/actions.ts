@@ -1,70 +1,98 @@
 'use server'
 
+import { createClient } from '@/lib/utils/supabase/server'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { deleteProduct, upsertProduct } from '@/lib/data/mutations/products'
-import { slugify } from '@/lib/utils/slugfy'
-import { replaceAll } from '@/lib/data/mutations/products-attributes'
 import { ProductSchema } from '@/lib/validators'
-import { ProductInsert } from '@/lib/types/types'
-import { verifyStoreAccess } from '@/lib/utils/verify-store-acess'
+import { slugify } from '@/lib/utils/slugfy'
 
 export async function upsertProductAction(formData: FormData) {
+  const supabase = await createClient()
+  const store = await getCurrentStore()
+
+  if (!store) {
+    return { error: 'Sessão inválida ou loja não encontrada.' }
+  }
+
+  const rawData = {
+    id: formData.get('id') || '',
+    name: formData.get('name'),
+    description: formData.get('description'),
+    image_url: formData.get('image_url'),
+    slug: formData.get('slug'),
+    status: formData.get('status'),
+  }
+
+  const validation = ProductSchema.safeParse(rawData)
+
+  if (!validation.success) {
+    return { error: validation.error.issues[0].message }
+  }
+
+  const data = validation.data
+
+  const finalSlug = data.slug && data.slug.trim() !== ''
+    ? slugify(data.slug)
+    : slugify(data.name)
+
   try {
-    const store = await getCurrentStore()
-
-    if (!store) throw new Error("Loja não encontrada")
-
-    await verifyStoreAccess(store.id)
-
-    const selectedAttributeIds = formData.getAll('selected_values') as string[]
-
-    const rawData = {
-      id: formData.get('id') || '',
-      name: formData.get('name') || '',
-      description: formData.get('description') || '',
-      image_url: formData.get('image_url') || '',
-      slug: formData.get('slug') || '',
-      status: formData.get('status') || '',
-    }
-
-    const result = ProductSchema.safeParse(rawData)
-
-    if (!result.success) {
-      const errorMessage = result.error.issues
-        .map((issue) => issue.message)
-        .join('. ')
-      return { error: errorMessage }
-    }
-
-    const data = result.data
-
-    let finalSlug = data.slug
-    if (!finalSlug || finalSlug.trim() === '') {
-      finalSlug = slugify(data.name)
-    }
-
-    const productPayload: ProductInsert = {
+    const productPayload = {
+      store_id: store.id,
       name: data.name,
       description: data.description || null,
       image_url: data.image_url || null,
       slug: finalSlug,
-      status: (data.status as "active" | "inactive" | "draft") || 'active',
-      store_id: store.id,
+      status: (data.status as 'active' | 'inactive' | 'draft') || 'active',
+      updated_at: new Date().toISOString()
     }
 
-    const product = await upsertProduct(data.id || null, store.id, productPayload)
+    let productId = data.id
 
-    if (product?.id) {
-      await replaceAll(product.id, selectedAttributeIds)
+    if (productId) {
+      const { error } = await supabase
+        .from('products')
+        .update(productPayload)
+        .eq('id', productId)
+        .eq('store_id', store.id)
+
+      if (error) throw error
+    } else {
+      const { data: newProduct, error } = await supabase
+        .from('products')
+        .insert(productPayload)
+        .select('id')
+        .single()
+
+      if (error) throw error
+      productId = newProduct.id
+    }
+
+    const selectedOptions = formData.getAll('selected_values') as string[]
+
+    if (productId) {
+      await supabase
+        .from('products_options')
+        .delete()
+        .eq('product_id', productId)
+
+      if (selectedOptions.length > 0) {
+        const relations = selectedOptions.map(optionId => ({
+          product_id: productId,
+          option_id: optionId
+        }))
+
+        const { error: relError } = await supabase
+          .from('products_options')
+          .insert(relations)
+
+        if (relError) throw relError
+      }
     }
 
   } catch (error) {
     console.error('Erro ao salvar produto:', error)
-    return {
-      error: error instanceof Error ? error.message : 'Erro interno ao salvar produto'
-    }
+    return { error: 'Erro interno ao salvar os dados. Tente novamente.' }
   }
 
   revalidatePath('/dashboard/products')
@@ -72,19 +100,24 @@ export async function upsertProductAction(formData: FormData) {
 }
 
 export async function deleteProductAction(formData: FormData) {
-  const id = formData.get('id') as string;
+  const supabase = await createClient()
+  const id = formData.get('id') as string
 
-  if (!id) {
-    return { error: 'ID do produto não fornecido.' };
-  }
+  if (!id) return { error: 'ID inválido' }
 
   try {
-    await deleteProduct(id);
-  } catch (err) {
-    console.error('Delete product error:', err);
-    return { error: 'Não foi possível deletar o produto.' };
+    const { error } = await supabase
+      .from('products')
+      .delete()
+      .eq('id', id)
+
+    if (error) throw error
+
+  } catch (error) {
+    console.error('Delete error:', error)
+    return { error: 'Erro ao excluir o produto.' }
   }
 
-  revalidatePath('/dashboard/products');
-  redirect('/dashboard/products');
+  revalidatePath('/dashboard/products')
+  redirect('/dashboard/products')
 }
