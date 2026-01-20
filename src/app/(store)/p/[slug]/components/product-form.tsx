@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useCart } from '@/src/app/context/cart-context'
+import { useCart } from '@/src/components/providers/cart-provider'
 import { useProductConfigurator } from '../hooks/useProductConfigurator'
 import { GroupedAttribute } from '@/src/lib/utils/product-logic'
 import { ProductOption } from '@/src/lib/types/types'

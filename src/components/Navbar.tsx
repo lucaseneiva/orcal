@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from 'react';
 import { ShoppingBag } from "lucide-react";
 import { signout } from '@/src/actions/auth.actions'; 
-import { useCart } from '@/src/app/context/cart-context';
+import { useCart } from '@/src/components/providers/cart-provider';
 
 type NavbarProps = {
   mode: 'store' | 'dashboard';

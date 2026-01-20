@@ -1,6 +1,6 @@
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
-import { CartProvider } from "@/src/app/context/cart-context";
+import { CartProvider } from "@/src/components/providers/cart-provider";
 import { StoreNotFound } from "@/src/components/StoreNotFound";
 import { getCurrentStore } from "@/src/lib/utils/get-current-store";
 import { headers } from "next/headers";

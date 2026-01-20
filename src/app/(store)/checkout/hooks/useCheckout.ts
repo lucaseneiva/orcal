@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useCart } from '@/src/app/context/cart-context'
+import { useCart } from '@/src/components/providers/cart-provider'
 import { submitOrder } from '../../../../actions/checkout.actions'
 import { toast } from 'sonner'
 
