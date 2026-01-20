@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/utils/supabase/server'
 import { ProductList } from './components/product-list'
-import { ProductEmptyState } from './components/product-empty-state'
 import { DashboardPageHeader } from '../components/dashboard-page-header'
+import { ResourceEmptyState } from '@/components/resource-empty-state'
 
 export default async function ProductsPage() {
 
@@ -41,7 +41,13 @@ export default async function ProductsPage() {
           {products && products.length > 0 ? (
             <ProductList products={products} primaryColor={primaryColor} />
           ) : (
-            <ProductEmptyState primaryColor={primaryColor} />
+            <ResourceEmptyState
+            title="Nenhum Produto Cadastrado"
+            description="Comece adicionando seu primeiro produto."
+            actionLabel="+ Criar Primeiro Produto"
+            href="/dashboard/products/new"
+            primaryColor={primaryColor}
+          />
           )}
         </div>
       </div>
