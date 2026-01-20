@@ -1,6 +1,6 @@
 'use client'
 
-import { upsertProductAction } from './actions'
+import { upsertProductAction } from '../../../../actions/products.actions'
 import { AttributeWithOptions, ProductWithOptions } from '@/lib/types/types'
 import { toast } from 'sonner'
 import { ProductMainInfo } from './components/product-main-info'

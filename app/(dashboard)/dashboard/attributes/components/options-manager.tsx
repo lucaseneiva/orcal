@@ -1,7 +1,7 @@
 'use client'
 
 import { AttributeWithOptions } from '@/lib/types/types'
-import { createOptionAction, updateOptionAction, deleteOptionAction } from '../actions'
+import { createOptionAction, updateOptionAction, deleteOptionAction } from '../../../../../actions/attributes.actions'
 import { Edit2, Trash2, X, Check, Info, Loader2 } from 'lucide-react'
 import { useState, useRef } from 'react'
 

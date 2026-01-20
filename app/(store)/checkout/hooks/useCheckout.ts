@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useCart } from '@/app/context/cart-context'
-import { submitOrder } from '../actions'
+import { submitOrder } from '../../../../actions/checkout.actions'
 import { toast } from 'sonner'
 
 export function useCheckout() {
