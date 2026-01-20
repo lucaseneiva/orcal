@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { AttributeWithOptions, ProductOption } from '@/src/lib/types/types'
-import { deleteProductAction } from '../../../../../actions/products.actions'
+import { deleteProductAction } from '../../../../actions/products.actions'
 import { toast } from 'sonner'
 import { useState } from 'react'
 

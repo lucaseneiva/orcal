@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ImageUpload } from '../../components/image-upload'
+import { ImageUpload } from '../../../layout/image-upload'
 import { ProductWithOptions } from '@/src/lib/types/types'
 
 interface ProductMainInfoProps {

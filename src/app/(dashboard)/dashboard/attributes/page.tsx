@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 import { notFound, redirect } from 'next/navigation'
 import { ResourceEmptyState } from '@/src/components/resource-empty-state'
-import { DashboardPageHeader } from '../components/dashboard-page-header'
+import { DashboardPageHeader } from '../../../../components/layout/dashboard-header'
 import { createClient } from '@/src/lib/utils/supabase/server'
 
 export default async function AttributesPage() {

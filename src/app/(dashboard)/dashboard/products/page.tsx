@@ -2,8 +2,8 @@ import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/src/lib/utils/supabase/server'
-import { ProductList } from './components/product-list'
-import { DashboardPageHeader } from '../components/dashboard-page-header'
+import { ProductList } from '../../../../components/modules/products/product-list'
+import { DashboardPageHeader } from '../../../../components/layout/dashboard-header'
 import { ResourceEmptyState } from '@/src/components/resource-empty-state'
 
 export default async function ProductsPage() {

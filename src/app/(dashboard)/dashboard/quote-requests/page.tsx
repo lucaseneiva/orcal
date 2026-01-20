@@ -1,10 +1,10 @@
 import { createClient } from "@/src/lib/utils/supabase/server";
 import { getCurrentStore } from "@/src/lib/utils/get-current-store";
 import { redirect } from "next/navigation";
-import { QuoteRequestCard } from "./components/QuoteRequestCard";
+import { QuoteRequestCard } from "../../../../components/modules/quote-requests/QuoteRequestCard";
 import { getQuoteRequestsByStoreId } from "@/src/lib/data/queries/quote-requests";
 // Import the interface to ensure we are aligning correctly
-import type { QuoteRequest } from "./components/QuoteRequestCard";
+import type { QuoteRequest } from "../../../../components/modules/quote-requests/QuoteRequestCard";
 
 export default async function quoteRequestsPage() {
   const store = await getCurrentStore();

@@ -1,7 +1,7 @@
 import { createClient } from '@/src/lib/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
-import { DashboardCards } from './components/DashboardCards'
+import { DashboardCards } from '../../../components/layout/DashboardCards'
 export default async function AdminDashboard() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

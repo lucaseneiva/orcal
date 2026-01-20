@@ -1,9 +1,9 @@
-import { AttributeHeaderForm } from '../../components/attribute-header-form'
-import { OptionsManager } from '../../components/options-manager'
+import { AttributeHeaderForm } from '../../../../../../components/modules/attributes/attribute-header-form'
+import { OptionsManager } from '../../../../../../components/modules/attributes/options-manager'
 import { notFound } from 'next/navigation'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 import { createClient } from '@/src/lib/utils/supabase/server'
-import { DashboardPageHeader } from '../../../components/dashboard-page-header'
+import { DashboardPageHeader } from '../../../../../../components/layout/dashboard-header'
 
 interface PageProps {
   params: Promise<{ id: string }>

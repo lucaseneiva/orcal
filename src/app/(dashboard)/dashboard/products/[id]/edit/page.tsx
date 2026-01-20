@@ -1,8 +1,8 @@
 import { notFound, redirect } from 'next/navigation'
 import { createClient } from '@/src/lib/utils/supabase/server'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
-import { DashboardPageHeader } from '../../../components/dashboard-page-header'
-import { ProductForm } from '../../form'
+import { DashboardPageHeader } from '../../../../../../components/layout/dashboard-header'
+import { ProductForm } from '../../../../../../components/modules/products/product-form'
 import { ProductOption, ProductWithOptions } from '@/src/lib/types/types'
 
 interface PageProps {

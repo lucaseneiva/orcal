@@ -1,7 +1,5 @@
 'use client'
 
-import { toast } from "sonner";
-
 import Link from "next/link";
 
 interface DashboardCardsProps {
@@ -11,13 +9,8 @@ interface DashboardCardsProps {
 export function DashboardCards({ primaryColor }: DashboardCardsProps) {
   return (
     <>
-      <button 
-        onClick={() => toast.success('Sonner está funcionando!')}
-        className="mb-4 bg-green-500 text-white px-4 py-2 rounded"
-      >
-        Testar Toast
-      </button>
-
+      
+      
       {/* Card de Produtos */}
       <div className="p-8 rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col">
         <h2 className="text-xl font-bold text-gray-900">

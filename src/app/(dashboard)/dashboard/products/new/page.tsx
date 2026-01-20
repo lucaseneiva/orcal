@@ -1,6 +1,6 @@
-import { ProductForm } from '../form'
+import { ProductForm } from '../../../../../components/modules/products/product-form'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
-import { DashboardPageHeader } from '../../components/dashboard-page-header'
+import { DashboardPageHeader } from '../../../../../components/layout/dashboard-header'
 import { createClient } from '@/src/lib/utils/supabase/server'
 
 export default async function NewProductPage() {

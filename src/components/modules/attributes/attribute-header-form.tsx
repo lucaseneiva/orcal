@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { upsertAttribute, deleteAttributeAction } from '../../../../../actions/attributes.actions'
+import { upsertAttribute, deleteAttributeAction } from '../../../actions/attributes.actions'
 import { AttributeWithOptions } from '@/src/lib/types/types'
 import { useState } from 'react'
 import { Loader2 } from 'lucide-react'

@@ -1,7 +1,7 @@
-import { AttributeHeaderForm } from '../components/attribute-header-form'
+import { AttributeHeaderForm } from '../../../../../components/modules/attributes/attribute-header-form'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 import NotFound from '@/src/app/not-found'
-import { DashboardPageHeader } from '../../components/dashboard-page-header'
+import { DashboardPageHeader } from '../../../../../components/layout/dashboard-header'
 
 export default async function NewAttributePage() {
 

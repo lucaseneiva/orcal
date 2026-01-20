@@ -3,8 +3,8 @@
 import { upsertProductAction } from '../../../../actions/products.actions'
 import { AttributeWithOptions, ProductWithOptions } from '@/src/lib/types/types'
 import { toast } from 'sonner'
-import { ProductMainInfo } from './components/product-main-info'
-import { ProductSettingsSidebar } from './components/product-settings-sidebar'
+import { ProductMainInfo } from './main-info'
+import { ProductSettingsSidebar } from './settings-sidebar'
 
 type ProductFormProps = {
   product?: Partial<ProductWithOptions>
