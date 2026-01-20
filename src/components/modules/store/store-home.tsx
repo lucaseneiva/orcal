@@ -1,5 +1,5 @@
 import { Search, ShoppingBag, PackageSearch } from 'lucide-react'
-import { ProductCard } from '@/src/components/ProductCard'
+import { ProductCard } from '@/src/components/modules/products/product-card'
 import { Database } from '@/src/lib/types/database.types'
 
 type Store = Database['public']['Tables']['stores']['Row']

@@ -1,7 +1,7 @@
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CartProvider } from "@/src/components/providers/cart-provider";
-import { StoreNotFound } from "@/src/components/StoreNotFound";
+import { StoreNotFound } from "@/src/components/modules/store/store-not-found";
 import { getCurrentStore } from "@/src/lib/utils/get-current-store";
 import { headers } from "next/headers";
 import { ToasterProvider } from "@/src/components/providers/toaster-provider";

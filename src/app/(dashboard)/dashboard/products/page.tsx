@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/src/lib/utils/supabase/server'
 import { ProductList } from '../../../../components/modules/products/product-list'
 import { DashboardPageHeader } from '../../../../components/layout/dashboard-header'
-import { ResourceEmptyState } from '@/src/components/resource-empty-state'
+import { ResourceEmptyState } from '@/src/components/ui/empty-state'
 
 export default async function ProductsPage() {
 

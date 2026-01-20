@@ -1,5 +1,5 @@
-import { StoreNotFound } from '@/src/components/StoreNotFound'
-import { StoreHome } from '@/src/components/StoreHome'
+import { StoreNotFound } from '@/src/components/modules/store/store-not-found'
+import { StoreHome } from '@/src/components/modules/store/store-home'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 import { getAllProductsByStoreId } from '@/src/lib/data/queries/products'
 import { Metadata } from 'next'

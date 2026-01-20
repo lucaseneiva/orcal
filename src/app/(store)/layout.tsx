@@ -1,6 +1,6 @@
 import { getCurrentStore } from "@/src/lib/utils/get-current-store";
-import { Navbar } from "@/src/components/Navbar";
-import { Footer } from "@/src/components/Footer";
+import { Navbar } from "@/src/components/layout/navbar";
+import { Footer } from "@/src/components/layout/footer";
 
 export default async function StoreLayout({
   children,

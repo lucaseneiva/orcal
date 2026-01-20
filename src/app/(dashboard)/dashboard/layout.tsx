@@ -1,8 +1,8 @@
 import { createClient } from "@/src/lib/utils/supabase/server";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentStore } from "@/src/lib/utils/get-current-store";
-import { Navbar } from "@/src/components/Navbar";
-import { Footer } from "@/src/components/Footer";
+import { Navbar } from "@/src/components/layout/navbar";
+import { Footer } from "@/src/components/layout/footer";
 import { checkUserStoreAccess } from "@/src/lib/utils/check-auth";
 
 export default async function DashboardLayout({
