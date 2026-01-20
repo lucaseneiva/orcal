@@ -4,9 +4,9 @@ import { AttributeWithOptions } from '@/lib/types/types'
 import { useAttributeValues } from '../hooks/useAttributeValues'
 import { Edit2, Trash2, X, Check, Info } from 'lucide-react'
 
-export function AttributeValuesManager({
+export function OptionsManager({
   attribute,
-  primaryColor = '#000000' // Add this prop
+  primaryColor = '#000000'
 }: {
   attribute: AttributeWithOptions,
   primaryColor?: string

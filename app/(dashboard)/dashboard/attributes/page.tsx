@@ -1,16 +1,26 @@
 import Link from 'next/link'
 import { getCurrentStore } from '@/lib/utils/get-current-store'
-import { getAttributesByStoreId } from '@/lib/data/queries/attributes'
-import { redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { ResourceEmptyState } from '@/components/resource-empty-state'
 import { DashboardPageHeader } from '../components/dashboard-page-header'
+import { createClient } from '@/lib/utils/supabase/server'
 
 export default async function AttributesPage() {
   const store = await getCurrentStore()
   if (!store) redirect('/dashboard')
 
-  const attributes = await getAttributesByStoreId(store.id)
+  const supabase = await createClient()
+  const { data: attributes } = await supabase
+    .from('attributes')
+    .select(`
+      *,
+      options (*)
+    `)
+    .eq('store_id', store.id)
+    .order('created_at', { ascending: false })
   const primaryColor = store.primary_color
+  
+  if(attributes == null) return notFound()
 
   return (
     <div className="p-6">
@@ -28,7 +38,7 @@ export default async function AttributesPage() {
       </DashboardPageHeader>
 
       <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-        {attributes.length === 0 ? (
+        {attributes.length === 0   ? (
           <ResourceEmptyState
             title="Nenhum Atributo Cadastrado"
             description="Atributos servem para definir variações como Tamanho, Cor, ou Tipo de Papel."
