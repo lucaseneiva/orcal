@@ -3,10 +3,8 @@
 import { getCurrentStore } from '@/lib/utils/get-current-store'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createAttribute, updateAttribute, deleteAttribute } from '@/lib/data/mutations/attributes'
-import { createOption, deleteOption, updateOption } from '@/lib/data/mutations/options'
-import { OptionInsert } from '@/lib/types/types'
-import { AttributeSchema, OptionSchema } from '@/lib/validators' // Import Zod Schemas
+import { createClient } from '@/lib/utils/supabase/server'
+import { AttributeSchema, OptionSchema } from '@/lib/validators'
 import { slugify } from '@/lib/utils/slugfy'
 
 export async function upsertAttribute(formData: FormData) {
@@ -25,8 +23,8 @@ export async function upsertAttribute(formData: FormData) {
   }
 
   const { id, name } = validation.data
-
   const slug = slugify(name)
+  const supabase = await createClient()
 
   const payload = {
     name,
@@ -35,9 +33,20 @@ export async function upsertAttribute(formData: FormData) {
   }
 
   if (id) {
-    await updateAttribute(id, payload)
+    const { error } = await supabase
+      .from('attributes')
+      .update(payload)
+      .eq('id', id)
+      .select()
+
+    if (error) throw new Error(error.message)
   } else {
-    await createAttribute(payload)
+    const { error } = await supabase
+      .from('attributes')
+      .insert(payload)
+      .select()
+
+    if (error) throw new Error(error.message)
   }
 
   revalidatePath('/dashboard/attributes')
@@ -48,13 +57,19 @@ export async function deleteAttributeAction(formData: FormData) {
   const id = formData.get('id') as string
   if (!id) throw new Error("ID inválido")
 
-  await deleteAttribute(id)
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('attributes')
+    .delete()
+    .eq('id', id)
+
+  if (error) throw new Error(error.message)
 
   revalidatePath('/dashboard/attributes')
   redirect('/dashboard/attributes')
 }
 
-export async function createOptonAction(formData: FormData) {
+export async function createOptionAction(formData: FormData) {
   const rawData = {
     attribute_id: formData.get('attribute_id'),
     name: formData.get('name'),
@@ -69,14 +84,17 @@ export async function createOptonAction(formData: FormData) {
   }
 
   const { attribute_id, name, description } = validation.data
+  const supabase = await createClient()
 
-  const payload: OptionInsert = {
-    name,
-    attribute_id,
-    description: description || null
-  }
+  const { error } = await supabase
+    .from('options')
+    .insert({
+      name,
+      attribute_id,
+      description: description || null
+    })
 
-  await createOption(payload)
+  if (error) console.error("Database Error:", error.message)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
@@ -97,15 +115,18 @@ export async function updateOptionAction(formData: FormData) {
   }
 
   const { id, attribute_id, name, description } = validation.data
+  const supabase = await createClient()
 
-  const payload = {
-    name,
-    description: description || null,
-  }
 
-  if (id) {
-    await updateOption(id, payload)
-  }
+  const { error } = await supabase
+    .from('options')
+    .update({
+      name,
+      description: description || null,
+    })
+    .eq('id', id!)
+
+  if (error) console.error("Database Error:", error.message)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
@@ -116,7 +137,13 @@ export async function deleteOptionAction(formData: FormData) {
 
   if (!id) return
 
-  await deleteOption(id)
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('options')
+    .delete()
+    .eq('id', id)
+
+  if (error) console.error("Database Error:", error.message)
 
   revalidatePath(`/dashboard/attributes/${attribute_id}/edit`)
 }
