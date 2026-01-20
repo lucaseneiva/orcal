@@ -1,39 +1,65 @@
 'use client'
 
 import Link from 'next/link'
+import { useState } from 'react'
+import { toast } from 'sonner'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
-import { useCheckout } from './hooks/useCheckout'
-import { CheckoutSuccess } from '../../../components/modules/checkout/checkout-success'
-import { EmptyCartView } from '../../../components/modules/checkout/empty-cart-view'
-import { CartItemList } from '../../../components/modules/checkout/cart-item-list'
-import { CheckoutForm } from '../../../components/modules/checkout/checkout-form'
+
+// Imports internos
+import { useCart } from '@/src/components/providers/cart-provider' // Usando o provider consolidado
+import { submitOrder } from '@/src/actions/checkout.actions'
+import { CheckoutSuccess } from '@/src/components/modules/checkout/checkout-success'
+import { EmptyCartView } from '@/src/components/modules/checkout/empty-cart-view'
+import { CartItemList } from '@/src/components/modules/checkout/cart-item-list'
+import { CheckoutForm } from '@/src/components/modules/checkout/checkout-form'
 
 type CheckoutPageProps = {
   primaryColor?: string
 }
 
 export default function CheckoutPage({ primaryColor }: CheckoutPageProps) {
-  const {
-    cartItems,
-    removeFromCart,
-    handleFormSubmit,
-    loading,
-    success,
-    isEmpty,
-  } = useCheckout()
+  const { items, removeFromCart, clearCart } = useCart()
+  
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
-  if (success) {
-    if (success) {
-      return (
-        <CheckoutSuccess
-          primaryColor={primaryColor}
-        />
-      )
+  async function handleFormSubmit(formData: FormData) {
+    if (items.length === 0) {
+      toast.error('O carrinho está vazio')
+      return
     }
 
+    setLoading(true)
+
+    formData.append('cart_items', JSON.stringify(items))
+
+    try {
+      const result = await submitOrder(formData)
+
+      if (result.success) {
+        setSuccess(true)
+        clearCart()
+        toast.success('Pedido de orçamento enviado!')
+      } else {
+        toast.error(result.error || 'Erro ao enviar pedido')
+      }
+    } catch (error) {
+      console.error(error)
+      toast.error('Erro inesperado. Tente novamente.')
+    } finally {
+      setLoading(false)
+    }
   }
 
-  if (isEmpty) {
+  // --- Views Condicionais ---
+
+  if (success) {
+    return (
+      <CheckoutSuccess primaryColor={primaryColor} />
+    )
+  }
+
+  if (items.length === 0) {
     return (
       <EmptyCartView
         primaryColor={primaryColor}
@@ -60,11 +86,13 @@ export default function CheckoutPage({ primaryColor }: CheckoutPageProps) {
       </h1>
 
       <div className="grid lg:grid-cols-5 gap-12">
+        {/* Lista de Itens */}
         <CartItemList
-          items={cartItems}
+          items={items}
           onRemove={removeFromCart}
         />
 
+        {/* Botão Mobile "Adicionar Mais" */}
         <div className="mt-8 flex justify-center lg:hidden">
           <Link
             href="/"
@@ -75,13 +103,13 @@ export default function CheckoutPage({ primaryColor }: CheckoutPageProps) {
           </Link>
         </div>
 
+        {/* Formulário */}
         <div className="lg:col-span-2">
           <CheckoutForm
             onSubmit={handleFormSubmit}
             loading={loading}
             primaryColor={primaryColor}
           />
-
         </div>
       </div>
     </div>
