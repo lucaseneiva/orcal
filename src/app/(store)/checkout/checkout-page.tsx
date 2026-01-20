@@ -3,10 +3,10 @@
 import Link from 'next/link'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { useCheckout } from './hooks/useCheckout'
-import { CheckoutSuccess } from './components/checkout-success'
-import { EmptyCartView } from './components/empty-cart-view'
-import { CartItemList } from './components/cart-item-list'
-import { CheckoutForm } from './components/checkout-form'
+import { CheckoutSuccess } from '../../../components/modules/checkout/checkout-success'
+import { EmptyCartView } from '../../../components/modules/checkout/empty-cart-view'
+import { CartItemList } from '../../../components/modules/checkout/cart-item-list'
+import { CheckoutForm } from '../../../components/modules/checkout/checkout-form'
 
 type CheckoutPageProps = {
   primaryColor?: string
