@@ -5,15 +5,14 @@ import { Image as ImageIcon, ChevronLeft } from 'lucide-react'
 import { getProductBySlugAndStoreId } from '@/src/lib/data/queries/products'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 import { groupProductOptions } from '@/src/lib/utils/product-logic'
-import ProductForm from './components/product-form'
-import AttributeDetails from './components/attribute-options'
+import ProductForm from '@/src/components/modules/products/details/product-configurator'
+import AttributeDetails from '@/src/components/modules/products/details/attribute-details'
 import { Metadata } from 'next'
 
 type PageProps = {
   params: Promise<{ slug: string }>
 }
 
-// New Metadata Function
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const store = await getCurrentStore()
   if (!store) return {}
