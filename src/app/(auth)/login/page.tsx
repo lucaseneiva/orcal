@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { login } from '../../actions/auth.actions'
+import { login } from '../../../actions/auth.actions'
 import { getCurrentStore } from '@/src/lib/utils/get-current-store'
 
 type LoginPageProps = {
