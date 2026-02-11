@@ -1,0 +1,39 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title Container Diagram - Orçal SaaS Platform
+
+Person(customer, "Cliente Final", "Acessa a loja (ex: grafica.com) para pedir orçamentos")
+Person(merchant, "Lojista", "Gerencia produtos e recebe leads no Dashboard")
+
+System_Boundary(saas, "Orçal SaaS (Next.js 15)") {
+    
+    Container(middleware, "Middleware Tenant Resolver", "Next.js Edge", "Intercepta o Host/Domínio da requisição e identifica o store_id")
+    
+    Container(storefront, "Storefront (SSR)", "React Server Components", "Renderiza a loja pública com branding (Cor/Logo) dinâmico")
+    
+    Container(dashboard, "Admin Dashboard", "Next.js App Router", "Área protegida para gestão de catálogo")
+    
+    Container(actions, "Server Actions", "TypeScript / Zod", "Processa formulários, validação e lógica de negócio")
+}
+
+System_Ext(supabase, "Supabase", "PostgreSQL (Dados), Auth (Login) & Storage (Imagens)")
+System_Ext(brevo, "Brevo API", "Serviço de envio de e-mails transacionais")
+System_Ext(whatsapp, "WhatsApp", "App externo para negociação")
+
+' Fluxo do Cliente
+Rel(customer, middleware, "Acessa via HTTPS", "Browser")
+Rel(middleware, storefront, "Roteia requisição")
+Rel(storefront, supabase, "Lê Produtos (Cached)", "TCP/IP")
+Rel(customer, actions, "Submete Pedido", "Form Data")
+
+' Fluxo do Servidor (Checkout)
+Rel(actions, supabase, "Salva Lead (quote_requests)", "TCP/IP")
+Rel(actions, brevo, "Envia Notificação", "REST API")
+
+' Fluxo do Lojista
+Rel(merchant, dashboard, "Acessa Painel", "HTTPS")
+Rel(dashboard, supabase, "CRUD Produtos/Atributos", "RLS Protected")
+Rel(merchant, whatsapp, "Responde Cliente", "Deep Link")
+
+@enduml

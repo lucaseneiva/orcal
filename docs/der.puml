@@ -1,0 +1,96 @@
+@startuml
+!theme plain
+hide circle
+skinparam linetype ortho
+
+' ENTIDADES BASEADAS NO SEU CÓDIGO
+
+entity "stores" as stores {
+  *id : UUID <<PK>>
+  --
+  *domain : VARCHAR <<Unique>>
+  *slug : VARCHAR
+  *name : VARCHAR
+  primary_color : VARCHAR
+  logo_url : VARCHAR
+  created_at : TIMESTAMP
+}
+
+entity "profiles" as profiles {
+  *id : UUID <<PK>>
+  --
+  *store_id : UUID <<FK>>
+  email : VARCHAR
+  full_name : VARCHAR
+  role : VARCHAR
+}
+
+entity "products" as products {
+  *id : UUID <<PK>>
+  --
+  *store_id : UUID <<FK>>
+  *name : VARCHAR
+  slug : VARCHAR
+  description : TEXT
+  image_url : VARCHAR
+  status : ENUM (active, draft, inactive)
+}
+
+entity "attributes" as attributes {
+  *id : UUID <<PK>>
+  --
+  *store_id : UUID <<FK>>
+  *name : VARCHAR
+  slug : VARCHAR
+}
+
+entity "options" as options {
+  *id : UUID <<PK>>
+  --
+  *attribute_id : UUID <<FK>>
+  *name : VARCHAR
+  description : VARCHAR
+}
+
+entity "products_options" as products_options {
+  *product_id : UUID <<PK, FK>>
+  *option_id : UUID <<PK, FK>>
+  --
+  (Tabela Pivô N:N)
+}
+
+entity "quote_requests" as quote_requests {
+  *id : UUID <<PK>>
+  --
+  *store_id : UUID <<FK>>
+  customer_name : VARCHAR
+  customer_whatsapp : VARCHAR
+  email : VARCHAR
+  items : JSONB <<Cart Snapshot>>
+  status : ENUM (pending, responded...)
+  viewed : BOOLEAN
+  created_at : TIMESTAMP
+}
+
+' RELACIONAMENTOS
+
+' Uma loja tem vários admins/perfis
+stores ||..o{ profiles : "has staff"
+
+' Uma loja tem vários produtos
+stores ||..o{ products : "owns catalog"
+
+' Uma loja tem vários atributos (configurações globais)
+stores ||..o{ attributes : "defines"
+
+' Uma loja recebe vários pedidos
+stores ||..o{ quote_requests : "receives"
+
+' Um atributo tem várias opções (Ex: Papel -> A4, A3)
+attributes ||--o{ options : "contains values"
+
+' Relação N:N entre Produto e Opções
+products ||..o{ products_options : "has"
+options ||..o{ products_options : "belongs to"
+
+@enduml
