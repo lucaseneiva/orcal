@@ -37,7 +37,13 @@ Diferente de um e-commerce tradicional, o Orçal foca na **configuração comple
 
 O sistema utiliza a detecção de host nos headers da requisição para identificar qual loja carregar. Isso garante isolamento de dados entre os clientes do SaaS.
 
+### Diagrama C4 - Contexto do Sistema
 
+![C4 Diagram](https://github.com/lucaseneiva/orcal/blob/main/docs/c4.png)
+
+### Diagrama de Casos de Uso
+
+![Use Case Diagram](https://github.com/lucaseneiva/orcal/blob/main/docs/usecase.png)
 
 ---
 
@@ -120,6 +126,12 @@ O sistema utiliza a detecção de host nos headers da requisição para identifi
 ## 🗃️ Estrutura do Banco de Dados
 
 O projeto utiliza um modelo relacional robusto para suportar a flexibilidade dos produtos:
+
+### Diagrama Entidade-Relacionamento (DER)
+
+![DER Diagram](https://github.com/lucaseneiva/orcal/blob/main/docs/der.png)
+
+### Descrição das Tabelas
 
 *   **stores:** Tabela principal. Define o tenant (domínio, cores, logo).
 *   **attributes:** Definições genéricas (ex: "Tamanho", "Papel"). Vinculado à `store`.
